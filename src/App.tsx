@@ -14,7 +14,11 @@ import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 
-const clerkFrontendApi = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
+
+if (!clerkPublishableKey) {
+  console.error('Clerk publishable key is missing!');
+}
 
 function HomePage() {
   const passes = [
@@ -68,7 +72,7 @@ function HomePage() {
 
 function App() {
   return (
-    <ClerkProvider frontendApi={clerkFrontendApi}>
+    <ClerkProvider publishableKey={clerkPublishableKey}>
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
           <Navbar />
@@ -108,14 +112,7 @@ function App() {
                   </SignedIn>
                 }
               />
-              <Route
-                path="*"
-                element={
-                  <SignedOut>
-                    <RedirectToSignIn />
-                  </SignedOut>
-                }
-              />
+              <Route path="*" element={<RedirectToSignIn />} />
             </Routes>
           </AnimatePresence>
           <Toaster position="top-right" />
