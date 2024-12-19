@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { SignIn, ClerkProvider, useAuth } from "@clerk/clerk-react";
+import React, { useState, useEffect } from "react";
+import { SignIn, SignUp, ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 
 // SignInPage Component
-const SignInPage: React.FC = () => {
+const AuthPage: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(true); // Dark mode state
-  const { isSignedIn, user } = useAuth(); // Clerk hook for authentication
+  const [isSignUp, setIsSignUp] = useState<boolean>(false); // State to toggle between SignIn and SignUp screens
+  const { isSignedIn } = useAuth(); // Clerk hook for authentication
   const navigate = useNavigate();
 
   // Redirect user if already signed in
@@ -23,22 +24,47 @@ const SignInPage: React.FC = () => {
   return (
     <div className={`min-h-screen flex items-center justify-center ${themeClass}`}>
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h2 className={`text-2xl font-bold ${textColor}`}>Sign In</h2>
+        <h2 className={`text-2xl font-bold ${textColor}`}>{isSignUp ? "Sign Up" : "Sign In"}</h2>
         <p className={`mt-4 ${descriptionColor}`}>
-          Please sign in using one of the following methods:
+          {isSignUp
+            ? "Create an account to get started with our service."
+            : "Please sign in to continue."}
         </p>
         <div className="mt-6">
-          {/* Clerk SignIn Component */}
-          <SignIn
-            path="/signin"
-            routing="path"
-            redirectUrl="/account"
-            appearance={{
-              variables: {
-                colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color change for dark/light mode
-              },
-            }}
-          />
+          {/* Conditionally render SignIn or SignUp based on isSignUp state */}
+          {isSignUp ? (
+            <SignUp
+              path="/signup"
+              routing="path"
+              redirectUrl="/account"
+              appearance={{
+                variables: {
+                  colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color change for dark/light mode
+                },
+              }}
+            />
+          ) : (
+            <SignIn
+              path="/signin"
+              routing="path"
+              redirectUrl="/account"
+              appearance={{
+                variables: {
+                  colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color change for dark/light mode
+                },
+              }}
+            />
+          )}
+        </div>
+
+        {/* Switch between Sign In and Sign Up */}
+        <div className="mt-4 text-center">
+          <button
+            className="text-sm text-blue-500 hover:text-blue-700"
+            onClick={() => setIsSignUp(!isSignUp)}
+          >
+            {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
+          </button>
         </div>
       </div>
     </div>
@@ -46,7 +72,7 @@ const SignInPage: React.FC = () => {
 };
 
 // SignInWrapper Component (Wrapper for ClerkProvider)
-const SignInWrapper: React.FC = () => {
+const AuthWrapper: React.FC = () => {
   // Make sure to replace with your actual Clerk Publishable Key
   const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -56,9 +82,9 @@ const SignInWrapper: React.FC = () => {
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
-      <SignInPage />
+      <AuthPage />
     </ClerkProvider>
   );
 };
 
-export default SignInWrapper;
+export default AuthWrapper;
