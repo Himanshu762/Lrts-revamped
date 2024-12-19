@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
+import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import Benefits from './components/features/Benefits';
@@ -12,7 +13,8 @@ import PassesPage from './pages/PassesPage';
 import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
-import { useAuth } from './hooks/useAuth'; // Custom hook for auth state
+
+const clerkFrontendApi = process.env.REACT_APP_CLERK_FRONTEND_API || '';
 
 function HomePage() {
   const passes = [
@@ -65,29 +67,62 @@ function HomePage() {
 }
 
 function App() {
-  const { isAuthenticated } = useAuth(); // Assume this hook provides the user authentication status
-
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Navbar />
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route
-              path="/account"
-              element={isAuthenticated ? <AccountPage /> : <Navigate to="/signin" />}
-            />
-            <Route path="/zones" element={<ExploreZones />} />
-            <Route path="/planner" element={<TripPlanner />} />
-            <Route path="/passes" element={<PassesPage />} />
-          </Routes>
-        </AnimatePresence>
-        <Toaster position="top-right" />
-      </div>
-      <Footer />
-    </Router>
+    <ClerkProvider frontendApi={clerkFrontendApi}>
+      <Router>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <Navbar />
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/signin" element={<SignInPage />} />
+              <Route
+                path="/account"
+                element={
+                  <SignedIn>
+                    <AccountPage />
+                  </SignedIn>
+                }
+              />
+              <Route
+                path="/zones"
+                element={
+                  <SignedIn>
+                    <ExploreZones />
+                  </SignedIn>
+                }
+              />
+              <Route
+                path="/planner"
+                element={
+                  <SignedIn>
+                    <TripPlanner />
+                  </SignedIn>
+                }
+              />
+              <Route
+                path="/passes"
+                element={
+                  <SignedIn>
+                    <PassesPage />
+                  </SignedIn>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <SignedOut>
+                    <RedirectToSignIn />
+                  </SignedOut>
+                }
+              />
+            </Routes>
+          </AnimatePresence>
+          <Toaster position="top-right" />
+        </div>
+        <Footer />
+      </Router>
+    </ClerkProvider>
   );
 }
 

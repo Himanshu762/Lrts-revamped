@@ -4,12 +4,13 @@ import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import clsx from 'clsx';
-import { useAuth } from '../../hooks/useAuth';
+import { useUser, useSignOut } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth(); // Assume logout handles user sign-out
+  const { isSignedIn } = useUser();
+  const { signOut } = useSignOut();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -54,14 +55,14 @@ const Navbar = () => {
             <li>
               <NavLink to="/passes" isActive={isActive('/passes')}>Passes</NavLink>
             </li>
-            {isAuthenticated ? (
+            {isSignedIn ? (
               <>
                 <li>
                   <NavLink to="/account" isActive={isActive('/account')}>Account</NavLink>
                 </li>
                 <li>
                   <button
-                    onClick={logout}
+                    onClick={() => signOut()}
                     className="px-3 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600"
                   >
                     Logout
