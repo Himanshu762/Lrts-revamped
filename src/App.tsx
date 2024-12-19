@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
@@ -10,7 +10,9 @@ import ExploreZones from './pages/ExploreZones';
 import TripPlanner from './pages/TripPlanner';
 import PassesPage from './pages/PassesPage';
 import Footer from './components/layout/Footer';
-
+import SignInPage from './pages/SignInPage';
+import AccountPage from './pages/AccountPage';
+import { useAuth } from './hooks/useAuth'; // Custom hook for auth state
 
 function HomePage() {
   const passes = [
@@ -62,23 +64,30 @@ function HomePage() {
   );
 }
 
-  function App() {
+function App() {
+  const { isAuthenticated } = useAuth(); // Assume this hook provides the user authentication status
+
   return (
-      <Router>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/zones" element={<ExploreZones />} />
-              <Route path="/planner" element={<TripPlanner />} />
-              <Route path="/passes" element={<PassesPage />} />
-            </Routes>
-          </AnimatePresence>
-          <Toaster position="top-right" />
-        </div>
-        <Footer />
-      </Router>
+    <Router>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Navbar />
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route
+              path="/account"
+              element={isAuthenticated ? <AccountPage /> : <Navigate to="/signin" />}
+            />
+            <Route path="/zones" element={<ExploreZones />} />
+            <Route path="/planner" element={<TripPlanner />} />
+            <Route path="/passes" element={<PassesPage />} />
+          </Routes>
+        </AnimatePresence>
+        <Toaster position="top-right" />
+      </div>
+      <Footer />
+    </Router>
   );
 }
 
