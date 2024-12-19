@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import clsx from 'clsx';
-import { useAuth } from '../../hooks/useAuth'; // Custom hook for auth state
+import { useAuth } from '../../hooks/useAuth';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
