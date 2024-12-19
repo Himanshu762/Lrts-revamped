@@ -38,7 +38,7 @@ const SignUpPage: React.FC = () => {
                 colorBackground: darkMode ? "#2d3748" : "#f7fafc", // Background color
                 colorText: darkMode ? "#f7fafc" : "#2d3748", // Text color
                 colorButtonText: "#fff", // Always white button text
-                colorButtonBackground: darkMode ? "#1a202c" : "#1a202c", // Keep button background color consistent
+                colorButtonBackground: darkMode ? "f7fafc" : "f7fafc", // Keep button background color consistent
               },
             }}
           />
