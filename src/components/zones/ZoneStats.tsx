@@ -1,6 +1,5 @@
 import React from 'react';
 import { MapPin, Bike, Clock, TrendingUp, Users, Building2, Battery } from 'lucide-react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, LineChart, Line } from 'recharts';
 
 const ZoneStats: React.FC = () => {
   const stats = [

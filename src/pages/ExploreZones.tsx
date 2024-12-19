@@ -1,4 +1,4 @@
-=import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ZoneMap from '../components/zones/ZoneMap';
 import ZoneStats from '../components/zones/ZoneStats';
 import { MapPin, Users, Clock, Shield } from 'lucide-react';
@@ -23,6 +23,7 @@ const ExploreZones: React.FC = () => {
     };
   }, []);
 
+  // Define the tooltip styles based on the theme
   const tooltipStyles = {
     backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF', // Dark gray for dark mode, white for light mode
     color: isDarkMode ? '#FFFFFF' : '#000000',          // White text for dark mode, black text for light mode
@@ -121,7 +122,7 @@ const ExploreZones: React.FC = () => {
                 <XAxis dataKey="name" stroke="#666" />
                 <YAxis stroke="#666" />
                 <Tooltip 
-                  contentStyle={tooltipStyles(isDarkMode)} 
+                  contentStyle={tooltipStyles} 
                   wrapperStyle={{ outline: 'none' }} 
                 />
                 <Legend />
@@ -135,7 +136,7 @@ const ExploreZones: React.FC = () => {
                 <XAxis dataKey="name" stroke="#666" />
                 <YAxis stroke="#666" />
                 <Tooltip 
-                  contentStyle={tooltipStyles(isDarkMode)} 
+                  contentStyle={tooltipStyles} 
                   wrapperStyle={{ outline: 'none' }} 
                   labelStyle={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} // Adjust label styling for light mode
                 />
