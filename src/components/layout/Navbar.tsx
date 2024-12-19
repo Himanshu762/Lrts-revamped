@@ -1,20 +1,32 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react'; // Import icons
 import { useUser, useClerk } from '@clerk/clerk-react';
 import clsx from 'clsx';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
   const location = useLocation();
   const { isSignedIn } = useUser();
   const { signOut } = useClerk();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path) => location.pathname === path;
 
   const handleSignOut = () => {
     signOut();
   };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle('dark', !darkMode);
+  };
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -72,7 +84,16 @@ const Navbar = () => {
               <li>
                 <NavLink to="/signin" isActive={isActive('/signin')}>Sign In</NavLink>
               </li>
-            )}]
+            )}
+            <li>
+              <button
+                onClick={toggleDarkMode}
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 flex items-center"
+              >
+                {darkMode ? <Sun className="w-5 h-5 mr-1" /> : <Moon className="w-5 h-5 mr-1" />}
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -80,7 +101,7 @@ const Navbar = () => {
   );
 };
 
-const NavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
+const NavLink = ({ to, children, isActive }) => (
   <Link
     to={to}
     className={clsx(
