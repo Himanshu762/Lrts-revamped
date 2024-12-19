@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
-import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { ClerkProvider, RedirectToSignIn, SignedIn } from '@clerk/clerk-react';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import Benefits from './components/features/Benefits';
@@ -15,7 +15,6 @@ import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
-
 
 function HomePage() {
   const passes = [
@@ -85,30 +84,9 @@ function App() {
                   </SignedIn>
                 }
               />
-              <Route
-                path="/zones"
-                element={
-                  <SignedIn>
-                    <ExploreZones />
-                  </SignedIn>
-                }
-              />
-              <Route
-                path="/planner"
-                element={
-                  <SignedIn>
-                    <TripPlanner />
-                  </SignedIn>
-                }
-              />
-              <Route
-                path="/passes"
-                element={
-                  <SignedIn>
-                    <PassesPage />
-                  </SignedIn>
-                }
-              />
+              <Route path="/zones" element={<ExploreZones />} />
+              <Route path="/planner" element={<TripPlanner />} />
+              <Route path="/passes" element={<PassesPage />} />
               <Route path="*" element={<RedirectToSignIn />} />
             </Routes>
           </AnimatePresence>
