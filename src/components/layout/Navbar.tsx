@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import clsx from 'clsx';
-import DarkModeToggle from '../ui/DarkModeToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -73,11 +72,7 @@ const Navbar = () => {
               <li>
                 <NavLink to="/signin" isActive={isActive('/signin')}>Sign In</NavLink>
               </li>
-            )}
-            {/* Move DarkModeToggle inside the dropdown */}
-            <li className="mt-2 md:mt-0 md:ml-auto">
-              <DarkModeToggle />
-            </li>
+            )}]
           </ul>
         </div>
       </div>
