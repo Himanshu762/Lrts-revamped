@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
-import { SignUp, useAuth } from "@clerk/clerk-react";
+import React from "react";
+import { SignUp, ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from '../../context/DarkModeContext'; // Assuming you have this context
 
 const SignUpPage: React.FC = () => {
-  const { isSignedIn } = useAuth();
   const navigate = useNavigate();
-  const darkMode = true; // Assuming dark mode is true
+  const { isSignedIn } = useAuth();
+  const { darkMode } = useDarkMode(); // Access dark mode state
 
   // Redirect to account page if already signed in
-  useEffect(() => {
+  React.useEffect(() => {
     if (isSignedIn) {
       navigate("/account");
     }
@@ -17,9 +18,12 @@ const SignUpPage: React.FC = () => {
   return (
     <div className={`min-h-screen flex items-center justify-center ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-white">Sign Up</h2>
-        <p className="mt-4 text-gray-300">Create an account to get started with our service.</p>
+        <h2 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Sign Up</h2>
+        <p className={`mt-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+          Create a new account.
+        </p>
         <div className="mt-6">
+          {/* Clerk's SignUp Component */}
           <SignUp
             path="/signup"
             routing="path"
@@ -36,4 +40,13 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+// Wrap your app in the ClerkProvider
+const SignUpWrapper: React.FC = () => {
+  return (
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+      <SignUpPage />
+    </ClerkProvider>
+  );
+};
+
+export default SignUpWrapper;
