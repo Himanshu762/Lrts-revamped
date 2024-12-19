@@ -13,6 +13,7 @@ import PassesPage from './pages/PassesPage';
 import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
+import SignUpPage from './pages/SignUpPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
 
@@ -105,6 +106,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/signin" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route
                   path="/account"
                   element={
