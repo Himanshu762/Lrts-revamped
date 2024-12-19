@@ -80,7 +80,6 @@ const ZoneStats: React.FC = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">
       {stats.map((stat, index) => (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div
             key={index}
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4"
@@ -114,7 +113,6 @@ const ZoneStats: React.FC = () => {
               </div>
             </div>
           </div>
-        </div> 
       ))}
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
