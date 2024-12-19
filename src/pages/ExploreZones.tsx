@@ -1,10 +1,36 @@
-import React from 'react';
+=import React, { useState, useEffect } from 'react';
 import ZoneMap from '../components/zones/ZoneMap';
 import ZoneStats from '../components/zones/ZoneStats';
 import { MapPin, Users, Clock, Shield } from 'lucide-react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, LineChart, Line } from 'recharts';
 
 const ExploreZones: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detect if dark mode is preferred by the user
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(mediaQuery.matches);
+
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      setIsDarkMode(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange);
+    };
+  }, []);
+
+  const tooltipStyles = {
+    backgroundColor: isDarkMode ? '#1F2937' : '#FFFFFF', // Dark gray for dark mode, white for light mode
+    color: isDarkMode ? '#FFFFFF' : '#000000',          // White text for dark mode, black text for light mode
+    borderRadius: '8px',                               // Rounded corners
+    padding: '10px',                                   // Padding inside the tooltip
+    border: isDarkMode ? '1px solid #333' : '1px solid #ddd', // Subtle border based on theme
+  };
+
   const features = [
     {
       icon: MapPin,
@@ -34,14 +60,6 @@ const ExploreZones: React.FC = () => {
     { name: 'Zone 3', rickshaws: 20, waitTime: 1.5 },
     { name: 'Zone 4', rickshaws: 50, waitTime: 2.5 },
   ];
-
-  const tooltipStyles = {
-    backgroundColor: '#1F2937', // Dark gray background for readability
-    color: '#FFFFFF',          // White text for contrast
-    borderRadius: '8px',       // Rounded corners
-    padding: '10px',           // Padding inside the tooltip
-    border: '1px solid #333',  // Subtle border for clarity
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-white to-blue-100 dark:from-gray-800 dark:to-gray-900 py-8">
@@ -103,7 +121,7 @@ const ExploreZones: React.FC = () => {
                 <XAxis dataKey="name" stroke="#666" />
                 <YAxis stroke="#666" />
                 <Tooltip 
-                  contentStyle={tooltipStyles} 
+                  contentStyle={tooltipStyles(isDarkMode)} 
                   wrapperStyle={{ outline: 'none' }} 
                 />
                 <Legend />
@@ -117,9 +135,9 @@ const ExploreZones: React.FC = () => {
                 <XAxis dataKey="name" stroke="#666" />
                 <YAxis stroke="#666" />
                 <Tooltip 
-                  contentStyle={tooltipStyles} 
+                  contentStyle={tooltipStyles(isDarkMode)} 
                   wrapperStyle={{ outline: 'none' }} 
-                  labelStyle={{ color: '#FFFFFF' }} // Ensures label text is also visible
+                  labelStyle={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} // Adjust label styling for light mode
                 />
                 <Legend />
                 <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
