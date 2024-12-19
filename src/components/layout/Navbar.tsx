@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import clsx from 'clsx';
+import DarkModeToggle from '../ui/DarkModeToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);

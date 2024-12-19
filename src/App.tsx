@@ -16,9 +16,6 @@ import AccountPage from './pages/AccountPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
 
-if (!clerkPublishableKey) {
-  console.error('Clerk publishable key is missing!');
-}
 
 function HomePage() {
   const passes = [
@@ -72,7 +69,6 @@ function HomePage() {
 
 function App() {
   return (
-    console.log('Clerk Publishable Key:', clerkPublishableKey),
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
