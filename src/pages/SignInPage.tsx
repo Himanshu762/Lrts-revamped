@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { SignIn, SignUp, ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 
-// SignInPage Component
-const AuthPage: React.FC = () => {
+const SignInPage: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(true); // Dark mode state
   const [isSignUp, setIsSignUp] = useState<boolean>(false); // State to toggle between SignIn and SignUp screens
   const { isSignedIn } = useAuth(); // Clerk hook for authentication
@@ -71,20 +70,4 @@ const AuthPage: React.FC = () => {
   );
 };
 
-// SignInWrapper Component (Wrapper for ClerkProvider)
-const AuthWrapper: React.FC = () => {
-  // Make sure to replace with your actual Clerk Publishable Key
-  const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-  if (!clerkPublishableKey) {
-    return <div>Error: Clerk Publishable Key is missing!</div>;
-  }
-
-  return (
-    <ClerkProvider publishableKey={clerkPublishableKey}>
-      <AuthPage />
-    </ClerkProvider>
-  );
-};
-
-export default AuthWrapper;
+export default SignInPage;
