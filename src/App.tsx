@@ -14,7 +14,7 @@ import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 
-const clerkFrontendApi = process.env.REACT_APP_CLERK_FRONTEND_API || '';
+const clerkFrontendApi = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
 
 function HomePage() {
   const passes = [
