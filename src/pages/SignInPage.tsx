@@ -48,7 +48,7 @@ const SignInPage: React.FC = () => {
 // Wrap your app in the ClerkProvider
 const App: React.FC = () => {
   return (
-    <ClerkProvider frontendApi={process.env.REACT_APP_CLERK_FRONTEND_API}>
+    <ClerkProvider frontendApi={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
       <SignInPage />
     </ClerkProvider>
   );
