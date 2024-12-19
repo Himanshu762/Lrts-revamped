@@ -1,18 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useUser } from '@clerk/clerk-react';
+import { Clerk } from '@clerk/clerk-react';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import clsx from 'clsx';
-import { useUser, useSignOut } from '@clerk/clerk-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
   const { isSignedIn } = useUser();
-  const { signOut } = useSignOut();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleSignOut = () => {
+    Clerk.signOut();
+  };
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -62,7 +65,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() => signOut()}
+                    onClick={handleSignOut}
                     className="px-3 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600"
                   >
                     Logout
