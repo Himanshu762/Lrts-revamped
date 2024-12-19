@@ -70,12 +70,12 @@ const ZoneStats: React.FC = () => {
   ];
 
   const tooltipStyles = {
-    backgroundColor: '#1F2937', // Dark gray background
-    color: '#FFFFFF',          // White text
+    backgroundColor: '#1F2937', // Dark gray background for readability
+    color: '#FFFFFF',          // White text for contrast
     borderRadius: '8px',       // Rounded corners
     padding: '10px',           // Padding inside the tooltip
-    border: 'none',            // Remove border
-  };
+    border: '1px solid #333',  // Subtle border for clarity
+  };  
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">
