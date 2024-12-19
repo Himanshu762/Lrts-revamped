@@ -85,31 +85,35 @@ const ExploreZones: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Zone Statistics</h2>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
-              <BarChart width={500} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip wrapperStyle={{ backgroundColor: '#333', color: '#fff' }} />
-                <Legend />
-                <Bar dataKey="rickshaws" fill="#8884d8" />
-              </BarChart>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
-              <LineChart width={500} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip wrapperStyle={{ backgroundColor: '#333', color: '#fff' }} />
-                <Legend />
-                <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
-              </LineChart>
-            </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
+            <BarChart width={500} height={300} data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+              <XAxis dataKey="name" stroke="#666" />
+              <YAxis stroke="#666" />
+              <Tooltip 
+                contentStyle={tooltipStyles} 
+                wrapperStyle={{ outline: 'none' }} 
+              />
+              <Legend />
+              <Bar dataKey="rickshaws" fill="#8884d8" />
+            </BarChart>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
+            <LineChart width={500} height={300} data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+              <XAxis dataKey="name" stroke="#666" />
+              <YAxis stroke="#666" />
+              <Tooltip 
+                contentStyle={tooltipStyles} 
+                wrapperStyle={{ outline: 'none' }} 
+                labelStyle={{ color: '#FFFFFF' }} // Ensures label text is also visible
+              />
+              <Legend />
+              <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
+            </LineChart>
           </div>
         </div>
       </div>

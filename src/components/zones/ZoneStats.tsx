@@ -79,7 +79,6 @@ const ZoneStats: React.FC = () => {
 
   return (
     <div className="px-4">
-      {/* Zone Features Section */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <div
@@ -114,39 +113,6 @@ const ZoneStats: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Graphs Section */}
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
-          <BarChart width={500} height={300} data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-            <XAxis dataKey="name" stroke="#666" />
-            <YAxis stroke="#666" />
-            <Tooltip 
-              contentStyle={tooltipStyles} 
-              wrapperStyle={{ outline: 'none' }} 
-            />
-            <Legend />
-            <Bar dataKey="rickshaws" fill="#8884d8" />
-          </BarChart>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
-          <LineChart width={500} height={300} data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-            <XAxis dataKey="name" stroke="#666" />
-            <YAxis stroke="#666" />
-            <Tooltip 
-              contentStyle={tooltipStyles} 
-              wrapperStyle={{ outline: 'none' }} 
-              labelStyle={{ color: '#FFFFFF' }} // Ensures label text is also visible
-            />
-            <Legend />
-            <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
-          </LineChart>
-        </div>
       </div>
     </div>
   );
