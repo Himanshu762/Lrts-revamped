@@ -35,6 +35,14 @@ const ExploreZones: React.FC = () => {
     { name: 'Zone 4', rickshaws: 50, waitTime: 2.5 },
   ];
 
+  const tooltipStyles = {
+    backgroundColor: '#1F2937', // Dark gray background for readability
+    color: '#FFFFFF',          // White text for contrast
+    borderRadius: '8px',       // Rounded corners
+    padding: '10px',           // Padding inside the tooltip
+    border: '1px solid #333',  // Subtle border for clarity
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-white to-blue-100 dark:from-gray-800 dark:to-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,36 +93,39 @@ const ExploreZones: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
-            <BarChart width={500} height={300} data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis dataKey="name" stroke="#666" />
-              <YAxis stroke="#666" />
-              <Tooltip 
-                contentStyle={tooltipStyles} 
-                wrapperStyle={{ outline: 'none' }} 
-              />
-              <Legend />
-              <Bar dataKey="rickshaws" fill="#8884d8" />
-            </BarChart>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
-            <LineChart width={500} height={300} data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis dataKey="name" stroke="#666" />
-              <YAxis stroke="#666" />
-              <Tooltip 
-                contentStyle={tooltipStyles} 
-                wrapperStyle={{ outline: 'none' }} 
-                labelStyle={{ color: '#FFFFFF' }} // Ensures label text is also visible
-              />
-              <Legend />
-              <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
-            </LineChart>
-          </div>
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Zone Statistics</h2>
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
+                <BarChart width={500} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={tooltipStyles} 
+                  wrapperStyle={{ outline: 'none' }} 
+                />
+                <Legend />
+                <Bar dataKey="rickshaws" fill="#8884d8" />
+                </BarChart>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
+                <LineChart width={500} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={tooltipStyles} 
+                  wrapperStyle={{ outline: 'none' }} 
+                  labelStyle={{ color: '#FFFFFF' }} // Ensures label text is also visible
+                />
+                <Legend />
+                <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
+                </LineChart>
+              </div>
+            </div>
         </div>
       </div>
     </div>
