@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useUser } from '@clerk/clerk-react';
-import { Clerk } from '@clerk/clerk-react';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import clsx from 'clsx';
 
@@ -10,11 +9,12 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
   const { isSignedIn } = useUser();
+  const { signOut } = useClerk();
 
   const isActive = (path: string) => location.pathname === path;
 
   const handleSignOut = () => {
-    Clerk.signOut();
+    signOut();
   };
 
   return (
