@@ -80,39 +80,6 @@ const ZoneStats: React.FC = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">
       {stats.map((stat, index) => (
-        <div
-          key={index}
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4"
-        >
-          <div className="flex items-center">
-            <div
-              className={`p-3 rounded-full bg-${stat.color}-100 dark:bg-${stat.color}-900`}
-            >
-              <stat.icon
-                className={`h-6 w-6 text-${stat.color}-600 dark:text-${stat.color}-400`}
-              />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                {stat.name}
-              </h3>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">
-                {stat.value}
-              </p>
-              <p
-                className={`text-sm ${
-                  stat.changeType === 'increase'
-                    ? 'text-green-500 dark:text-green-400'
-                    : stat.changeType === 'decrease'
-                    ? 'text-red-500 dark:text-red-400'
-                    : 'text-gray-500 dark:text-gray-400'
-                }`}
-              >
-                {stat.change}
-              </p>
-            </div>
-          </div>
-        </div>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
