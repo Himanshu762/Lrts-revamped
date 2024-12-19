@@ -79,6 +79,7 @@ const ZoneStats: React.FC = () => {
 
   return (
     <div className="px-4">
+      {/* Zone Features Section */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <div
