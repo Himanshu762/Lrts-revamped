@@ -1,109 +1,71 @@
 import React from 'react';
-import { MapPin, Bike, Clock, TrendingUp, Users, Building2, Wallet, Battery } from 'lucide-react';
+import { Users, Clock, MapPin, Truck, Phone, Map } from 'lucide-react';
 
-const ZoneStats: React.FC = () => {
+const ZoneStats = () => {
   const stats = [
     {
-      name: 'Active Zones',
-      value: '25',
+      title: 'Active Zones',
+      value: 8,
       icon: MapPin,
-      change: '+3 this month',
-      changeType: 'increase',
-      color: 'indigo',
+      change: 5,
     },
     {
-      name: 'Total Rickshaws',
-      value: '199',
-      icon: Bike,
-      change: '+15 this week',
-      changeType: 'increase',
-      color: 'green',
+      title: 'Total Rickshaws',
+      value: 240,
+      icon: Truck,
+      change: -3,
     },
     {
-      name: 'Avg. Wait Time',
-      value: '2.8 min',
+      title: 'Average Wait Time (min)',
+      value: 4.5,
       icon: Clock,
-      change: '-0.5 min from last week',
-      changeType: 'decrease',
-      color: 'blue',
+      change: -0.5,
     },
     {
-      name: 'Daily Rides',
-      value: '3.2k',
-      icon: TrendingUp,
-      change: '+18% this month',
-      changeType: 'increase',
-      color: 'purple',
+      title: 'Daily Rides',
+      value: 2300,
+      icon: Phone,
+      change: 100,
     },
     {
-      name: 'Active Drivers',
-      value: '180',
+      title: 'Active Drivers',
+      value: 150,
       icon: Users,
-      change: '+8 this week',
-      changeType: 'increase',
-      color: 'pink',
+      change: 20,
     },
     {
-      name: 'Connected Landmarks',
-      value: '102',
-      icon: Building2,
-      change: '+5 this month',
-      changeType: 'increase',
-      color: 'yellow',
-    },
-    {
-      name: 'E-Rickshaws',
-      value: '85%',
-      icon: Battery,
-      change: '+5% this quarter',
-      changeType: 'increase',
-      color: 'teal',
+      title: 'E-Rickshaws (%)',
+      value: 45,
+      icon: Map,
+      change: 10,
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">
-      {stats.map((stat, index) => (
-        <div
-          key={index}
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4"
-        >
-          <div className="flex items-center">
-            <div
-              className={`p-3 rounded-full bg-${stat.color}-100 dark:bg-${stat.color}-900`}
-            >
-              <stat.icon
-                className={`h-6 w-6 text-${stat.color}-600 dark:text-${stat.color}-400`}
-              />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                {stat.name}
-              </h3>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">
-                {stat.value}
-              </p>
-              <p
-                className={`text-sm ${
-                  stat.changeType === 'increase'
-                    ? 'text-green-500'
-                    : stat.changeType === 'decrease'
-                    ? 'text-red-500'
-                    : 'text-gray-500'
-                } dark:text-${
-                  stat.changeType === 'increase'
-                    ? 'green-400'
-                    : stat.changeType === 'decrease'
-                    ? 'red-400'
-                    : 'gray-400'
-                }`}
-              >
-                {stat.change}
-              </p>
-            </div>
-          </div>
+    <div className="py-12 bg-gray-50 dark:bg-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase dark:text-indigo-400">System Stats</h2>
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+            Key Metrics of LRTS
+          </p>
         </div>
-      ))}
+
+        <div className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat, index) => (
+            <div key={index} className="relative bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+              <div className="absolute top-0 left-0 p-3 bg-indigo-500 rounded-full text-white">
+                <stat.icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{stat.title}</h3>
+              <p className="mt-2 text-3xl font-bold text-indigo-600 dark:text-indigo-400">{stat.value}</p>
+              <p className={`mt-1 text-sm ${stat.change >= 0 ? 'text-green-600' : 'text-red-600'} dark:text-gray-300`}>
+                {stat.change >= 0 ? `+${stat.change}` : stat.change}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

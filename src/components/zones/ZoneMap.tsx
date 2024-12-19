@@ -34,17 +34,13 @@ const ZoneMap: React.FC = () => {
           <button
             key={station.name}
             onClick={() => setSelectedZone(station.name)}
-            className={`px-3 py-2 text-sm rounded-full transition-all ${
-              selectedZone === station.name
-                ? 'bg-indigo-600 text-white'
-                : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
-            }`}
+            className={`px-3 py-2 text-sm rounded-full transition-all ${selectedZone === station.name ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900 dark:text-white dark:hover:bg-indigo-800'}`}
           >
             {station.name}
           </button>
         ))}
       </div>
-      
+
       <div className="h-[600px] w-full rounded-lg overflow-hidden shadow-lg">
         <MapContainer
           center={[28.6139, 77.2090]}
@@ -58,57 +54,20 @@ const ZoneMap: React.FC = () => {
           <ZoomToZone stationName={selectedZone} />
           {delhiMetroStations.map((station) => (
             <React.Fragment key={station.name}>
-              <Marker 
-                position={[station.lat, station.lng]} 
+              <Marker
+                position={[station.lat, station.lng]}
                 icon={customIcon}
               >
                 <Popup>
                   <div className="p-2 min-w-[200px]">
-                    <h3 className="font-bold text-lg text-indigo-600">{station.name}</h3>
-                    <div className="space-y-2 mt-2">
-                      <div className="flex items-center">
-                        <Users className="w-4 h-4 mr-2 text-indigo-500" />
-                        <span>{station.rickshaws} rickshaws available</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-2 text-indigo-500" />
-                        <span>{station.waitTime} min average wait</span>
-                      </div>
-                      <div className="flex items-center">
-                        {station.demand === 'High' ? (
-                          <AlertTriangle className="w-4 h-4 mr-2 text-red-500" />
-                        ) : (
-                          <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
-                        )}
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          station.demand === 'High' 
-                            ? 'bg-red-100 text-red-800'
-                            : station.demand === 'Medium'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}>
-                          {station.demand} Demand
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3 pt-3 border-t">
-                      <p className="text-sm text-gray-600">
-                        {station.landmarks} landmarks in zone
-                      </p>
-                    </div>
+                    <h3 className="font-bold text-lg text-indigo-600 dark:text-indigo-400">{station.name}</h3>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">Zone: {station.zone}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Active Rickshaws: {station.activeRickshaws}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Wait Time: {station.waitTime} min</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Demand: {station.demand}</p>
                   </div>
                 </Popup>
               </Marker>
-              <Circle
-                center={[station.lat, station.lng]}
-                radius={2000}
-                pathOptions={{
-                  fillColor: selectedZone === station.name ? '#4F46E5' : '#6366F1',
-                  fillOpacity: selectedZone === station.name ? 0.3 : 0.1,
-                  color: selectedZone === station.name ? '#4F46E5' : '#6366F1',
-                  weight: selectedZone === station.name ? 2 : 1,
-                }}
-              />
             </React.Fragment>
           ))}
         </MapContainer>
