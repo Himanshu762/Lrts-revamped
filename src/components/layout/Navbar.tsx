@@ -4,12 +4,10 @@ import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import clsx from 'clsx';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { useDarkMode } from '../../App';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
   const { isSignedIn } = useUser();
   const { signOut } = useClerk();
