@@ -1,5 +1,5 @@
 import React from "react";
-import { SignInButton, ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { SignIn, ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 
 const SignInPage: React.FC = () => {
@@ -19,26 +19,20 @@ const SignInPage: React.FC = () => {
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
         <h2 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>Sign In</h2>
         <p className={`mt-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-          Please sign in using one of the following providers:
+          Please sign in using one of the following methods:
         </p>
-        <div className="space-y-4 mt-6">
-          {/* Google Sign-In */}
-          <SignInButton
+        <div className="mt-6">
+          {/* Clerk's SignIn Component */}
+          <SignIn
+            path="/signin"
+            routing="path"
             redirectUrl="/account"
-            provider="google"
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-          >
-            Sign in with Google
-          </SignInButton>
-
-          {/* Microsoft Sign-In */}
-          <SignInButton
-            redirectUrl="/account"
-            provider="microsoft"
-            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition"
-          >
-            Sign in with Microsoft
-          </SignInButton>
+            appearance={{
+              variables: {
+                colorPrimary: darkMode ? "#1a202c" : "#3182ce",
+              },
+            }}
+          />
         </div>
       </div>
     </div>
@@ -46,12 +40,12 @@ const SignInPage: React.FC = () => {
 };
 
 // Wrap your app in the ClerkProvider
-const App: React.FC = () => {
+const SignInWrapper: React.FC = () => {
   return (
-    <ClerkProvider frontendApi={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
       <SignInPage />
     </ClerkProvider>
   );
 };
 
-export default SignInPage;
+export default SignInWrapper;

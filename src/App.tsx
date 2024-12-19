@@ -16,12 +16,18 @@ import AccountPage from './pages/AccountPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
 
-// Create a DarkModeContext
-const DarkModeContext = createContext();
+const DarkModeContext = createContext<{
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+}>({
+  darkMode: false,
+  toggleDarkMode: () => {},
+});
 
-// DarkModeProvider component
-const DarkModeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(() =>
+export const useDarkMode = () => useContext(DarkModeContext);
+
+const DarkModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
 
@@ -37,9 +43,6 @@ const DarkModeProvider = ({ children }) => {
     </DarkModeContext.Provider>
   );
 };
-
-// Custom hook to use the dark mode context
-export const useDarkMode = () => useContext(DarkModeContext);
 
 function HomePage() {
   const passes = [
@@ -116,10 +119,10 @@ function App() {
                 <Route path="*" element={<RedirectToSignIn />} />
               </Routes>
             </AnimatePresence>
-            <Toaster position="top-right" />
+            <Footer />
           </div>
-          <Footer />
         </Router>
+        <Toaster position="bottom-center" reverseOrder={false} />
       </DarkModeProvider>
     </ClerkProvider>
   );
