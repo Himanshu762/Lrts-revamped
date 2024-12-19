@@ -1,7 +1,7 @@
 import React from "react";
 import { SignUp, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { useDarkMode } from "../context/DarkModeContext"; // Assuming you have this context
+import { useDarkMode } from "../../context/DarkModeContext"; // Assuming you have this context
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -37,8 +37,8 @@ const SignUpPage: React.FC = () => {
                 colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color
                 colorBackground: darkMode ? "#2d3748" : "#f7fafc", // Background color
                 colorText: darkMode ? "#f7fafc" : "#2d3748", // Text color
-                colorButtonText: darkMode ? "#f7fafc" : "#2d3748", // Button text color
-                colorButtonBackground: darkMode ? "#3182ce" : "#4a90e2", // Button background
+                colorButtonText: "#fff", // Always white button text
+                colorButtonBackground: darkMode ? "#3182ce" : "#3182ce", // Keep button background color consistent
               },
             }}
           />
