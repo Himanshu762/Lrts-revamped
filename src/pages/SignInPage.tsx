@@ -1,14 +1,13 @@
 import React from "react";
-import { SignIn, ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { SignIn, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { useDarkMode } from "../context/DarkModeContext"; // Assuming you have this context
+import { useDarkMode } from "../../context/DarkModeContext"; // Assuming you have this context
 
 const SignInPage: React.FC = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
   const { darkMode } = useDarkMode(); // Access dark mode state
 
-  // Redirect to account page if already signed in
   React.useEffect(() => {
     if (isSignedIn) {
       navigate("/account");
@@ -29,7 +28,6 @@ const SignInPage: React.FC = () => {
           Please sign in using one of the following methods:
         </p>
         <div className="mt-6">
-          {/* Clerk's SignIn Component with dynamic appearance based on dark mode */}
           <SignIn
             path="/signin"
             routing="path"
@@ -50,13 +48,4 @@ const SignInPage: React.FC = () => {
   );
 };
 
-// Wrap your app in the ClerkProvider
-const SignInWrapper: React.FC = () => {
-  return (
-    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
-      <SignInPage />
-    </ClerkProvider>
-  );
-};
-
-export default SignInWrapper;
+export default SignInPage;
