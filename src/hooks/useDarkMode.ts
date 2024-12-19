@@ -9,10 +9,13 @@ export function useDarkMode() {
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('darkMode', JSON.stringify(isDark));
-    document.documentElement.classList.toggle('dark', isDark);
-  }, [isDark]);
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('darkMode');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDark(saved ? JSON.parse(saved) : prefersDark);
+    }
+  }, []);
+  
 
   return [isDark, setIsDark] as const;
 }
