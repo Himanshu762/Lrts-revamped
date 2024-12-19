@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
@@ -15,6 +15,31 @@ import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
+
+// Create a DarkModeContext
+const DarkModeContext = createContext();
+
+// DarkModeProvider component
+const DarkModeProvider = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
+  return (
+    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+      {children}
+    </DarkModeContext.Provider>
+  );
+};
+
+// Custom hook to use the dark mode context
+export const useDarkMode = () => useContext(DarkModeContext);
 
 function HomePage() {
   const passes = [
@@ -69,31 +94,33 @@ function HomePage() {
 function App() {
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
-      <Router>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-          <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/signin" element={<SignInPage />} />
-              <Route
-                path="/account"
-                element={
-                  <SignedIn>
-                    <AccountPage />
-                  </SignedIn>
-                }
-              />
-              <Route path="/zones" element={<ExploreZones />} />
-              <Route path="/planner" element={<TripPlanner />} />
-              <Route path="/passes" element={<PassesPage />} />
-              <Route path="*" element={<RedirectToSignIn />} />
-            </Routes>
-          </AnimatePresence>
-          <Toaster position="top-right" />
-        </div>
-        <Footer />
-      </Router>
+      <DarkModeProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <Navbar />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/signin" element={<SignInPage />} />
+                <Route
+                  path="/account"
+                  element={
+                    <SignedIn>
+                      <AccountPage />
+                    </SignedIn>
+                  }
+                />
+                <Route path="/zones" element={<ExploreZones />} />
+                <Route path="/planner" element={<TripPlanner />} />
+                <Route path="/passes" element={<PassesPage />} />
+                <Route path="*" element={<RedirectToSignIn />} />
+              </Routes>
+            </AnimatePresence>
+            <Toaster position="top-right" />
+          </div>
+          <Footer />
+        </Router>
+      </DarkModeProvider>
     </ClerkProvider>
   );
 }

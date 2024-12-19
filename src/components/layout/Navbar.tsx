@@ -1,32 +1,24 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon } from 'lucide-react'; // Import icons
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import clsx from 'clsx';
+import { useDarkMode } from '../../context/DarkModeContext';
+import { useDarkMode } from '../../App';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [darkMode, setDarkMode] = React.useState(() =>
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
   const { isSignedIn } = useUser();
   const { signOut } = useClerk();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   const handleSignOut = () => {
     signOut();
   };
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark', !darkMode);
-  };
-
-  React.useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -101,7 +93,7 @@ const Navbar = () => {
   );
 };
 
-const NavLink = ({ to, children, isActive }) => (
+const NavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
   <Link
     to={to}
     className={clsx(
