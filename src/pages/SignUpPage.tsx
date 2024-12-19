@@ -1,7 +1,7 @@
 import React from "react";
 import { SignUp, ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { useDarkMode } from "../../context/DarkModeContext"; // Assuming you have this context
+import { useDarkMode } from "../context/DarkModeContext"; // Assuming you have this context
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
