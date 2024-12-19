@@ -9,19 +9,13 @@
 
 :root {
   --primary-gradient: linear-gradient(to right bottom, #8b5cf6, #6d28d9);
-  --secondary-gradient: linear-gradient(to right, #f472b6, #ec4899);
 }
 
 .dark {
   --primary-gradient: linear-gradient(to right bottom, #7c3aed, #5b21b6);
-  --secondary-gradient: linear-gradient(to right, #f43f5e, #be185d);
 }
 
 body {
-  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
-  @apply transition-colors duration-200 ease-in-out;
-  font-family: 'Inter', sans-serif; /* Ensure a clean, modern font */
-  line-height: 1.6; /* Improved readability */
   @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
 }
 
@@ -40,44 +34,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-primary-500 dark:bg-primary-700;
-}
-
-/* Custom focus ring for accessibility */
-:focus-visible {
-  @apply outline-none ring-2 ring-primary-500 dark:ring-primary-700;
-}
-
-/* Utility classes for gradient backgrounds */
-.bg-primary-gradient {
-  background: var(--primary-gradient);
-}
-
-.bg-secondary-gradient {
-  background: var(--secondary-gradient);
-}
-
-/* Utility classes for text gradients */
-.text-primary-gradient {
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-secondary-gradient {
-  background: var(--secondary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Transition for interactive elements */
-button, a {
-  @apply transition-transform duration-150 ease-in-out;
-}
-
-button:hover, a:hover {
-  @apply scale-105;
-}
-
-button:active, a:active {
-  @apply scale-95;
 }
