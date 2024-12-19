@@ -36,22 +36,12 @@ const SignInPage: React.FC = () => {
               path="/signup"
               routing="path"
               redirectUrl="/account"
-              appearance={{
-                variables: {
-                  colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color change for dark/light mode
-                },
-              }}
             />
           ) : (
             <SignIn
               path="/signin"
               routing="path"
               redirectUrl="/account"
-              appearance={{
-                variables: {
-                  colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color change for dark/light mode
-                },
-              }}
             />
           )}
         </div>
