@@ -72,6 +72,7 @@ function HomePage() {
 
 function App() {
   return (
+    console.log('Clerk Publishable Key:', clerkPublishableKey),
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
