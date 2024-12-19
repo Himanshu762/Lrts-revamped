@@ -32,15 +32,6 @@ const SignUpPage: React.FC = () => {
             path="/signup"
             routing="path"
             redirectUrl="/account"
-            appearance={{
-              variables: {
-                colorPrimary: darkMode ? "#1a202c" : "#3182ce", // Primary color
-                colorBackground: darkMode ? "#2d3748" : "#f7fafc", // Background color
-                colorText: darkMode ? "#f7fafc" : "#2d3748", // Text color
-                colorButtonText: "#fff", // Always white button text
-                colorButtonBackground: darkMode ? "f7fafc" : "f7fafc", // Keep button background color consistent
-              },
-            }}
           />
         </div>
       </div>
