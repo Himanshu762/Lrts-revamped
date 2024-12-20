@@ -25,11 +25,7 @@ const AccountPage: React.FC = () => {
           Manage Your Account
         </h1>
         {/* Clerk's UserProfile Component */}
-        <div className="w-full flex-grow flex justify-center items-center"
-          style={{
-            maxHeight: "100%", // Ensures embedding doesn't overflow
-            overflowY: "auto", // Allows scrolling if content is larger
-          }}>
+        <div className="overflow-hidden">
           <UserProfile
             appearance={{
               variables: {
