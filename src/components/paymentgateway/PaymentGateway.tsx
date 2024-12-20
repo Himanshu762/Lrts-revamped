@@ -1,126 +1,262 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
-import { X } from "lucide-react";
+import { useDarkMode } from "../../context/DarkModeContext"; // Import DarkModeContext
 
-interface PaymentGatewayProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onPaymentSuccess: () => void;
-}
+const PaymentGateway = () => {
+  const [activeScreen, setActiveScreen] = useState("UPI");
+  const { darkMode, toggleDarkMode } = useDarkMode(); // Use global dark mode context
 
-const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaymentSuccess }) => {
-  if (!isOpen) return null;
+  const renderScreen = () => {
+    switch (activeScreen) {
+      case "UPI":
+        return <UPIScreen />;
+      case "Cards":
+        return <CardsScreen />;
+      case "Wallets":
+        return <WalletsScreen />;
+      default:
+        return <UPIScreen />;
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-[800px] max-w-full flex overflow-hidden">
+    <div
+      className={clsx(
+        "flex w-full h-screen justify-center items-center",
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+      )}
+    >
+      <div
+        className={clsx(
+          "flex w-[900px] shadow-lg rounded-md overflow-hidden transition-colors duration-300",
+          darkMode ? "bg-gray-800" : "bg-white"
+        )}
+      >
         {/* Sidebar */}
-        <div className="w-1/3 bg-green-100 p-6 flex flex-col justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-green-700">LRTS दिल्ली</h2>
-            <p className="text-xs text-gray-500 mt-1">JoyeshPay Trusted Business</p>
-
-            <div className="mt-6">
-              <h3 className="text-lg font-bold text-gray-800">Price Summary</h3>
-              <p className="text-2xl font-extrabold text-green-700 mt-4">₹188</p>
-            </div>
-
-            <div className="mt-6">
-              <p className="text-sm text-gray-500">Using as <span className="text-gray-700 font-semibold">+91 78929 74539</span></p>
-              <button className="mt-2 text-blue-600 text-sm underline">Change</button>
-            </div>
+        <div
+          className={clsx(
+            "w-1/3 p-6 relative transition-colors duration-300",
+            darkMode ? "bg-gray-700" : "bg-green-200"
+          )}
+        >
+          <div className="text-center">
+            <img src="/fresh-to-home-logo.png" alt="Logo" className="mx-auto mb-4" />
+            <h2 className="text-lg font-bold">LRTS.com</h2>
+            <p className={clsx("text-sm", darkMode ? "text-gray-400" : "text-gray-600")}>
+              JoyeshPay Trusted Business
+            </p>
           </div>
-
-          <div>
-            <button className="text-green-700 bg-green-300 px-4 py-2 rounded-full text-sm w-full">
-              Offers on UPI and UPI QR
-            </button>
+          <div className="mt-8">
+            <h3 className="text-md font-semibold">Price Summary</h3>
+            <p className="text-2xl font-bold mt-2">₹152</p>
+          </div>
+          <div className="mt-6">
+            <p className="text-sm">Using as +91 86605 83883</p>
+            <p
+              className={clsx(
+                "text-sm mt-2 cursor-pointer",
+                darkMode ? "text-blue-400" : "text-green-700"
+              )}
+            >
+              Offers on UPI and Cards
+            </p>
+          </div>
+          <div className="absolute bottom-6 left-6">
+            <p className={clsx("text-xs", darkMode ? "text-gray-500" : "text-gray-500")}>
+              Secured by JoyeshPay
+            </p>
           </div>
         </div>
 
-        {/* Main Section */}
-        <div className="w-2/3 bg-white p-6">
-          {/* Header */}
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">Payment Options</h2>
-            <button onClick={onClose}>
-              <X className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+        {/* Main Content */}
+        <div className="w-2/3 p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Payment Options</h2>
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className={clsx(
+                "py-2 px-4 rounded-md font-medium",
+                darkMode
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+              )}
+            >
+              {darkMode ? "Light Mode" : "Dark Mode"}
             </button>
           </div>
 
-          <div className="mt-4">
-            {/* Offers */}
-            <div className="flex items-center space-x-4 bg-gray-100 p-3 rounded-md">
-              <span className="text-sm font-medium text-gray-800">UPTO ₹200 CRED cashback on CRED</span>
-              <button className="text-blue-600 text-sm underline">View all</button>
+          <div className="flex">
+            <div className="w-1/3">
+              <MenuOption
+                label="UPI"
+                active={activeScreen === "UPI"}
+                onClick={() => setActiveScreen("UPI")}
+                isDarkMode={darkMode}
+              />
+              <MenuOption
+                label="Cards"
+                active={activeScreen === "Cards"}
+                onClick={() => setActiveScreen("Cards")}
+                isDarkMode={darkMode}
+              />
+              <MenuOption
+                label="Wallets"
+                active={activeScreen === "Wallets"}
+                onClick={() => setActiveScreen("Wallets")}
+                isDarkMode={darkMode}
+              />
             </div>
-
-            {/* Payment Methods */}
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              {/* UPI */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">UPI</div>
-                <div className="flex items-center space-x-2">
-                  <img src="upi-icon.png" alt="UPI" className="h-5 w-5" />
-                  <span className="text-xs text-gray-500">2 Offers</span>
-                </div>
-              </div>
-
-              {/* Cards */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Cards</div>
-                <img src="visa-icon.png" alt="Cards" className="h-5 w-5" />
-              </div>
-
-              {/* Netbanking */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Netbanking</div>
-                <img src="netbanking-icon.png" alt="Netbanking" className="h-5 w-5" />
-              </div>
-
-              {/* Wallet */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Wallet</div>
-                <img src="wallet-icon.png" alt="Wallet" className="h-5 w-5" />
-              </div>
-
-              {/* Pay Later */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Pay Later</div>
-                <img src="paylater-icon.png" alt="Pay Later" className="h-5 w-5" />
-              </div>
-            </div>
-
-            {/* UPI QR Section */}
-            <div className="mt-8">
-              <h3 className="text-sm font-medium text-gray-800">UPI QR</h3>
-              <div className="mt-3 flex items-center space-x-4">
-                <div className="bg-gray-100 p-4 rounded-md">
-                  <div className="bg-white p-4 rounded-md">
-                    <img src="src/components/misc/QR.png" alt="QR Code" className="h-24 w-24" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Scan with any app</p>
-                  <div className="flex items-center space-x-2 mt-2">
-                    <img src="gpay-icon.png" alt="Google Pay" className="h-6 w-6" />
-                    <img src="phonepe-icon.png" alt="PhonePe" className="h-6 w-6" />
-                    <img src="paytm-icon.png" alt="Paytm" className="h-6 w-6" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Recommended */}
-            <div className="mt-6 bg-gray-100 p-3 rounded-md">
-              <p className="text-sm font-medium text-gray-800">Recommended</p>
-              <div className="mt-2 text-sm text-gray-500">UPI - Google Pay</div>
-            </div>
+            <div className="w-2/3">{renderScreen()}</div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+const MenuOption = ({ label, active, onClick, isDarkMode }: any) => (
+  <div
+    onClick={onClick}
+    className={clsx(
+      "py-2 px-4 cursor-pointer rounded-md transition-colors duration-300",
+      active
+        ? isDarkMode
+          ? "bg-blue-700 text-white"
+          : "bg-green-100 font-bold"
+        : isDarkMode
+        ? "hover:bg-gray-600 text-gray-300"
+        : "hover:bg-green-50 text-gray-700"
+    )}
+  >
+    {label}
+  </div>
+);
+
+const UPIScreen = () => {
+  const [upiId, setUpiId] = useState("");
+  const [error, setError] = useState("");
+
+  const validateUPI = () => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+$/;
+    if (!upiId || !regex.test(upiId)) {
+      setError("Please enter a valid UPI ID (example@bank)");
+    } else {
+      setError("");
+      alert("UPI ID Verified Successfully");
+    }
+  };
+
+  return (
+    <div>
+      <h3 className="font-semibold mb-4">Enter your UPI ID</h3>
+      <input
+        type="text"
+        value={upiId}
+        onChange={(e) => setUpiId(e.target.value)}
+        placeholder="example@okhdfcbank"
+        className={clsx(
+          "w-full border p-2 rounded-md",
+          error ? "border-red-500" : "border-gray-300"
+        )}
+      />
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      <button
+        onClick={validateUPI}
+        className={clsx(
+          "mt-4 w-full py-2 rounded-md transition-colors",
+          "bg-black text-white hover:bg-gray-800"
+        )}
+      >
+        Verify and Pay
+      </button>
+    </div>
+  );
+};
+
+const CardsScreen = () => {
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [error, setError] = useState("");
+
+  const validateCard = () => {
+    const cardRegex = /^[0-9]{16}$/;
+    const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    const cvvRegex = /^[0-9]{3}$/;
+
+    if (!cardRegex.test(cardNumber)) {
+      setError("Invalid card number (16 digits required)");
+    } else if (!expiryRegex.test(expiry)) {
+      setError("Invalid expiry date (MM/YY format)");
+    } else if (!cvvRegex.test(cvv)) {
+      setError("Invalid CVV (3 digits required)");
+    } else {
+      setError("");
+      alert("Card Verified Successfully");
+    }
+  };
+
+  return (
+    <div>
+      <h3 className="font-semibold mb-4">Add a new card</h3>
+      <input
+        type="text"
+        value={cardNumber}
+        onChange={(e) => setCardNumber(e.target.value)}
+        placeholder="Card Number"
+        className="w-full border p-2 rounded-md mb-4"
+      />
+      <div className="flex space-x-4">
+        <input
+          type="text"
+          value={expiry}
+          onChange={(e) => setExpiry(e.target.value)}
+          placeholder="MM / YY"
+          className="w-1/2 border p-2 rounded-md"
+        />
+        <input
+          type="text"
+          value={cvv}
+          onChange={(e) => setCvv(e.target.value)}
+          placeholder="CVV"
+          className="w-1/2 border p-2 rounded-md"
+        />
+      </div>
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      <button
+        onClick={validateCard}
+        className="mt-4 w-full bg-black text-white py-2 rounded-md hover:bg-gray-800"
+      >
+        Continue
+      </button>
+    </div>
+  );
+};
+
+const WalletsScreen = () => (
+  <div>
+    <h3 className="font-semibold mb-4">All Wallet Options</h3>
+    <ul className="space-y-2">
+      {[
+        "Amazon Pay",
+        "PhonePe",
+        "Mobikwik",
+        "Airtel Payments Bank",
+        "Ola Money (Postpaid + Wallet)",
+        "JioMoney",
+        "Freecharge",
+        "Payzapp",
+      ].map((wallet, index) => (
+        <li
+          key={index}
+          className="cursor-pointer border p-2 rounded-md hover:bg-gray-50"
+        >
+          {wallet}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 export default PaymentGateway;
