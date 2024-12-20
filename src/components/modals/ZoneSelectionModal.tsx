@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import PaymentGateway from "./PaymentGateway"; // Import payment gateway
-import LocationSearch from "../trip/LocationSearch";
-import { delhiMetroStations } from "../../data/stations"; // Assuming station data
-import { findNearestStations } from "../../utils/zoneUtils";
+import PaymentGateway from "./PaymentGateway";
+import LocationSearch from "../components/trip/LocationSearch"; // Assuming LocationSearch is available
+import { findNearestStations } from "../utils/zoneUtils";
+import { delhiMetroStations } from "../data/stations";
 
 interface ZoneSelectionModalProps {
   isOpen: boolean;
@@ -18,25 +18,22 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
   const [homeZone, setHomeZone] = useState("");
   const [destinationZone, setDestinationZone] = useState("");
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
-  const [searchResult, setSearchResult] = useState<{
-    lat: number;
-    lon: number;
-    nearestStations: typeof delhiMetroStations;
-  } | null>(null);
+  const [homeNearest, setHomeNearest] = useState<string | null>(null);
+  const [destinationNearest, setDestinationNearest] = useState<string | null>(
+    null
+  );
 
-  const handleSearch = async (location: string, setZone: (zone: string) => void) => {
+  const handleZoneSearch = async (zone: string, setZone: any, setNearest: any) => {
     try {
-      // Simulating a geocoding API call for the location
       const lat = 28.6139 + (Math.random() - 0.5) * 0.1;
       const lon = 77.2090 + (Math.random() - 0.5) * 0.1;
-
-      const nearest = findNearestStations(lat, lon, delhiMetroStations);
-      if (nearest.length > 0) {
-        setZone(nearest[0].name);
-        setSearchResult({ lat, lon, nearestStations: nearest });
+      const nearestStations = findNearestStations(lat, lon, delhiMetroStations);
+      if (nearestStations.length > 0) {
+        setZone(zone);
+        setNearest(nearestStations[0].name); // Assuming nearestStations returns a sorted list
       }
-    } catch (error) {
-      console.error("Error finding location:", error);
+    } catch {
+      setNearest(null);
     }
   };
 
@@ -54,28 +51,39 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96">
             <h3 className="text-lg font-bold mb-4">Select Zones</h3>
-
             <div className="mb-4">
               <label className="block mb-2 text-sm">Home Zone:</label>
               <LocationSearch
-                onSearch={(location) => handleSearch(location, setHomeZone)}
-                isLoading={false} // Assuming a loading state can be implemented
+                onSearch={(zone) => handleZoneSearch(zone, setHomeZone, setHomeNearest)}
+                isLoading={false}
               />
-              {homeZone && <p className="text-sm text-gray-600 mt-2">Selected: {homeZone}</p>}
+              {homeNearest && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Nearest Zone: {homeNearest}
+                </p>
+              )}
             </div>
-
             <div className="mb-4">
               <label className="block mb-2 text-sm">Destination Zone:</label>
               <LocationSearch
-                onSearch={(location) => handleSearch(location, setDestinationZone)}
+                onSearch={(zone) =>
+                  handleZoneSearch(zone, setDestinationZone, setDestinationNearest)
+                }
                 isLoading={false}
               />
-              {destinationZone && <p className="text-sm text-gray-600 mt-2">Selected: {destinationZone}</p>}
+              {destinationNearest && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Nearest Zone: {destinationNearest}
+                </p>
+              )}
             </div>
-
             <button
               onClick={handleConfirm}
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded"
+              className={`w-full py-2 px-4 ${
+                homeZone && destinationZone
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              } rounded`}
               disabled={!homeZone || !destinationZone}
             >
               Confirm
@@ -87,7 +95,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
           passDetails={{ ...passDetails, homeZone, destinationZone }}
           onClose={() => {
             setIsPaymentOpen(false);
-            onClose();
+            onClose(); // Only trigger onClose when done with payment modal
           }}
         />
       )}
