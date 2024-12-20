@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import PaymentGateway from "./PaymentGateway";
-import LocationSearch from "../components/trip/LocationSearch"; // Assuming LocationSearch is available
-import { findNearestStations } from "../utils/zoneUtils";
-import { delhiMetroStations } from "../data/stations";
+import LocationSearch from "../trip/LocationSearch"; // Assuming LocationSearch is available
+import { findNearestStations } from "../../utils/zoneUtils";
+import { delhiMetroStations } from "../../data/stations";
 
 interface ZoneSelectionModalProps {
   isOpen: boolean;
