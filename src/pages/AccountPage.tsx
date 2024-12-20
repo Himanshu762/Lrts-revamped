@@ -33,8 +33,6 @@ const AccountPage: React.FC = () => {
                 colorText: "#374151", // Text color
                 colorBackground: "#f9fafb", // Background color
                 colorTextSecondary: "#9ca3af", // Secondary text
-                colorBackgroundDark: "#1f2937", // Dark mode background
-                colorTextDark: "#d1d5db", // Text color for dark mode
               },
               layout: {
                 width: "100%", // Ensure it takes up full width of the container
