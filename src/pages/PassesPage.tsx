@@ -31,8 +31,12 @@ const PassesPage: React.FC = () => {
     const fetchPasses = async () => {
       const { data, error } = await supabase.from("passes").select("*");
 
-      if (error) console.error("Error fetching passes:", error);
-      else setPasses(data || []);
+      if (error) {
+        console.error("Error fetching passes:", error);
+      } else {
+        console.log("Available Passes:", data); // Debugging output
+        setPasses(data || []);
+      }
     };
 
     fetchPasses();
@@ -43,12 +47,16 @@ const PassesPage: React.FC = () => {
     if (user) {
       const fetchUserPasses = async () => {
         const { data, error } = await supabase
-          .from("passes") // Assuming all passes are in this table
+          .from("passes")
           .select("*")
           .eq("user_id", user.id);
 
-        if (error) console.error("Error fetching user passes:", error);
-        else setUserPasses(data || []);
+        if (error) {
+          console.error("Error fetching user passes:", error);
+        } else {
+          console.log("User's Passes:", data); // Debugging output
+          setUserPasses(data || []);
+        }
       };
 
       fetchUserPasses();
@@ -67,8 +75,8 @@ const PassesPage: React.FC = () => {
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
             Please log in to view and buy passes
           </h2>
+        </div>
       </div>
-    </div>
     );
   }
 
@@ -83,16 +91,22 @@ const PassesPage: React.FC = () => {
           <UserPasses />
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-            {passes.map((pass) => (
-              <PassCard
-                key={pass.id}
-                title={pass.pass_type}
-                price={pass.price}
-                duration={pass.duration}
-                features={pass.features}
-                onSelect={() => handlePassSelect(pass)}
-              />
-            ))}
+            {passes.length > 0 ? (
+              passes.map((pass) => (
+                <PassCard
+                  key={pass.id}
+                  title={pass.pass_type}
+                  price={pass.price}
+                  duration={pass.duration}
+                  features={pass.features}
+                  onSelect={() => handlePassSelect(pass)}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">
+                No available passes to display.
+              </p>
+            )}
           </div>
         )}
       </div>
