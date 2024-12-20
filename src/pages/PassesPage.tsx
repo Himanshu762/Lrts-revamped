@@ -29,12 +29,13 @@ const PassesPage: React.FC = () => {
   // Fetch all available passes
   useEffect(() => {
     const fetchPasses = async () => {
+      console.log("Fetching all available passes...");
       const { data, error } = await supabase.from("passes").select("*");
 
       if (error) {
         console.error("Error fetching passes:", error);
       } else {
-        console.log("Available Passes:", data); // Debugging output
+        console.log("Fetched passes:", data); // Debugging output
         setPasses(data || []);
       }
     };
@@ -46,6 +47,7 @@ const PassesPage: React.FC = () => {
   useEffect(() => {
     if (user) {
       const fetchUserPasses = async () => {
+        console.log("Fetching user passes...");
         const { data, error } = await supabase
           .from("passes")
           .select("*")
@@ -91,16 +93,20 @@ const PassesPage: React.FC = () => {
           <UserPasses />
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-            {passes.map((pass) => (
-              <PassCard
-                key={pass.id}
-                title={pass.pass_type}
-                price={pass.price}
-                duration={pass.duration}
-                features={pass.features}
-                onSelect={() => handlePassSelect(pass)}
-              />
-            ))}
+            {passes.length > 0 ? (
+              passes.map((pass) => (
+                <PassCard
+                  key={pass.id}
+                  title={pass.pass_type}
+                  price={pass.price}
+                  duration={pass.duration}
+                  features={pass.features}
+                  onSelect={() => handlePassSelect(pass)}
+                />
+              ))
+            ) : (
+              <p className="text-gray-600 dark:text-gray-400">No passes available at the moment.</p>
+            )}
           </div>
         )}
       </div>
