@@ -7,14 +7,20 @@ interface ZoneSelectionModalProps {
   passDetails: { title: string; price: string };
 }
 
-const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose, passDetails }) => {
+const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
+  isOpen,
+  onClose,
+  passDetails,
+}) => {
   const [homeZone, setHomeZone] = useState("");
   const [destinationZone, setDestinationZone] = useState("");
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   const handleConfirm = () => {
-    if (homeZone && destinationZone) {
+    if (homeZone.trim() && destinationZone.trim()) {
       setIsPaymentOpen(true);
+    } else {
+      alert("Please fill in both zones to proceed.");
     }
   };
 
