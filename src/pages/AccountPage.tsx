@@ -42,9 +42,12 @@ const AccountPage: React.FC = () => {
       }`}
     >
       <div
-        className={`w-full max-w-3xl ${
+        className={`w-full max-w-5xl ${
           isDarkMode ? "bg-gray-800" : "bg-white"
-        } shadow-lg rounded-lg p-4 sm:p-6 overflow-hidden`}
+        } shadow-lg rounded-lg p-4 sm:p-6 flex flex-col items-center`}
+        style={{
+          minHeight: "80vh", // Ensures enough space for the embedding
+        }}
       >
         <h1
           className={`text-xl sm:text-2xl font-bold ${
@@ -54,7 +57,13 @@ const AccountPage: React.FC = () => {
           Manage Your Account
         </h1>
         {/* Clerk's UserProfile Component */}
-        <div className="flex justify-center">
+        <div
+          className="w-full flex-grow flex justify-center items-center"
+          style={{
+            maxHeight: "100%", // Ensures embedding doesn't overflow
+            overflowY: "auto", // Allows scrolling if content is larger
+          }}
+        >
           <UserProfile
             appearance={{
               variables: {
@@ -70,7 +79,7 @@ const AccountPage: React.FC = () => {
                 minHeight: "auto",
               },
               elements: {
-                card: "shadow-md rounded-lg w-full max-w-xl mx-auto",
+                card: "shadow-md rounded-lg w-full max-w-3xl mx-auto",
                 buttonPrimary: `${
                   isDarkMode
                     ? "bg-indigo-600 hover:bg-indigo-700 text-white"
