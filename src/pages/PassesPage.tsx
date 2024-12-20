@@ -3,7 +3,6 @@ import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 import PassCard from "../components/passes/PassCard";
 import UserPasses from "../components/passes/UserPasses";
-import ZoneSelectionModal from "../components/modals/ZoneSelectionModal";
 
 // Initialize Supabase
 const supabase = createClient(
@@ -21,33 +20,35 @@ interface Pass {
 
 const PassesPage: React.FC = () => {
   const { user } = useClerk();
-  const [passes, setPasses] = useState<Pass[]>([]);
+  const [availablePasses, setAvailablePasses] = useState<Pass[]>([]);
   const [userPasses, setUserPasses] = useState<any[]>([]);
-  const [selectedPass, setSelectedPass] = useState<Pass | null>(null);
-  const [showZoneModal, setShowZoneModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch all available passes
+  // Fetch all passes
   useEffect(() => {
-    const fetchPasses = async () => {
-      console.log("Fetching all available passes...");
-      const { data, error } = await supabase.from("passes").select("*");
+    const fetchAvailablePasses = async () => {
+      try {
+        const { data, error } = await supabase.from("passes").select("*");
 
-      if (error) {
-        console.error("Error fetching passes:", error);
-      } else {
-        console.log("Fetched passes:", data); // Debugging output
-        setPasses(data || []);
+        if (error) {
+          console.error("Error fetching available passes:", error);
+          return;
+        }
+        setAvailablePasses(data || []);
+      } catch (error) {
+        console.error("Unexpected error:", error);
       }
     };
 
-    fetchPasses();
+    fetchAvailablePasses();
   }, []);
 
-  // Fetch user's purchased passes
+  // Fetch user's passes
   useEffect(() => {
-    if (user) {
-      const fetchUserPasses = async () => {
-        console.log("Fetching user passes...");
+    const fetchUserPasses = async () => {
+      if (!user?.id) return;
+
+      try {
         const { data, error } = await supabase
           .from("passes")
           .select("*")
@@ -55,20 +56,18 @@ const PassesPage: React.FC = () => {
 
         if (error) {
           console.error("Error fetching user passes:", error);
-        } else {
-          console.log("User's Passes:", data); // Debugging output
-          setUserPasses(data || []);
+          return;
         }
-      };
+        setUserPasses(data || []);
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchUserPasses();
-    }
+    fetchUserPasses();
   }, [user]);
-
-  const handlePassSelect = (pass: Pass) => {
-    setSelectedPass(pass);
-    setShowZoneModal(true);
-  };
 
   if (!user) {
     return (
@@ -82,43 +81,54 @@ const PassesPage: React.FC = () => {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
-          {userPasses.length > 0 ? "Your Passes" : "Choose Your Pass"}
-        </h2>
-
         {userPasses.length > 0 ? (
-          <UserPasses />
+          <>
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+              Your Passes
+            </h2>
+            <UserPasses />
+            <button
+              onClick={() => setAvailablePasses([])} // Trigger modal logic here
+              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded"
+            >
+              Buy Another Pass
+            </button>
+          </>
         ) : (
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-            {passes.length > 0 ? (
-              passes.map((pass) => (
-                <PassCard
-                  key={pass.id}
-                  title={pass.pass_type}
-                  price={pass.price}
-                  duration={pass.duration}
-                  features={pass.features}
-                  onSelect={() => handlePassSelect(pass)}
-                />
-              ))
+          <>
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+              Choose Your Pass
+            </h2>
+            {availablePasses.length > 0 ? (
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+                {availablePasses.map((pass) => (
+                  <PassCard
+                    key={pass.id}
+                    title={pass.pass_type}
+                    price={pass.price}
+                    duration={pass.duration}
+                    features={pass.features}
+                    onSelect={() => console.log("Selected pass:", pass)}
+                  />
+                ))}
+              </div>
             ) : (
-              <p className="text-gray-600 dark:text-gray-400">No passes available at the moment.</p>
+              <p>No passes available at the moment.</p>
             )}
-          </div>
+          </>
         )}
       </div>
-
-      {/* Zone Selection Modal */}
-      {showZoneModal && selectedPass && (
-        <ZoneSelectionModal
-          isOpen={showZoneModal}
-          onClose={() => setShowZoneModal(false)}
-          passDetails={selectedPass}
-        />
-      )}
     </div>
   );
 };
