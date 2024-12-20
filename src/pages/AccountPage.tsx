@@ -21,18 +21,18 @@ const AccountPage: React.FC = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 sm:p-6">
-        <div 
-          style={{
-            maxWidth: "900px", // Maximum width for larger screens
-            width: "100%", // Full width for smaller screens
-            padding: "20px", // Add padding for spacing
-          }}
-        >
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
-            Manage Your Account
-          </h1>
-          {/* Clerk's UserProfile Component */}
-          <div className="overflow-hidden">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+          Manage Your Account
+        </h1>
+        {/* Clerk's UserProfile Component */}
+        <div className="overflow-hidden">
+          <div 
+            style={{
+              maxWidth: "900px", // Maximum width for larger screens
+              width: "100%", // Full width for smaller screens
+              padding: "20px", // Add padding for spacing
+            }}
+          >
             <UserProfile
               appearance={{
                 variables: {
@@ -58,8 +58,8 @@ const AccountPage: React.FC = () => {
                 },
               }}
             />
-          </div>
-        </div>  
+          </div>  
+        </div>
       </div>
     </div>
   );
