@@ -189,7 +189,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaym
                         }`}
                       >
                         <img
-                          src="QR.png"
+                          src="/src/components/pages/QR.png"
                           alt="QR Code"
                           className="h-24 w-24"
                         />
