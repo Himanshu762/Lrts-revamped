@@ -1,5 +1,4 @@
-import React from "react";
-import clsx from "clsx";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 interface PaymentGatewayProps {
@@ -9,113 +8,163 @@ interface PaymentGatewayProps {
 }
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaymentSuccess }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detect if dark mode is preferred by the user
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDarkMode(mediaQuery.matches);
+
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      setIsDarkMode(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleThemeChange);
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-[800px] max-w-full flex overflow-hidden">
+    <div
+      className={`fixed inset-0 flex items-center justify-center z-50 ${
+        isDarkMode ? "bg-gray-900 bg-opacity-80" : "bg-black bg-opacity-60"
+      }`}
+    >
+      <div
+        className={`rounded-lg shadow-lg w-[800px] max-w-full flex overflow-hidden ${
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        }`}
+      >
         {/* Sidebar */}
-        <div className="w-1/3 bg-green-100 p-6 flex flex-col justify-between">
+        <div
+          className={`w-1/3 p-6 flex flex-col justify-between ${
+            isDarkMode ? "bg-gray-700 text-white" : "bg-blue-100 text-gray-900"
+          }`}
+        >
           <div>
-            <h2 className="text-xl font-semibold text-green-700">LRTS दिल्ली</h2>
-            <p className="text-xs text-gray-500 mt-1">JoyeshPay Trusted Business</p>
+            <h2 className="text-xl font-semibold">LRTS दिल्ली</h2>
+            <p className="text-xs mt-1">JoyeshPay Trusted Business</p>
 
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-gray-800">Price Summary</h3>
-              <p className="text-2xl font-extrabold text-green-700 mt-4">₹188</p>
+              <h3 className="text-lg font-bold">Price Summary</h3>
+              <p className="text-2xl font-extrabold mt-4">₹999</p>
             </div>
 
             <div className="mt-6">
-              <p className="text-sm text-gray-500">Using as <span className="text-gray-700 font-semibold">+91 78929 74539</span></p>
-              <button className="mt-2 text-blue-600 text-sm underline">Change</button>
+              <p className="text-sm">
+                Using as <span className="font-semibold">+91 78929 74539</span>
+              </p>
+              <button
+                className={`mt-2 text-sm underline ${
+                  isDarkMode ? "text-blue-400" : "text-blue-600"
+                }`}
+              >
+                Change
+              </button>
             </div>
           </div>
 
           <div>
-            <button className="text-green-700 bg-green-300 px-4 py-2 rounded-full text-sm w-full">
+            <button
+              className={`px-4 py-2 rounded-full text-sm w-full ${
+                isDarkMode
+                  ? "bg-blue-500 text-white"
+                  : "bg-blue-300 text-blue-700"
+              }`}
+            >
               Offers on UPI and UPI QR
             </button>
           </div>
         </div>
 
         {/* Main Section */}
-        <div className="w-2/3 bg-white p-6">
+        <div className="w-2/3 p-6">
           {/* Header */}
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">Payment Options</h2>
+            <h2 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+              Payment Options
+            </h2>
             <button onClick={onClose}>
-              <X className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+              <X className={`h-6 w-6 ${isDarkMode ? "text-gray-400" : "text-gray-500"} hover:text-gray-700`} />
             </button>
           </div>
 
           <div className="mt-4">
             {/* Offers */}
-            <div className="flex items-center space-x-4 bg-gray-100 p-3 rounded-md">
-              <span className="text-sm font-medium text-gray-800">UPTO ₹200 CRED cashback on CRED</span>
-              <button className="text-blue-600 text-sm underline">View all</button>
+            <div
+              className={`flex items-center space-x-4 p-3 rounded-md ${
+                isDarkMode ? "bg-purple-900 text-purple-300" : "bg-purple-100 text-purple-800"
+              }`}
+            >
+              <span className="text-sm font-medium">UPTO ₹200 Cashback on CRED</span>
+              <button
+                className={`text-sm underline ${
+                  isDarkMode ? "text-purple-400" : "text-purple-600"
+                }`}
+              >
+                View all
+              </button>
             </div>
 
             {/* Payment Methods */}
             <div className="mt-6 grid grid-cols-2 gap-4">
-              {/* UPI */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">UPI</div>
-                <div className="flex items-center space-x-2">
-                  <img src="upi-icon.png" alt="UPI" className="h-5 w-5" />
-                  <span className="text-xs text-gray-500">2 Offers</span>
-                </div>
-              </div>
-
-              {/* Cards */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Cards</div>
-                <img src="visa-icon.png" alt="Cards" className="h-5 w-5" />
-              </div>
-
-              {/* Netbanking */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Netbanking</div>
-                <img src="netbanking-icon.png" alt="Netbanking" className="h-5 w-5" />
-              </div>
-
-              {/* Wallet */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Wallet</div>
-                <img src="wallet-icon.png" alt="Wallet" className="h-5 w-5" />
-              </div>
-
-              {/* Pay Later */}
-              <div className="flex items-center justify-between border rounded-md p-3 hover:shadow-md">
-                <div className="text-sm font-medium text-gray-800">Pay Later</div>
-                <img src="paylater-icon.png" alt="Pay Later" className="h-5 w-5" />
-              </div>
-            </div>
-
-            {/* UPI QR Section */}
-            <div className="mt-8">
-              <h3 className="text-sm font-medium text-gray-800">UPI QR</h3>
-              <div className="mt-3 flex items-center space-x-4">
-                <div className="bg-gray-100 p-4 rounded-md">
-                  <div className="bg-white p-4 rounded-md">
-                    <img src="qr-code-placeholder.png" alt="QR Code" className="h-24 w-24" />
+              {["UPI", "Cards", "Netbanking", "Wallet", "Pay Later"].map((method, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center justify-between border rounded-md p-3 hover:shadow-md ${
+                    isDarkMode ? "bg-gray-700 border-gray-600 text-gray-300" : "bg-white border-gray-300 text-gray-800"
+                  }`}
+                >
+                  <div className="text-sm font-medium">{method}</div>
+                  <div className="flex items-center space-x-2">
+                    <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                      {index === 0 ? "2 Offers" : ""}
+                    </span>
                   </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">Scan with any app</p>
-                  <div className="flex items-center space-x-2 mt-2">
-                    <img src="gpay-icon.png" alt="Google Pay" className="h-6 w-6" />
-                    <img src="phonepe-icon.png" alt="PhonePe" className="h-6 w-6" />
-                    <img src="paytm-icon.png" alt="Paytm" className="h-6 w-6" />
-                  </div>
+              ))}
+            </div>
+          </div>
+
+          {/* UPI QR Section */}
+          <div className="mt-8">
+            <h3 className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+              UPI QR
+            </h3>
+            <div className="mt-3 flex items-center space-x-4">
+              <div
+                className={`p-4 rounded-md ${
+                  isDarkMode ? "bg-gray-600" : "bg-gray-100"
+                }`}
+              >
+                <div
+                  className={`p-4 rounded-md ${
+                    isDarkMode ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
+                  <img src="qr-code-placeholder.png" alt="QR Code" className="h-24 w-24" />
                 </div>
               </div>
+              <div>
+                <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-500"}`}>
+                  Scan with any app
+                </p>
+              </div>
             </div>
+          </div>
 
-            {/* Recommended */}
-            <div className="mt-6 bg-gray-100 p-3 rounded-md">
-              <p className="text-sm font-medium text-gray-800">Recommended</p>
-              <div className="mt-2 text-sm text-gray-500">UPI - Google Pay</div>
-            </div>
+          {/* Recommended */}
+          <div
+            className={`mt-6 p-3 rounded-md ${
+              isDarkMode ? "bg-blue-900 text-blue-300" : "bg-blue-100 text-gray-800"
+            }`}
+          >
+            <p className="text-sm font-medium">Recommended</p>
+            <div className="mt-2 text-sm">UPI - Google Pay</div>
           </div>
         </div>
       </div>
