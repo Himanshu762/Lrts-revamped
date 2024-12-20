@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom"; // Change to useNavigate from react-router-dom
 import { v4 as uuidv4 } from "uuid";
 import { useClerk } from "@clerk/clerk-react"; // For user authentication
 import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+  process.env.VITE_SUPABASE_URL || "",  // Adjusted for Vite environment variables
+  process.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
 interface PaymentGatewayProps {
@@ -16,7 +16,7 @@ interface PaymentGatewayProps {
 }
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose }) => {
-  const router = useRouter();
+  const navigate = useNavigate(); // Use useNavigate from react-router-dom
   const { user } = useClerk(); // Fetch Clerk user details
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
@@ -45,7 +45,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
       }
 
       // Redirect back to PassesPage
-      router.push("/passes");
+      navigate("/passes"); // Use navigate instead of router.push
     }, 2000); // Simulate 2-second payment delay
   };
 

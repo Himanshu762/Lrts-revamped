@@ -1,63 +1,92 @@
 import React, { useEffect, useState } from "react";
 import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
+import PassCard from "../components/passes/PassCard";
+import UserPasses from "../components/passes/UserPasses";
+import ZoneSelectionModal from "../components/modals/ZoneSelectionModal";
+import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
 
-// Initialize Supabase
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+  import.meta.env.VITE_SUPABASE_URL || "",
+  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
-const PassesPage: React.FC = () => {
-  const [userPasses, setUserPasses] = useState<any[]>([]);
-  const { user } = useClerk();
+interface Pass {
+  id: number;
+  pass_type: string;
+  price: string;
+  duration: string;
+  features: { text: string; included: boolean }[];
+}
 
+const PassesPage: React.FC = () => {
+  const { user } = useClerk();
+  const [passes, setPasses] = useState<Pass[]>([]);
+  const [userPasses, setUserPasses] = useState<any[]>([]);
+  const [selectedPass, setSelectedPass] = useState<Pass | null>(null);
+  const [showZoneModal, setShowZoneModal] = useState(false);
+  const [showBuyAnotherModal, setShowBuyAnotherModal] = useState(false);
+
+  // Fetch all available passes
   useEffect(() => {
     const fetchPasses = async () => {
-      const { data, error } = await supabase
-        .from("passes")
-        .select("*")
-        .eq("user_id", user?.id);
+      const { data, error } = await supabase.from("passes").select("*");
 
       if (error) console.error("Error fetching passes:", error);
-      else setUserPasses(data || []);
+      else setPasses(data || []);
     };
 
     fetchPasses();
+  }, []);
+
+  // Fetch user's purchased passes
+  useEffect(() => {
+    if (user) {
+      const fetchUserPasses = async () => {
+        const { data, error } = await supabase
+          .from("user_passes")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) console.error("Error fetching user passes:", error);
+        else setUserPasses(data || []);
+      };
+
+      fetchUserPasses();
+    }
   }, [user]);
 
-  if (userPasses.length > 0) {
+  const handlePassSelect = (pass: Pass) => {
+    setSelectedPass(pass);
+    setShowZoneModal(true); // Open ZoneSelectionModal
+  };
+
+  const handleNewPassPurchase = async (newPassDetails: any) => {
+    const newPass = {
+      user_id: user?.id,
+      pass_type: newPassDetails.pass_type,
+      price: newPassDetails.price,
+      home_zone: newPassDetails.homeZone,
+      destination_zone: newPassDetails.destinationZone,
+    };
+
+    const { error } = await supabase.from("user_passes").insert(newPass);
+    if (error) {
+      console.error("Error saving pass to database:", error);
+    } else {
+      setUserPasses((prev) => [...prev, newPass]); // Add the new pass to userPasses
+      setShowZoneModal(false);
+      setShowBuyAnotherModal(false);
+    }
+  };
+
+  if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
-            Manage Your Passes
+            Please log in to view and buy passes
           </h2>
-          <div className="grid grid-cols-1 gap-6">
-            {userPasses.map((pass) => (
-              <div
-                key={pass.pass_secret}
-                className="p-4 border rounded-lg bg-white dark:bg-gray-800"
-              >
-                <h3 className="text-xl font-bold">{pass.pass_type}</h3>
-                <p>
-                  <strong>Price:</strong> ₹{pass.price}
-                </p>
-                <p>
-                  <strong>Home Zone:</strong> {pass.home_zone}
-                </p>
-                <p>
-                  <strong>Destination Zone:</strong> {pass.destination_zone}
-                </p>
-                <p>
-                  <strong>Email:</strong> {pass.email}
-                </p>
-                <p>
-                  <strong>Pass Secret:</strong> {pass.pass_secret}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     );
@@ -65,21 +94,60 @@ const PassesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
-            Choose Your Pass
-          </h2>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-300">
-            Select the perfect pass that suits your travel needs
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {passes.map((pass, index) => (
-            <PassCard key={index} {...pass} />
-          ))}
-        </div>
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+          {userPasses.length > 0 ? "Your Passes" : "Choose Your Pass"}
+        </h2>
+
+        {userPasses.length > 0 && (
+          <>
+            {/* Display user's purchased passes */}
+            <UserPasses passes={userPasses} />
+            <button
+              onClick={() => setShowBuyAnotherModal(true)}
+              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded"
+            >
+              Buy Another Pass
+            </button>
+          </>
+        )}
+
+        {/* Show available passes if no user passes */}
+        {userPasses.length === 0 && (
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+            {passes.map((pass) => (
+              <PassCard
+                key={pass.id}
+                title={pass.pass_type}
+                price={pass.price}
+                duration={pass.duration}
+                features={pass.features}
+                onSelect={() => handlePassSelect(pass)}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Zone Selection Modal */}
+      {showZoneModal && selectedPass && (
+        <ZoneSelectionModal
+          isOpen={showZoneModal}
+          onClose={() => setShowZoneModal(false)}
+          passDetails={selectedPass}
+          onPaymentSuccess={(newPass) => handleNewPassPurchase(newPass)}
+        />
+      )}
+
+      {/* Buy Another Pass Modal */}
+      {showBuyAnotherModal && (
+        <BuyAnotherPassModal
+          isOpen={showBuyAnotherModal}
+          onClose={() => setShowBuyAnotherModal(false)}
+          availablePasses={passes}
+          onPassSelect={(pass) => handlePassSelect(pass)}
+        />
+      )}
     </div>
   );
 };
