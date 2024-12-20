@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ZoneMap from '../components/zones/ZoneMap';
 import ZoneStats from '../components/zones/ZoneStats';
 import { MapPin, Users, Clock, Shield } from 'lucide-react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, LineChart, Line } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, LineChart, Line, ResponsiveContainer } from 'recharts';
 
 const ExploreZones: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -114,37 +114,48 @@ const ExploreZones: React.FC = () => {
 
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Zone Statistics</h2>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
-                <BarChart width={500} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip 
-                  contentStyle={tooltipStyles} 
-                  wrapperStyle={{ outline: 'none' }} 
-                />
-                <Legend />
-                <Bar dataKey="rickshaws" fill="#8884d8" />
-                </BarChart>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
-                <LineChart width={500} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip 
-                  contentStyle={tooltipStyles} 
-                  wrapperStyle={{ outline: 'none' }} 
-                  labelStyle={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} // Adjust label styling for light mode
-                />
-                <Legend />
-                <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
-                </LineChart>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 mt-8">
+            {/* Rickshaws per Zone Bar Chart */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rickshaws per Zone</h3>
+              <div style={{ width: '100%', height: 300 }}>
+                <ResponsiveContainer>
+                  <BarChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <XAxis dataKey="name" stroke={isDarkMode ? '#ddd' : '#666'} />
+                    <YAxis stroke={isDarkMode ? '#ddd' : '#666'} />
+                    <Tooltip
+                      contentStyle={tooltipStyles}
+                      wrapperStyle={{ outline: 'none' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="rickshaws" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
+
+            {/* Average Wait Time Line Chart */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Wait Time</h3>
+              <div style={{ width: '100%', height: 300 }}>
+                <ResponsiveContainer>
+                  <LineChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <XAxis dataKey="name" stroke={isDarkMode ? '#ddd' : '#666'} />
+                    <YAxis stroke={isDarkMode ? '#ddd' : '#666'} />
+                    <Tooltip
+                      contentStyle={tooltipStyles}
+                      wrapperStyle={{ outline: 'none' }}
+                      labelStyle={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                    />
+                    <Legend />
+                    <Line type="monotone" dataKey="waitTime" stroke="#82ca9d" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
