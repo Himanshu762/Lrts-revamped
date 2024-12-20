@@ -17,8 +17,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaym
         {/* Sidebar */}
         <div className="w-1/3 bg-green-100 p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-green-700">Freshtohome.com</h2>
-            <p className="text-xs text-gray-500 mt-1">Razorpay Trusted Business</p>
+            <h2 className="text-xl font-semibold text-green-700">LRTS</h2>
+            <p className="text-xs text-gray-500 mt-1">JoyeshPay Trusted Business</p>
 
             <div className="mt-6">
               <h3 className="text-lg font-bold text-gray-800">Price Summary</h3>
