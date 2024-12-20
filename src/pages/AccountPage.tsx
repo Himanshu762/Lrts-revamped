@@ -23,7 +23,7 @@ const AccountPage: React.FC = () => {
       <div 
         className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 sm:p-6"
         style={{
-          maxWidth: "900px",
+          maxWidth: "1300px",
           width: "100%", 
           padding: "20px",
         }}      
