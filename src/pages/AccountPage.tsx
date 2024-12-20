@@ -25,7 +25,11 @@ const AccountPage: React.FC = () => {
           Manage Your Account
         </h1>
         {/* Clerk's UserProfile Component */}
-        <div className="overflow-hidden">
+        <div className="w-full flex-grow flex justify-center items-center"
+          style={{
+            maxHeight: "100%", // Ensures embedding doesn't overflow
+            overflowY: "auto", // Allows scrolling if content is larger
+          }}>
           <UserProfile
             appearance={{
               variables: {
@@ -37,7 +41,8 @@ const AccountPage: React.FC = () => {
                 colorTextDark: "#d1d5db", // Text color for dark mode
               },
               layout: {
-                width: "100%", // Ensure it takes up full width of the container
+                width: "100%",
+                minHeight: "auto",
               },
               elements: {
                 card: "shadow-md rounded-lg w-full max-w-md mx-auto", // Restrict size and center
