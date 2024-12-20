@@ -91,22 +91,16 @@ const PassesPage: React.FC = () => {
           <UserPasses />
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-            {passes.length > 0 ? (
-              passes.map((pass) => (
-                <PassCard
-                  key={pass.id}
-                  title={pass.pass_type}
-                  price={pass.price}
-                  duration={pass.duration}
-                  features={pass.features}
-                  onSelect={() => handlePassSelect(pass)}
-                />
-              ))
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">
-                No available passes to display.
-              </p>
-            )}
+            {passes.map((pass) => (
+              <PassCard
+                key={pass.id}
+                title={pass.pass_type}
+                price={pass.price}
+                duration={pass.duration}
+                features={pass.features}
+                onSelect={() => handlePassSelect(pass)}
+              />
+            ))}
           </div>
         )}
       </div>
