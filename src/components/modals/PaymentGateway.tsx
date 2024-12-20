@@ -6,8 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || "",  // Adjusted for Vite environment variables
-  process.env.VITE_SUPABASE_ANON_KEY || ""
+  import.meta.env.VITE_SUPABASE_URL || "",  // Adjusted for Vite environment variables
+  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
 interface PaymentGatewayProps {
