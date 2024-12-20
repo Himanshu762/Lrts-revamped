@@ -42,9 +42,9 @@ const AccountPage: React.FC = () => {
       }`}
     >
       <div
-        className={`w-full max-w-2xl ${
+        className={`w-full max-w-3xl ${
           isDarkMode ? "bg-gray-800" : "bg-white"
-        } shadow-lg rounded-lg p-4 sm:p-6`}
+        } shadow-lg rounded-lg p-4 sm:p-6 overflow-hidden`}
       >
         <h1
           className={`text-xl sm:text-2xl font-bold ${
@@ -54,7 +54,7 @@ const AccountPage: React.FC = () => {
           Manage Your Account
         </h1>
         {/* Clerk's UserProfile Component */}
-        <div className="overflow-hidden">
+        <div className="flex justify-center">
           <UserProfile
             appearance={{
               variables: {
@@ -66,10 +66,11 @@ const AccountPage: React.FC = () => {
                 colorTextDark: "#d1d5db",
               },
               layout: {
-                width: "100%", // Ensure it takes up the full width of the container
+                width: "100%",
+                minHeight: "auto",
               },
               elements: {
-                card: "shadow-md rounded-lg w-full max-w-md mx-auto", // Restrict size and center
+                card: "shadow-md rounded-lg w-full max-w-xl mx-auto",
                 buttonPrimary: `${
                   isDarkMode
                     ? "bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -80,6 +81,16 @@ const AccountPage: React.FC = () => {
                     ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
                     : "bg-gray-200 hover:bg-gray-300 text-gray-700"
                 } font-medium rounded-lg px-4 py-2`,
+                tabsListButton: `${
+                  isDarkMode
+                    ? "text-gray-300 hover:text-white"
+                    : "text-gray-700 hover:text-black"
+                } font-medium px-3 py-2 transition-colors`,
+                tabsListButtonActive: `${
+                  isDarkMode
+                    ? "text-white border-b-2 border-indigo-600"
+                    : "text-black border-b-2 border-indigo-500"
+                } font-medium px-3 py-2`,
               },
             }}
           />
