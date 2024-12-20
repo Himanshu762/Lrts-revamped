@@ -37,7 +37,7 @@ const AccountPage: React.FC = () => {
                 colorTextDark: "#d1d5db", // Text color for dark mode
               },
               layout: {
-                width: "100%",
+                width: "auto",
                 minHeight: "auto",
               },
               elements: {
