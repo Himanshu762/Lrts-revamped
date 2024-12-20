@@ -53,19 +53,6 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaym
               <h3 className="text-lg font-bold">Price Summary</h3>
               <p className="text-2xl font-extrabold mt-4">₹999</p>
             </div>
-
-            <div className="mt-6">
-              <p className="text-sm">
-                Using as <span className="font-semibold">+91 78929 74539</span>
-              </p>
-              <button
-                className={`mt-2 text-sm underline ${
-                  isDarkMode ? "text-blue-400" : "text-blue-600"
-                }`}
-              >
-                Change
-              </button>
-            </div>
           </div>
 
           <div>
@@ -146,7 +133,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ isOpen, onClose, onPaym
                     isDarkMode ? "bg-gray-800" : "bg-white"
                   }`}
                 >
-                  <img src="qr-code-placeholder.png" alt="QR Code" className="h-24 w-24" />
+                  <img src="https://qr-codes.io/1PYZ6a" alt="QR Code" className="h-24 w-24" />
                 </div>
               </div>
               <div>
