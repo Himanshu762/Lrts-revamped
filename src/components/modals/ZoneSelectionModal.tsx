@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PaymentGateway from "./PaymentGateway";
+import { delhiMetroStations } from "../data/delhiMetroStations"; // Adjust the path as needed
 
 interface ZoneSelectionModalProps {
   isOpen: boolean;
@@ -16,7 +17,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
     if (homeZone && destinationZone) {
       setIsPaymentOpen(true); // Trigger payment modal
     } else {
-      alert("Please fill in both Home Zone and Destination Zone.");
+      alert("Please select both Home Zone and Destination Zone.");
     }
   };
 
@@ -24,51 +25,46 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center"
-      >
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         {!isPaymentOpen ? (
-          <div
-            className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md mx-auto shadow-lg transition-all transform"
-          >
-            {/* Header */}
-            <h3 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">
-              Select Zones
-            </h3>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96">
+            <h3 className="text-lg font-bold mb-4">Select Zones</h3>
 
-            {/* Home Zone Input */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Home Zone:
-              </label>
-              <input
-                type="text"
+            <div>
+              <label className="block mb-2 text-sm">Home Zone:</label>
+              <select
                 value={homeZone}
                 onChange={(e) => setHomeZone(e.target.value)}
-                className="w-full p-2 border rounded-lg dark:text-white dark:bg-gray-700 dark:border-gray-600"
-                placeholder="Enter your home zone"
-              />
+                className="w-full p-2 border rounded mb-4 dark:text-white dark:bg-gray-900"
+              >
+                <option value="">Select Home Zone</option>
+                {delhiMetroStations.map((station) => (
+                  <option key={station.name} value={station.name}>
+                    {station.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Destination Zone Input */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Destination Zone:
-              </label>
-              <input
-                type="text"
+            <div>
+              <label className="block mb-2 text-sm">Destination Zone:</label>
+              <select
                 value={destinationZone}
                 onChange={(e) => setDestinationZone(e.target.value)}
-                className="w-full p-2 border rounded-lg dark:text-white dark:bg-gray-700 dark:border-gray-600"
-                placeholder="Enter your destination zone"
-              />
+                className="w-full p-2 border rounded mb-4 dark:text-white dark:bg-gray-900"
+              >
+                <option value="">Select Destination Zone</option>
+                {delhiMetroStations.map((station) => (
+                  <option key={station.name} value={station.name}>
+                    {station.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Confirm Button */}
             <button
               onClick={handleConfirm}
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              className="w-full py-2 px-4 bg-blue-500 text-white rounded"
             >
               Confirm
             </button>
