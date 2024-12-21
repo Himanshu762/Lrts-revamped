@@ -50,26 +50,22 @@ const PassesPage: React.FC = () => {
   useEffect(() => {
     const fetchUserPasses = async () => {
       if (!user?.id) return;
-
+    
       try {
-        const { data, error } = await supabase
-          .from("passes")
-          .select("*")
-          .eq("user_id", user.id);
-
+        const { data, error } = await supabase.from("passes").select("*").eq("user_id", user.id);
         if (error) {
           console.error("Error fetching user passes:", error);
           setError("Unable to fetch your passes. Please try again later.");
-          return;
+        } else {
+          setUserPasses(data || []);
         }
-        setUserPasses(data || []);
       } catch (err) {
         console.error("Unexpected error fetching user passes:", err);
         setError("An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
-    };
+    };       
 
     fetchUserPasses();
   }, [user]);
@@ -123,7 +119,7 @@ const PassesPage: React.FC = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Choose Your Pass
             </h2>
-            {availablePasses.length > 0 ? (
+            {availablePasses?.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
                 {availablePasses.map((pass) => (
                   <PassCard
