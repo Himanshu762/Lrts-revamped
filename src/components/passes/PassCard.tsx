@@ -17,7 +17,7 @@ interface PassCardProps {
   popular?: boolean;
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, popular }) => {
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = [], popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
@@ -63,33 +63,37 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
 
           {/* Features rendering */}
           <ul className="space-y-3">
-            {features.map((feature, index) => (
-              <li key={index} className="flex items-center space-x-3">
-                <div
-                  className={clsx(
-                    'flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center',
-                    feature.included ? 'bg-blue-300 dark:bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'
-                  )}
-                >
-                  <Check
+            {features.length > 0 ? (
+              features.map((feature, index) => (
+                <li key={index} className="flex items-center space-x-3">
+                  <div
                     className={clsx(
-                      'h-3 w-3',
-                      feature.included ? 'text-white' : 'text-gray-400 dark:text-gray-500'
+                      'flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center',
+                      feature.included ? 'bg-blue-300 dark:bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'
                     )}
-                  />
-                </div>
-                <span
-                  className={clsx(
-                    'text-sm',
-                    feature.included
-                      ? 'text-gray-800 dark:text-white'
-                      : 'text-gray-400 dark:text-gray-500 line-through'
-                  )}
-                >
-                  {feature.text}
-                </span>
-              </li>
-            ))}
+                  >
+                    <Check
+                      className={clsx(
+                        'h-3 w-3',
+                        feature.included ? 'text-white' : 'text-gray-400 dark:text-gray-500'
+                      )}
+                    />
+                  </div>
+                  <span
+                    className={clsx(
+                      'text-sm',
+                      feature.included
+                        ? 'text-gray-800 dark:text-white'
+                        : 'text-gray-400 dark:text-gray-500 line-through'
+                    )}
+                  >
+                    {feature.text}
+                  </span>
+                </li>
+              ))
+            ) : (
+              <li>No features available</li>
+            )}
           </ul>
 
           <button
