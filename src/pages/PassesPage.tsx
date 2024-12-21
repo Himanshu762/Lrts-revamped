@@ -70,7 +70,7 @@ const PassesPage: React.FC = () => {
                     title={pass.pass_type}
                     price={pass.price}
                     duration={pass.duration}
-                    features={pass.features || []} // Ensure features is always an array
+                    features={pass.features}
                   />
                 ))
               ) : (
