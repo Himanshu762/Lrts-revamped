@@ -63,7 +63,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = 
 
           {/* Features rendering */}
           <ul className="space-y-3">
-            {features.length > 0 ? (
+            {features && features.length > 0 ? (
               features.map((feature, index) => (
                 <li key={index} className="flex items-center space-x-3">
                   <div

@@ -26,12 +26,16 @@ const PassesPage: React.FC = () => {
 
         // Handle case where no data is returned
         if (!data || data.length === 0) {
-          console.warn("No passes found.");
           setAvailablePasses([]); // Set to empty array if no data
           return;
         }
 
-        setAvailablePasses(data);
+        // Remove duplicates based on pass_id
+        const uniquePasses = data.filter((value, index, self) => {
+          return index === self.findIndex((t) => t.id === value.id);
+        });
+
+        setAvailablePasses(uniquePasses);
       } catch (err) {
         console.error("Unexpected error:", err);
         setAvailablePasses([]); // Clear passes on error
