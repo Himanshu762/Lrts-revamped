@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useClerk } from "@clerk/clerk-react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
+import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
@@ -39,7 +40,7 @@ const PassesPage: React.FC = () => {
   const { user } = useClerk();
   const [userPasses, setUserPasses] = useState<Pass[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const fetchUserPasses = async () => {
       if (!user?.primaryEmailAddress?.emailAddress) {
@@ -79,10 +80,21 @@ const PassesPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4">
         {userPasses.length > 0 ? (
           <>
-            <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-              Your Purchased Passes
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Your Purchased Passes
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(true)} // Toggle modal visibility
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Buy Another Pass
+              </button>
+            </div>
             <UserPasses passes={userPasses} />
+            {isModalOpen && (
+              <BuyAnotherPassModal onClose={() => setIsModalOpen(false)} />
+            )}
           </>
         ) : (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900">
