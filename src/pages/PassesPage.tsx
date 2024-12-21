@@ -49,11 +49,6 @@ const PassesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        {hasUserPasses === null && (
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
-            Loading...
-          </h2>
-        )}
 
         {hasUserPasses ? (
           <>
