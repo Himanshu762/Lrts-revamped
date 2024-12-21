@@ -12,6 +12,8 @@ const Navbar = () => {
   const { isSignedIn } = useUser();
   const { signOut } = useClerk();
 
+  const [authDropdownOpen, setAuthDropdownOpen] = React.useState(false);
+
   const isActive = (path: string) => location.pathname === path;
 
   const handleSignOut = () => {
@@ -71,14 +73,38 @@ const Navbar = () => {
                 </li>
               </>
             ) : (
-              <>
-                <li>
-                  <NavLink to="/signin" isActive={isActive('/signin')}>Sign In</NavLink>
-                </li>
-                <li>
-                  <NavLink to="/signup" isActive={isActive('/signup')}>Sign Up</NavLink>
-                </li>
-              </>
+              <li className="relative">
+                <button
+                  onClick={() => setAuthDropdownOpen(!authDropdownOpen)}
+                  className="px-3 py-2 rounded-md text-sm font-medium bg-primary-500 text-white hover:bg-primary-600"
+                >
+                  Login / Sign Up
+                </button>
+                {authDropdownOpen && (
+                  <div className="absolute right-0 mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden z-50">
+                    <ul className="py-2">
+                      <li>
+                        <Link
+                          to="/signin"
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => setAuthDropdownOpen(false)}
+                        >
+                          Sign In
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/signup"
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => setAuthDropdownOpen(false)}
+                        >
+                          Sign Up
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </li>
             )}
             <li>
               <button
