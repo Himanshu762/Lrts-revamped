@@ -283,7 +283,7 @@ const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }
         value={upiId}
         onChange={(e) => setUpiId(e.target.value)}
         placeholder="example@bank"
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       />
       <button
         onClick={handleVerify}
@@ -345,7 +345,7 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
               value={cardNumber}
               onChange={handleCardNumberChange}
               placeholder="Card Number"
-              className="w-full pl-14 pr-4 border border-gray-300 rounded-md p-3"
+              className="w-full pl-14 pr-4 border border-gray-300 rounded-md p-3 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
               maxLength={16}
             />
             <img
@@ -360,14 +360,14 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
           value={cardholderName}
           onChange={(e) => setCardholderName(e.target.value)}
           placeholder="Cardholder Name"
-          className="w-full border border-gray-300 rounded-md p-3 mb-2"
+          className="w-full border border-gray-300 rounded-md p-3 mb-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
         />
         <input
           type="text"
           value={expiryDate}
           onChange={(e) => setExpiryDate(e.target.value)}
           placeholder="MM/YY"
-          className="w-full border border-gray-300 rounded-md p-3 mb-2"
+          className="w-full border border-gray-300 rounded-md p-3 mb-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
         />
         <div className="relative mb-4">
         {/* CVV Input */}
@@ -377,7 +377,7 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
             value={cvv}
             onChange={(e) => setCvv(e.target.value)}
             placeholder="CVV"
-            className="w-full pl-4 pr-14 border border-gray-300 rounded-md p-3"
+            className="w-full pl-4 pr-14 border border-gray-300 rounded-md p-3 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
             maxLength={4}
           />
           <img
