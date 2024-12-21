@@ -21,54 +21,10 @@ interface Pass {
 }
 
 interface UserPassesProps {
-  onPassCheck?: (hasPasses: boolean) => void; // Notify parent if passes exist
+  passes: Pass[];
 }
 
-const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
-  const [passes, setPasses] = useState<Pass[]>([]);
-  const { user } = useClerk();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPasses = async () => {
-      if (!user?.emailAddress) {
-        console.error("User email not found");
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from("passes")
-          .select("*")
-          .eq("email", user.emailAddress); // Fetch by user email
-
-        if (error) {
-          console.error("Error fetching user passes:", error);
-          return;
-        }
-
-        setPasses(data || []);
-        if (onPassCheck) {
-          onPassCheck((data || []).length > 0);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPasses();
-  }, [user, onPassCheck]);
-
-  if (loading) {
-    return <p>Loading your passes...</p>;
-  }
-
-  if (!passes.length) {
-    return null; // No passes found for this user
-  }
-
+const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
   return (
     <div className="grid grid-cols-1 gap-6">
       {passes.map((pass) => (
