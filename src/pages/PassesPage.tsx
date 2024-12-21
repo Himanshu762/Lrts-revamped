@@ -4,6 +4,7 @@ import { useClerk } from "@clerk/clerk-react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
 import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
+import ZoneSelectionModal from "../components/modals/ZoneSelectionModal";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
@@ -40,7 +41,9 @@ const PassesPage: React.FC = () => {
   const { user } = useClerk();
   const [userPasses, setUserPasses] = useState<Pass[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
+  const [selectedPass, setSelectedPass] = useState<{ title: string; price: string } | null>(null);
+
   useEffect(() => {
     const fetchUserPasses = async () => {
       if (!user?.primaryEmailAddress?.emailAddress) {
@@ -85,23 +88,19 @@ const PassesPage: React.FC = () => {
                 Your Purchased Passes
               </h2>
               <button
-                onClick={() => setIsModalOpen(true)} // Toggle modal visibility
+                onClick={() => setIsZoneModalOpen(true)} // Toggle modal visibility
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Buy Another Pass
               </button>
             </div>
             <UserPasses passes={userPasses} />
-            {isModalOpen && (
-              <BuyAnotherPassModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                availablePasses={passes} // Provide the list of passes
-                onPassSelect={() => {
-                  setIsModalOpen(false); // Close the modal after selection
-                }}
-              />
-            )}
+            <BuyAnotherPassModal
+              isOpen={isZoneModalOpen}
+              onClose={() => setIsZoneModalOpen(false)}
+              availablePasses={passes}
+              onPassSelect={() => setIsZoneModalOpen(false)}
+            />
           </>
         ) : (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900">
@@ -115,12 +114,24 @@ const PassesPage: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
               {passes.map((pass, index) => (
-                <PassCard key={index} {...pass} />
+                <PassCard
+                  key={index}
+                  {...pass}
+                  onClick={() => {
+                    setSelectedPass({ title: pass.title, price: pass.price });
+                    setIsZoneModalOpen(true);
+                  }}
+                />
               ))}
             </div>
           </div>
         )}
       </div>
+      <ZoneSelectionModal
+        isOpen={isZoneModalOpen}
+        onClose={() => setIsZoneModalOpen(false)}
+        passDetails={selectedPass || { title: "", price: "" }}
+      />
     </div>
   );
 };
