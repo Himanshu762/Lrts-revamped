@@ -9,7 +9,7 @@ import mastercard from "../misc/icons/mastercard.svg";
 import amex from "../misc/icons/amex.svg";
 import discover from "../misc/icons/discover.svg";
 import generic from "../misc/icons/generic.svg";
-import diners from "../misc/icons/diners-club.svg";
+import diners from "../misc/icons/diners.svg";
 import unionpay from "../misc/icons/unionpay.svg";
 import maestro from "../misc/icons/maestro.svg";
 import jcb from "../misc/icons/jcb.svg";
