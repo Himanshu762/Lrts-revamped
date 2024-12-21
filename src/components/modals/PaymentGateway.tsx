@@ -59,8 +59,6 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   const handlePayment = async () => {
     if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
-    const validPassTypes = ["basic", "standard"];
-    if (!validPassTypes.includes(passDetails.title)) {alert(`Invalid pass type: ${passDetails.title}. Only 'basic' or 'standard' are allowed.`);return;}
   
     setIsPaymentProcessing(true);
     try {
@@ -144,6 +142,7 @@ const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = (
       <p className="text-sm text-gray-500 dark:text-gray-200">JoyeshPay Trusted Business</p>
     </div>
     <div>
+    <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.title}</p>
       <h3 className="text-md font-semibold text-gray-800 dark:text-white">Price Summary</h3>
       <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.price}</p>
     </div>
