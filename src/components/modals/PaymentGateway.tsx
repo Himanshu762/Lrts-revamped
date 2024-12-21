@@ -4,6 +4,17 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
+import visa from "../misc/icons/visa.svg";
+import mastercard from "../misc/icons/mastercard.svg";
+import amex from "../misc/icons/amex.svg";
+import discover from "../misc/icons/discover.svg";
+import generic from "../misc/icons/generic.svg";
+import diners from "../misc/icons/diners-club.svg";
+import unionpay from "../misc/icons/unionpay.svg";
+import maestro from "../misc/icons/maestro.svg";
+import jcb from "../misc/icons/jcb.svg";
+import cvvicon from "../misc/icons/cvv.svg";
+import qrcode from "../misc/QR.png";
 
 // Initialize Supabase
 const supabase = createClient(
@@ -13,18 +24,19 @@ const supabase = createClient(
 
 // Card Type Icons
 const cardIcons: { [key: string]: string } = {
-  Visa: "src/components/misc/icons/visa.svg",
-  MasterCard: "src/components/misc/icons/mastercard.svg",
-  "American Express": "src/components/misc/icons/amex.svg",
-  Discover: "src/components/misc/icons/discover.svg",
-  JCB: "src/components/misc/icons/jcb.svg",
-  "Diners Club": "src/components/misc/icons/diners-club.svg",
-  UnionPay: "src/components/misc/icons/unionpay.svg",
-  Maestro: "src/components/misc/icons/maestro.svg",
-  Unknown: "src/components/misc/icons/generic.svg",
+  Visa: visa,
+  MasterCard: mastercard,
+  "American Express": amex,
+  Discover: discover,
+  JCB: jcb,
+  "Diners Club": diners,
+  UnionPay: unionpay,
+  Maestro: maestro,
+  Unknown: generic,
 };
 
-const cvvIcon = "src/components/misc/icons/cvv.png";
+const cvvIcon = cvvicon;
+const QRCode = qrcode;
 
 // Identify Card Type Helper
 const identifyCardType = (cardNumber: string): string => {
@@ -219,7 +231,6 @@ const MenuOption: React.FC<{
 // UPI Screen Component with QR Code
 const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
   const [upiId, setUpiId] = useState("");
-  const [qrCodePath, setQrCodePath] = useState("src/components/misc/QR.png"); // Example QR code file path
 
   const handleVerify = () => {
     if (!upiId) {
@@ -256,7 +267,7 @@ const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }
       </button>
 
       <h3 className="text-lg font-bold text-gray-800 dark:text-white mt-4">Or Scan QR Code</h3>
-      <img src={qrCodePath} alt="QR Code for Payment" className="w-40 h-40 mx-auto my-4" />
+      <img src={QRCode} alt="QR Code for Payment" className="w-40 h-40 mx-auto my-4" />
     </div>
   );
 };
