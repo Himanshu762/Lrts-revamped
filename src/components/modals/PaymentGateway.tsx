@@ -142,7 +142,7 @@ const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = (
       <p className="text-sm text-gray-500 dark:text-gray-200">JoyeshPay Trusted Business</p>
     </div>
     <div>
-    <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.title}</p>
+      <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">{passDetails.title}</p>
       <h3 className="text-md font-semibold text-gray-800 dark:text-white">Price Summary</h3>
       <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.price}</p>
     </div>
