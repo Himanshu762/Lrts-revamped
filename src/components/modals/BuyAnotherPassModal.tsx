@@ -13,14 +13,38 @@ interface BuyAnotherPassModalProps {
   isOpen: boolean;
   onClose: () => void;
   availablePasses: Pass[];
-  onPassSelect: (pass: Pass) => void;
 }
+
+const passes = [
+  {
+    title: 'Basic',
+    price: '999',
+    duration: 'month',
+    features: [
+      { text: 'Unlimited rides in one zone', included: true },
+      { text: 'Peak hour access', included: true },
+      { text: 'Multi-zone access', included: false },
+      { text: 'Priority booking', included: false },
+    ],
+  },
+  {
+    title: 'Standard',
+    price: '1499',
+    duration: 'month',
+    features: [
+      { text: 'Unlimited rides in Multiple Zones', included: true },
+      { text: 'Peak hour access', included: true },
+      { text: 'Multi-zone access', included: true },
+      { text: 'Priority booking', included: true },
+    ],
+    popular: true,
+  },
+]
 
 const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
   isOpen,
   onClose,
   availablePasses,
-  onPassSelect,
 }) => {
   if (!isOpen) return null;
 
@@ -43,13 +67,9 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
               key={pass.id}
               className="flex-shrink-0 w-72 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition"
             >
-              <PassCard
-                title={pass.pass_type}
-                price={pass.price}
-                duration={pass.duration}
-                features={pass.features}
-                onSelect={() => onPassSelect(pass)}
-              />
+              {passes.map((pass, index) => (
+                <PassCard key={index} {...pass} />
+              ))}
             </div>
           ))}
         </div>
