@@ -92,7 +92,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = 
                 </li>
               ))
             ) : (
-              <li>No features available</li>
+              <li className="text-gray-400">No features available</li> // More informative message
             )}
           </ul>
 

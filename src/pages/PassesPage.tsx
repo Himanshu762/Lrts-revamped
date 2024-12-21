@@ -19,7 +19,6 @@ const PassesPage: React.FC = () => {
         const { data, error } = await supabase.from("passes").select("*");
 
         if (error) {
-          console.error("Error fetching available passes:", error);
           setAvailablePasses([]); // Clear the passes if error occurs
           return;
         }
@@ -37,7 +36,6 @@ const PassesPage: React.FC = () => {
 
         setAvailablePasses(uniquePasses);
       } catch (err) {
-        console.error("Unexpected error:", err);
         setAvailablePasses([]); // Clear passes on error
       }
     };
@@ -67,15 +65,18 @@ const PassesPage: React.FC = () => {
             </h2>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
               {availablePasses.length > 0 ? (
-                availablePasses.map((pass) => (
-                  <PassCard
-                    key={pass.id}
-                    title={pass.pass_type}
-                    price={pass.price}
-                    duration={pass.duration}
-                    features={Array.isArray(pass.features) ? pass.features : []} // Ensure features is an array
-                  />
-                ))
+                availablePasses.map((pass) => {
+                  const features = pass.features && Array.isArray(pass.features) ? pass.features : [];
+                  return (
+                    <PassCard
+                      key={pass.id}
+                      title={pass.pass_type}
+                      price={pass.price}
+                      duration={pass.duration}
+                      features={features}
+                    />
+                  );
+                })
               ) : (
                 <p className="text-gray-500">No passes available at the moment.</p>
               )}
