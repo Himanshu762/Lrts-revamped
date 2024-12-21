@@ -26,18 +26,20 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-lg w-full">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-5xl w-full">
         <h3 className="text-lg font-bold mb-4">Buy Another Pass</h3>
-        <div className="grid grid-cols-1 gap-4">
+        {/* Horizontal Layout */}
+        <div className="flex gap-4 overflow-x-auto">
           {availablePasses.map((pass) => (
-            <PassCard
-              key={pass.id}
-              title={pass.pass_type}
-              price={pass.price}
-              duration={pass.duration}
-              features={pass.features}
-              onSelect={() => onPassSelect(pass)} // Trigger when a pass is selected
-            />
+            <div key={pass.id} className="flex-shrink-0 w-80">
+              <PassCard
+                title={pass.pass_type}
+                price={pass.price}
+                duration={pass.duration}
+                features={pass.features}
+                onSelect={() => onPassSelect(pass)} // Trigger when a pass is selected
+              />
+            </div>
           ))}
         </div>
         <button
