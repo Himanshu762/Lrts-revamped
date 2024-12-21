@@ -97,7 +97,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = 
           </ul>
 
           <button
-            onClick={() => setIsZoneModalOpen(true)}
+            onClick={onClick}
             className={clsx(
               'w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200',
               'bg-blue-300 hover:bg-blue-400 text-white dark:bg-blue-500 dark:hover:bg-blue-600'
