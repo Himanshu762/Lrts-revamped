@@ -60,7 +60,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const handlePayment = async () => {
     if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
     const validPassTypes = ["basic", "standard"];
-    if (!validPassTypes.includes(passDetails.title.toLowerCase())) {alert(`Invalid pass type: ${passDetails.title}. Only 'basic' or 'standard' are allowed.`);return;}
+    if (!validPassTypes.includes(passDetails.title)) {alert(`Invalid pass type: ${passDetails.title}. Only 'basic' or 'standard' are allowed.`);return;}
   
     setIsPaymentProcessing(true);
     try {
