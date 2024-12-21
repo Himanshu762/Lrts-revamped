@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
 import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 import visa from "../misc/icons/visa.svg";
@@ -16,31 +15,16 @@ import jcb from "../misc/icons/jcb.svg";
 import cvvicon from "../misc/icons/cvv.svg";
 import qrcode from "../misc/QR.png";
 
-// Initialize Supabase
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
-// Card Type Icons
-const cardIcons: { [key: string]: string } = {
-  Visa: visa,
-  MasterCard: mastercard,
-  "American Express": amex,
-  Discover: discover,
-  JCB: jcb,
-  "Diners Club": diners,
-  UnionPay: unionpay,
-  Maestro: maestro,
-  Unknown: generic,
-};
-
+const cardIcons: { [key: string]: string } = {Visa: visa, MasterCard: mastercard, "American Express": amex, Discover: discover, JCB: jcb, "Diners Club": diners, UnionPay: unionpay, Maestro: maestro, Unknown: generic,};
 const cvvIcon = cvvicon;
 const QRCode = qrcode;
 
-// Identify Card Type Helper
-const identifyCardType = (cardNumber: string): string => {
-  const visaRegex = /^4/;
+const identifyCardType = (cardNumber: string): string => {const visaRegex = /^4/;
   const masterCardRegex = /^5[1-5]/;
   const maestroRegex = /^(?:5018|5020|5038|56|58|63|67)/;
   const amexRegex = /^3[47]/;
@@ -60,8 +44,6 @@ const identifyCardType = (cardNumber: string): string => {
   return "Unknown";
 };
 
-
-// Allowed UPI suffixes
 const validUPISuffixes = ["@okhdfcbank","@okaxis","@okicici","@oksbi","@ptyes","@ptsbi","@pthdfc","@ptaxis",];
 
 interface PaymentGatewayProps {
@@ -71,19 +53,12 @@ interface PaymentGatewayProps {
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose }) => {
   const { user } = useClerk();
-  const navigate = useNavigate();
   const [activePaymentMode, setActivePaymentMode] = useState("UPI");
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
 
-  const handlePayment = async () => {
-    if (!selectedPaymentMode) {
-      alert("Please select a payment mode.");
-      return;
-    }
-
+  const handlePayment = async () => {if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
     setIsPaymentProcessing(true);
-
     try {
       const { error } = await supabase.from("passes").insert([
         {
@@ -98,20 +73,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           payment_mode: selectedPaymentMode,
         },
       ]);
-
-      if (error) {
-        console.error("Failed to save pass details:", error);
-        alert("Payment failed. Please try again.");
-      } else {
-        alert("Payment successful! Your pass has been added.");
-        onClose(); // Close the payment gateway after successful payment
-      }
-    } catch (err) {
-      console.error("Payment error:", err);
-      alert("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsPaymentProcessing(false);
-    }
+      if (error) {console.error("Failed to save pass details:", error);alert("Payment failed. Please try again.");} else {alert("Payment successful! Your pass has been added.");onClose();}} catch (err) {console.error("Payment error:", err);alert("An unexpected error occurred. Please try again.");} finally {setIsPaymentProcessing(false);}
   };
 
   const renderPaymentMode = () => {
