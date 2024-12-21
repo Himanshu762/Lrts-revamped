@@ -9,41 +9,38 @@ const supabase = createClient(
 );
 
 const PassesPage: React.FC = () => {
-  const [availablePasses, setAvailablePasses] = useState<any[]>([]); // Ensure it's an array
-  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null);
+  const [availablePasses, setAvailablePasses] = useState<any[]>([]); // Available passes for purchase
+  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null); // Tracks if the user has passes
 
-  // Fetch available passes on mount
+  // Fetch available passes for purchase
   useEffect(() => {
     const fetchAvailablePasses = async () => {
       try {
         const { data, error } = await supabase.from("passes").select("*");
 
         if (error) {
-          setAvailablePasses([]); // Clear the passes if error occurs
+          console.error("Error fetching available passes:", error);
+          setAvailablePasses([]);
           return;
         }
 
-        // Handle case where no data is returned
-        if (!data || data.length === 0) {
-          setAvailablePasses([]); // Set to empty array if no data
-          return;
-        }
+        // Ensure features are always an array
+        const passesWithFeatures = (data || []).map((pass) => ({
+          ...pass,
+          features: Array.isArray(pass.features) ? pass.features : [],
+        }));
 
-        // Remove duplicates based on pass_id
-        const uniquePasses = data.filter((value, index, self) => {
-          return index === self.findIndex((t) => t.id === value.id);
-        });
-
-        setAvailablePasses(uniquePasses);
+        setAvailablePasses(passesWithFeatures);
       } catch (err) {
-        setAvailablePasses([]); // Clear passes on error
+        console.error("Unexpected error fetching available passes:", err);
+        setAvailablePasses([]);
       }
     };
 
     fetchAvailablePasses();
   }, []);
 
-  // Callback to determine if the user has passes
+  // Callback from UserPasses to determine if user has passes
   const handleUserPassCheck = (hasPasses: boolean) => {
     setHasUserPasses(hasPasses);
   };
@@ -65,18 +62,15 @@ const PassesPage: React.FC = () => {
             </h2>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
               {availablePasses.length > 0 ? (
-                availablePasses.map((pass) => {
-                  const features = pass.features && Array.isArray(pass.features) ? pass.features : [];
-                  return (
-                    <PassCard
-                      key={pass.id}
-                      title={pass.pass_type}
-                      price={pass.price}
-                      duration={pass.duration}
-                      features={features}
-                    />
-                  );
-                })
+                availablePasses.map((pass) => (
+                  <PassCard
+                    key={pass.id}
+                    title={pass.pass_type}
+                    price={pass.price}
+                    duration={pass.duration}
+                    features={pass.features || []}
+                  />
+                ))
               ) : (
                 <p className="text-gray-500">No passes available at the moment.</p>
               )}
