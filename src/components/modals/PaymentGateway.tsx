@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Change to useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { useClerk } from "@clerk/clerk-react"; // For user authentication
+import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase
 const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "", // Adjusted for Vite environment variables
+  import.meta.env.VITE_SUPABASE_URL || "",
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
@@ -16,18 +16,16 @@ interface PaymentGatewayProps {
 }
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose }) => {
-  const navigate = useNavigate(); // Use useNavigate from react-router-dom
-  const { user } = useClerk(); // Fetch Clerk user details
+  const navigate = useNavigate();
+  const { user } = useClerk();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false); // Track payment success
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handlePayment = async () => {
     setIsPaymentProcessing(true);
 
-    // Simulate payment processing delay
-    setTimeout(async () => {
-      // Save pass details to Supabase
-      const passSecret = uuidv4(); // Generate a unique pass identifier
+    try {
+      const passSecret = uuidv4();
       const { error } = await supabase.from("passes").insert([
         {
           user_id: user?.id,
@@ -43,12 +41,18 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
       if (error) {
         console.error("Failed to save pass details:", error);
-      } else {
-        setPaymentSuccess(true); // Mark payment as successful
+        alert("Payment failed. Please try again.");
+        setIsPaymentProcessing(false);
+        return;
       }
 
+      setPaymentSuccess(true);
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("An unexpected error occurred.");
+    } finally {
       setIsPaymentProcessing(false);
-    }, 2000); // Simulate 2-second payment delay
+    }
   };
 
   return (
@@ -87,7 +91,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           </>
         ) : (
           <>
-            <p className="mb-4 text-green-500 font-bold">Payment Successful!</p>
+            <p className="text-green-500 font-bold mb-4">Payment Successful!</p>
             <button
               onClick={() => navigate("/passes")}
               className="w-full py-2 px-4 bg-green-500 text-white rounded mb-2"
