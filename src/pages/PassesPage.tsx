@@ -11,7 +11,7 @@ const supabase = createClient(
 
 const PassesPage: React.FC = () => {
   const { user } = useClerk();
-  const [userHasPasses, setUserHasPasses] = useState(false);
+  const [userPasses, setUserPasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Default available passes
@@ -48,7 +48,7 @@ const PassesPage: React.FC = () => {
     const fetchUserPasses = async () => {
       if (!user || !user.emailAddress) {
         console.warn("User not authenticated or missing email address.");
-        setUserHasPasses(false);
+        setUserPasses([]);
         setLoading(false);
         return;
       }
@@ -61,15 +61,13 @@ const PassesPage: React.FC = () => {
   
         if (error) {
           console.error("Error fetching passes:", error);
-          setUserHasPasses(false);
-        } else if (data && data.length > 0) {
-          setUserHasPasses(true);
-        } else {
-          setUserHasPasses(false);
+          setUserPasses([]);
+        } else if (data) {
+          setUserPasses(data);
         }
       } catch (err) {
         console.error("Unexpected error fetching passes:", err);
-        setUserHasPasses(false);
+        setUserPasses([]);
       } finally {
         setLoading(false);
       }
@@ -85,12 +83,12 @@ const PassesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        {userHasPasses ? (
+        {userPasses.length > 0 ? (
           <>
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
             </h2>
-            <UserPasses />
+            <UserPasses passes={userPasses} />
           </>
         ) : (
           <>
