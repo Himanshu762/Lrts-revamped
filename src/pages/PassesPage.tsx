@@ -12,26 +12,27 @@ const PassesPage: React.FC = () => {
   // Default available passes
   const defaultPasses = [
     {
-      id: 1,
-      pass_type: "Basic Pass",
-      price: "100",
-      duration: "1 Month",
+      title: 'Basic',
+      price: '999',
+      duration: 'month',
       features: [
-        { text: "Access to Zone 1", included: true },
-        { text: "Limited Rides", included: true },
-        { text: "Premium Features", included: false },
+        { text: 'Unlimited rides in one zone', included: true },
+        { text: 'Peak hour access', included: true },
+        { text: 'Multi-zone access', included: false },
+        { text: 'Priority booking', included: false },
       ],
     },
     {
-      id: 2,
-      pass_type: "Standard Pass",
-      price: "300",
-      duration: "3 Months",
+      title: 'Standard',
+      price: '1499',
+      duration: 'month',
       features: [
-        { text: "Access to Zones 1-2", included: true },
-        { text: "Unlimited Rides", included: true },
-        { text: "Premium Features", included: true },
+        { text: 'Unlimited rides in Multiple Zones', included: true },
+        { text: 'Peak hour access', included: true },
+        { text: 'Multi-zone access', included: true },
+        { text: 'Priority booking', included: true },
       ],
+      popular: true,
     },
   ];
 
