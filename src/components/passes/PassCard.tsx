@@ -8,10 +8,11 @@ interface PassCardProps {
   title: string;
   price: string;
   duration: string;
+  features: { text: string; included: boolean }[]; // Ensuring correct types for features
   popular?: boolean;
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, popular }) => {
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
@@ -57,53 +58,58 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, popular }) 
 
           {/* Hardcoded Features */}
           <ul className="space-y-3">
-            <li className="flex items-center space-x-3">
-              <div
-                className={clsx(
-                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
-                  "bg-blue-300 dark:bg-blue-500"
-                )}
-              >
-                <Check className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm text-gray-800 dark:text-white">Unlimited rides in Multiple Zones</span>
-            </li>
-
-            <li className="flex items-center space-x-3">
-              <div
-                className={clsx(
-                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
-                  "bg-blue-300 dark:bg-blue-500"
-                )}
-              >
-                <Check className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm text-gray-800 dark:text-white">Peak hour access</span>
-            </li>
-
-            <li className="flex items-center space-x-3">
-              <div
-                className={clsx(
-                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
-                  "bg-blue-300 dark:bg-blue-500"
-                )}
-              >
-                <Check className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm text-gray-800 dark:text-white">Multi-zone access</span>
-            </li>
-
-            <li className="flex items-center space-x-3">
-              <div
-                className={clsx(
-                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
-                  "bg-blue-300 dark:bg-blue-500"
-                )}
-              >
-                <Check className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm text-gray-800 dark:text-white">Priority booking</span>
-            </li>
+            {features[0].included && (
+              <li className="flex items-center space-x-3">
+                <div
+                  className={clsx(
+                    "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                    features[0].included ? "bg-blue-300 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
+                  )}
+                >
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm text-gray-800 dark:text-white">Unlimited rides in Multiple Zones</span>
+              </li>
+            )}
+            {features[1].included && (
+              <li className="flex items-center space-x-3">
+                <div
+                  className={clsx(
+                    "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                    features[1].included ? "bg-blue-300 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
+                  )}
+                >
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm text-gray-800 dark:text-white">Peak hour access</span>
+              </li>
+            )}
+            {features[2].included && (
+              <li className="flex items-center space-x-3">
+                <div
+                  className={clsx(
+                    "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                    features[2].included ? "bg-blue-300 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
+                  )}
+                >
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm text-gray-800 dark:text-white">Multi-zone access</span>
+              </li>
+            )}
+            {features[3].included && (
+              <li className="flex items-center space-x-3">
+                <div
+                  className={clsx(
+                    "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                    features[3].included ? "bg-blue-300 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
+                  )}
+                >
+                  <Check className="h-3 w-3 text-white" />
+                </div>
+                <span className="text-sm text-gray-800 dark:text-white">Priority booking</span>
+              </li>
+            )}
           </ul>
 
           <button
