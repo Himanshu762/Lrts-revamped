@@ -11,6 +11,20 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
+// Identify Card Type Helper
+const identifyCardType = (cardNumber: string) => {
+  const visaRegex = /^4/;
+  const masterCardRegex = /^5[1-5]/;
+  const amexRegex = /^3[47]/;
+  const discoverRegex = /^6(?:011|5)/;
+
+  if (visaRegex.test(cardNumber)) return "Visa";
+  if (masterCardRegex.test(cardNumber)) return "MasterCard";
+  if (amexRegex.test(cardNumber)) return "American Express";
+  if (discoverRegex.test(cardNumber)) return "Discover";
+  return "Unknown";
+};
+
 interface PaymentGatewayProps {
   passDetails: { title: string; price: string; homeZone: string; destinationZone: string };
   onClose: () => void;
@@ -53,7 +67,6 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         return;
       }
 
-      // Navigate to passes page after successful payment
       navigate("/passes", { state: { success: true } });
     } catch (err) {
       console.error("Payment error:", err);
@@ -82,49 +95,60 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-2/3 shadow-lg relative">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-4/5 max-w-4xl relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white"
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"
         >
           &times;
         </button>
-        <h3 className="text-lg font-bold mb-4">Payment Gateway</h3>
-        <div className="flex">
-          <div className="w-1/3">
-            {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
-              <div
-                key={mode}
-                onClick={() => setActivePaymentMode(mode)}
-                className={clsx(
-                  "py-2 px-4 cursor-pointer rounded-md mb-2",
-                  activePaymentMode === mode
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
-                )}
-              >
-                {mode}
-              </div>
-            ))}
+        <div className="p-6 flex">
+          {/* Sidebar */}
+          <div className="w-1/4 border-r dark:border-gray-700">
+            <div className="flex flex-col">
+              {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
+                <div
+                  key={mode}
+                  onClick={() => setActivePaymentMode(mode)}
+                  className={clsx(
+                    "flex items-center gap-4 p-4 mb-2 rounded-lg cursor-pointer transition",
+                    activePaymentMode === mode
+                      ? "bg-blue-500 text-white shadow-lg"
+                      : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-300"
+                  )}
+                >
+                  <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 dark:border-gray-600">
+                    {mode[0]} {/* Add icons or initials */}
+                  </span>
+                  <span className="font-medium">{mode}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="w-2/3">{renderPaymentMode()}</div>
+
+          {/* Main Content */}
+          <div className="w-3/4 p-6">{renderPaymentMode()}</div>
         </div>
-        <button
-          onClick={handlePayment}
-          disabled={isPaymentProcessing}
-          className={clsx(
-            "w-full py-2 px-4 rounded mt-4",
-            isPaymentProcessing ? "bg-gray-400" : "bg-green-500 text-white"
-          )}
-        >
-          {isPaymentProcessing ? "Processing Payment..." : "Confirm Payment"}
-        </button>
+        <div className="p-6">
+          <button
+            onClick={handlePayment}
+            disabled={isPaymentProcessing}
+            className={clsx(
+              "w-full py-3 rounded-lg text-lg font-bold",
+              isPaymentProcessing
+                ? "bg-gray-400 text-gray-800"
+                : "bg-green-600 text-white hover:bg-green-700"
+            )}
+          >
+            {isPaymentProcessing ? "Processing Payment..." : "Confirm Payment"}
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-// Individual Payment Modes
+// Screens for Each Payment Mode
 
 const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
   const [upiId, setUpiId] = useState("");
@@ -140,93 +164,191 @@ const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }
 
   return (
     <div>
-      <h4 className="font-semibold mb-2">Enter your UPI ID</h4>
+      <h3 className="text-lg font-bold mb-2">Enter your UPI ID</h3>
       <input
         type="text"
         value={upiId}
         onChange={(e) => setUpiId(e.target.value)}
         placeholder="example@bank"
-        className="w-full border p-2 rounded mb-2"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4"
       />
-      <button onClick={handleVerify} className="w-full bg-black text-white py-2 rounded">
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
         Verify and Select
       </button>
     </div>
   );
 };
 
-const CardsScreen: React.FC<{ onSelect: (details: string) => void }> = ({ onSelect }) => {
+const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ onSelect }) => {
   const [cardNumber, setCardNumber] = useState("");
+  const [cardholderName, setCardholderName] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardType, setCardType] = useState<string>("");
 
-  const handleSelect = () => {
-    if (cardNumber) {
-      onSelect(cardNumber);
-      alert("Card Selected Successfully");
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCardNumber(value);
+    setCardType(identifyCardType(value)); // Update card type as user types the card number
+  };
+
+  const handleVerify = () => {
+    if (cardNumber && cardholderName && expiryDate && cvv) {
+      onSelect(`Card: ${cardNumber}`);
+      alert("Card Verified Successfully");
     } else {
-      alert("Please enter valid card details.");
+      alert("Please enter all required card details.");
     }
   };
 
   return (
     <div>
-      <h4 className="font-semibold mb-2">Enter your Card Number</h4>
+      <h3 className="text-lg font-bold mb-2">Enter your Card Details</h3>
       <input
         type="text"
         value={cardNumber}
-        onChange={(e) => setCardNumber(e.target.value)}
-        placeholder="1234 5678 9012 3456"
-        className="w-full border p-2 rounded mb-2"
+        onChange={handleCardNumberChange}
+        placeholder="Card Number"
+        maxLength={19}
+        className="w-full border border-gray-300 rounded-md p-3 mb-2"
       />
-      <button onClick={handleSelect} className="w-full bg-black text-white py-2 rounded">
-        Select Card
+      {cardNumber && <div><strong>Card Type:</strong> {cardType}</div>}
+      <input
+        type="text"
+        value={cardholderName}
+        onChange={(e) => setCardholderName(e.target.value)}
+        placeholder="Cardholder Name"
+        className="w-full border border-gray-300 rounded-md p-3 mb-2"
+      />
+      <input
+        type="text"
+        value={expiryDate}
+        onChange={(e) => setExpiryDate(e.target.value)}
+        placeholder="MM/YY"
+        className="w-full border border-gray-300 rounded-md p-3 mb-2"
+      />
+      <input
+        type="text"
+        value={cvv}
+        onChange={(e) => setCvv(e.target.value)}
+        placeholder="CVV"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+      />
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
+        Verify and Select
       </button>
     </div>
   );
 };
 
-const WalletsScreen: React.FC<{ onSelect: (wallet: string) => void }> = ({ onSelect }) => (
-  <div>
-    <h4 className="font-semibold mb-2">Select a Wallet</h4>
-    {["Paytm", "Google Pay", "PhonePe"].map((wallet) => (
-      <div
-        key={wallet}
-        onClick={() => onSelect(wallet)}
-        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
-      >
-        {wallet}
-      </div>
-    ))}
-  </div>
-);
+const WalletsScreen: React.FC<{ onSelect: (wallet: string) => void }> = ({ onSelect }) => {
+  const [wallet, setWallet] = useState("");
 
-const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSelect }) => (
-  <div>
-    <h4 className="font-semibold mb-2">Select Your Bank</h4>
-    {["HDFC", "ICICI", "SBI"].map((bank) => (
-      <div
-        key={bank}
-        onClick={() => onSelect(bank)}
-        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
-      >
-        {bank}
-      </div>
-    ))}
-  </div>
-);
+  const handleVerify = () => {
+    if (wallet) {
+      onSelect(wallet);
+      alert("Wallet Selected Successfully");
+    } else {
+      alert("Please select a wallet.");
+    }
+  };
 
-const EMIScreen: React.FC<{ onSelect: (emi: string) => void }> = ({ onSelect }) => (
-  <div>
-    <h4 className="font-semibold mb-2">Select EMI Option</h4>
-    {["6 Months", "9 Months", "12 Months"].map((emi) => (
-      <div
-        key={emi}
-        onClick={() => onSelect(emi)}
-        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
+  return (
+    <div>
+      <h3 className="text-lg font-bold mb-2">Select your Wallet</h3>
+      <select
+        value={wallet}
+        onChange={(e) => setWallet(e.target.value)}
+        className="w-full border border-gray-300 rounded-md p-3 mb-4"
       >
-        {emi}
-      </div>
-    ))}
-  </div>
-);
+        <option value="">-- Select Wallet --</option>
+        <option value="Paytm">Paytm</option>
+        <option value="Google Pay">Google Pay</option>
+        <option value="PhonePe">PhonePe</option>
+      </select>
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
+        Select Wallet
+      </button>
+    </div>
+  );
+};
+
+const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSelect }) => {
+  const [bank, setBank] = useState("");
+
+  const handleVerify = () => {
+    if (bank) {
+      onSelect(bank);
+      alert("Net Banking Selected Successfully");
+    } else {
+      alert("Please select a bank.");
+    }
+  };
+
+  return (
+    <div>
+      <h3 className="text-lg font-bold mb-2">Select your Bank</h3>
+      <select
+        value={bank}
+        onChange={(e) => setBank(e.target.value)}
+        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+      >
+        <option value="">-- Select Bank --</option>
+        <option value="HDFC">HDFC</option>
+        <option value="SBI">SBI</option>
+      </select>
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
+        Select Bank
+      </button>
+    </div>
+  );
+};
+
+const EMIScreen: React.FC<{ onSelect: (emi: string) => void }> = ({ onSelect }) => {
+  const [emi, setEmi] = useState("");
+
+  const handleVerify = () => {
+    if (emi) {
+      onSelect(emi);
+      alert("EMI Selected Successfully");
+    } else {
+      alert("Please select an EMI option.");
+    }
+  };
+
+  return (
+    <div>
+      <h3 className="text-lg font-bold mb-2">Select EMI Option</h3>
+      <select
+        value={emi}
+        onChange={(e) => setEmi(e.target.value)}
+        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+      >
+        <option value="">-- Select EMI --</option>
+        <option value="3 months">3 months</option>
+        <option value="6 months">6 months</option>
+        <option value="12 months">12 months</option>
+      </select>
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
+        Select EMI
+      </button>
+    </div>
+  );
+};
 
 export default PaymentGateway;
