@@ -23,20 +23,23 @@ const PassesPage: React.FC = () => {
   const [availablePasses, setAvailablePasses] = useState<Pass[]>([]);
   const [userPasses, setUserPasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch all passes
   useEffect(() => {
     const fetchAvailablePasses = async () => {
       try {
-        const { data, error } = await supabase.from("passes").select("*");
+        const { data, error } = await supabase.from("passes").select("*").is("user_id", null); // Fetch passes not tied to a user
 
         if (error) {
           console.error("Error fetching available passes:", error);
+          setError("Unable to fetch available passes. Please try again later.");
           return;
         }
         setAvailablePasses(data || []);
-      } catch (error) {
-        console.error("Unexpected error:", error);
+      } catch (err) {
+        console.error("Unexpected error fetching available passes:", err);
+        setError("An unexpected error occurred.");
       }
     };
 
@@ -56,11 +59,13 @@ const PassesPage: React.FC = () => {
 
         if (error) {
           console.error("Error fetching user passes:", error);
+          setError("Unable to fetch your passes. Please try again later.");
           return;
         }
         setUserPasses(data || []);
-      } catch (error) {
-        console.error("Unexpected error:", error);
+      } catch (err) {
+        console.error("Unexpected error fetching user passes:", err);
+        setError("An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
@@ -72,7 +77,7 @@ const PassesPage: React.FC = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
             Please log in to view and buy passes
           </h2>
@@ -89,6 +94,14 @@ const PassesPage: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
@@ -97,9 +110,9 @@ const PassesPage: React.FC = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
             </h2>
-            <UserPasses />
+            <UserPasses passes={userPasses} />
             <button
-              onClick={() => setAvailablePasses([])} // Trigger modal logic here
+              onClick={() => setAvailablePasses([])} // Replace with modal or navigation logic
               className="mt-4 py-2 px-4 bg-blue-500 text-white rounded"
             >
               Buy Another Pass
@@ -124,7 +137,9 @@ const PassesPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p>No passes available at the moment.</p>
+              <p className="text-center text-gray-500">
+                No passes available at the moment.
+              </p>
             )}
           </>
         )}
