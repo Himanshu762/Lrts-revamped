@@ -296,16 +296,16 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
       Maestro: [12, 13, 14, 15, 16, 17, 18, 19],
       Unknown: [16],
     };
-
-    const handleCardSelect = () => {
-      if (!isValidCardNumber(cardNumber, cardType)) {
-        alert(`Please enter a valid ${cardType} card number.`);
-        return;
-      }
-      onSelect(`${cardType} Card ending in ${cardNumber.slice(-4)}`);
-    }; 
     return cardLengths[cardType]?.includes(cardNumber.length) || false;
   };
+
+  const handleCardSelect = () => {
+    if (!isValidCardNumber(cardNumber, cardType)) {
+      alert(`Please enter a valid ${cardType} card number.`);
+      return;
+    }
+    onSelect(`${cardType} Card ending in ${cardNumber.slice(-4)}`);
+  }; 
   
   return (
     <div>
