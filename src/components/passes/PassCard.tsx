@@ -12,7 +12,7 @@ interface PassCardProps {
   popular?: boolean;
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, popular }) => {
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = [], popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
@@ -56,9 +56,9 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
             <div className="text-gray-500 font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</div>
           </div>
 
-          {/* Hardcoded Features */}
+          {/* Hardcoded Features with Safety Checks */}
           <ul className="space-y-3">
-            {features[0].included && (
+            {features[0] && features[0].included && (
               <li className="flex items-center space-x-3">
                 <div
                   className={clsx(
@@ -71,7 +71,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
                 <span className="text-sm text-gray-800 dark:text-white">Unlimited rides in Multiple Zones</span>
               </li>
             )}
-            {features[1].included && (
+            {features[1] && features[1].included && (
               <li className="flex items-center space-x-3">
                 <div
                   className={clsx(
@@ -84,7 +84,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
                 <span className="text-sm text-gray-800 dark:text-white">Peak hour access</span>
               </li>
             )}
-            {features[2].included && (
+            {features[2] && features[2].included && (
               <li className="flex items-center space-x-3">
                 <div
                   className={clsx(
@@ -97,7 +97,7 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
                 <span className="text-sm text-gray-800 dark:text-white">Multi-zone access</span>
               </li>
             )}
-            {features[3].included && (
+            {features[3] && features[3].included && (
               <li className="flex items-center space-x-3">
                 <div
                   className={clsx(
