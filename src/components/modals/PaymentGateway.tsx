@@ -218,14 +218,15 @@ const MenuOption: React.FC<{
   <div
     onClick={onClick}
     className={clsx(
-      "py-2 px-4 cursor-pointer rounded-md",
+      "py-2 px-4 cursor-pointer rounded-md transition",
       active
         ? "bg-blue-700 text-white"
-        : "hover:bg-blue-100 text-white dark:hover:bg-blue-500"
+        : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
     )}
   >
     {label}
   </div>
+
 );
 
 // UPI Screen Component with QR Code
@@ -285,13 +286,28 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
     setCardType(identifyCardType(input));
   };
 
+  const isValidCardNumber = (cardNumber: string, cardType: string): boolean => {
+    const cardLengths: { [key: string]: number[] } = {
+      Visa: [13, 16],
+      MasterCard: [16],
+      "American Express": [15],
+      Discover: [16],
+      "Diners Club": [14],
+      JCB: [15, 16],
+      Maestro: [12, 13, 14, 15, 16, 17, 18, 19],
+      Unknown: [16],
+    };
+  
+    return cardLengths[cardType]?.includes(cardNumber.length) || false;
+  };
+
   const handleCardSelect = () => {
-    if (!cardNumber || cardNumber.length < 16) {
-      alert("Please enter a valid card number.");
+    if (!isValidCardNumber(cardNumber, cardType)) {
+      alert(`Please enter a valid ${cardType} card number.`);
       return;
     }
     onSelect(`${cardType} Card ending in ${cardNumber.slice(-4)}`);
-  };
+  }; 
 
   return (
     <div>
@@ -376,7 +392,7 @@ const WalletsScreen: React.FC<{ onSelect: (wallet: string) => void }> = ({ onSel
       <select
         value={wallet}
         onChange={(e) => setWallet(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
         <option value="">-- Select Wallet --</option>
         <option value="Paytm">Paytm</option>
@@ -411,7 +427,7 @@ const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSe
       <select
         value={bank}
         onChange={(e) => setBank(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
         <option value="">-- Select Bank --</option>
         <option value="HDFC">HDFC</option>
@@ -452,7 +468,7 @@ const EMIScreen: React.FC<{ onSelect: (emi: string) => void }> = ({ onSelect }) 
       <select
         value={emi}
         onChange={(e) => setEmi(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
         <option value="">-- Select EMI --</option>
         <option value="3 months">3 months</option>
