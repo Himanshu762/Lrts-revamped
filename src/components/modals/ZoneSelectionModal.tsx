@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PaymentGateway from "./PaymentGateway";
-import { delhiMetroStations } from "../data/delhiMetroStations"; // Adjust the path as needed
+import { delhiMetroStations } from "../../data/stations"; // Adjust the path as needed
 
 interface ZoneSelectionModalProps {
   isOpen: boolean;
