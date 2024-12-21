@@ -99,7 +99,7 @@ function App() {
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <DarkModeProvider>
-        <Router basename="/"> {/* Add the base path if your app is deployed under a subpath */}
+        <Router>
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <Navbar />
             <AnimatePresence mode="wait">

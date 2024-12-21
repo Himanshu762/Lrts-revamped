@@ -17,39 +17,6 @@ interface PassCardProps {
   popular?: boolean;
 }
 
-const passes = [
-  {
-    title: 'Basic',
-    price: '999',
-    duration: 'month',
-    features: [
-      { text: 'Unlimited rides in Multiple Zones', included: true },
-      { text: 'Peak hour access', included: true },
-      { text: 'Multi-zone access', included: false },
-      { text: 'Priority booking', included: false },
-    ],
-  },
-  {
-    title: 'Standard',
-    price: '1499',
-    duration: 'month',
-    features: [
-      { text: 'Unlimited rides in Multiple Zones', included: true },
-      { text: 'Peak hour access', included: true },
-      { text: 'Multi-zone access', included: true },
-      { text: 'Priority booking', included: true },
-    ],
-    popular: true,
-  },
-];
-
-// Ensure that passes are only being rendered once
-<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
-  {passes.map((pass, index) => (
-    <PassCard key={index} {...pass} />
-  ))}
-</div>
-
 const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
