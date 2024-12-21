@@ -11,19 +11,53 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
+// Card Type Icons
+const cardIcons: { [key: string]: string } = {
+  Visa: "src/components/misc/icons/visa.svg",
+  MasterCard: "src/components/misc/icons/mastercard.svg",
+  "American Express": "src/components/misc/icons/amex.svg",
+  Discover: "src/components/misc/icons/discover.svg",
+  JCB: "src/components/misc/icons/jcb.svg",
+  "Diners Club": "src/components/misc/icons/diners-club.svg",
+  UnionPay: "src/components/misc/icons/unionpay.svg",
+  Maestro: "src/components/misc/icons/maestro.svg",
+  Unknown: "src/components/misc/icons/generic.svg",
+};
+
 // Identify Card Type Helper
-const identifyCardType = (cardNumber: string) => {
+const identifyCardType = (cardNumber: string): string => {
   const visaRegex = /^4/;
   const masterCardRegex = /^5[1-5]/;
+  const maestroRegex = /^(?:5018|5020|5038|56|58|63|67)/;
   const amexRegex = /^3[47]/;
-  const discoverRegex = /^6(?:011|5)/;
+  const discoverRegex = /^6(?:011|4[4-9]|5)/;
+  const dinersClubRegex = /^3(?:0[0-5]|[689])/;
+  const jcbRegex = /^(?:2131|1800|35\d{2})/;
+  const unionPayRegex = /^62/;
 
   if (visaRegex.test(cardNumber)) return "Visa";
   if (masterCardRegex.test(cardNumber)) return "MasterCard";
+  if (maestroRegex.test(cardNumber)) return "Maestro";
   if (amexRegex.test(cardNumber)) return "American Express";
   if (discoverRegex.test(cardNumber)) return "Discover";
+  if (dinersClubRegex.test(cardNumber)) return "Diners Club";
+  if (jcbRegex.test(cardNumber)) return "JCB";
+  if (unionPayRegex.test(cardNumber)) return "UnionPay";
   return "Unknown";
 };
+
+
+// Allowed UPI suffixes
+const validUPISuffixes = [
+  "@okhdfcbank",
+  "@okaxis",
+  "@okicici",
+  "@oksbi",
+  "@ptyes",
+  "@ptsbi",
+  "@pthdfc",
+  "@ptaxis",
+];
 
 interface PaymentGatewayProps {
   passDetails: { title: string; price: string; homeZone: string; destinationZone: string };
@@ -42,9 +76,9 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
       alert("Please select a payment mode.");
       return;
     }
-  
+
     setIsPaymentProcessing(true);
-  
+
     try {
       const { error } = await supabase.from("passes").insert([
         {
@@ -59,7 +93,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           payment_mode: selectedPaymentMode,
         },
       ]);
-  
+
       if (error) {
         console.error("Failed to save pass details:", error);
         alert("Payment failed. Please try again.");
@@ -73,7 +107,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
     } finally {
       setIsPaymentProcessing(false);
     }
-  };  
+  };
 
   const renderPaymentMode = () => {
     switch (activePaymentMode) {
@@ -94,7 +128,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-4/5 max-w-4xl relative">
+      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-4/5 max-w-4xl relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"
@@ -108,7 +142,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           {/* Main Content */}
           <div className="w-3/4 p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Payment Options</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Payment Options</h2>
             </div>
 
             <div className="flex space-x-4 mb-4">
@@ -134,7 +168,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
               "w-full py-3 rounded-lg text-lg font-bold",
               isPaymentProcessing
                 ? "bg-gray-400 text-gray-800"
-                : "bg-green-600 text-white hover:bg-green-700"
+                : "bg-blue-600 text-white hover:bg-blue-700"
             )}
           >
             {isPaymentProcessing ? "Processing Payment..." : "Confirm Payment"}
@@ -147,17 +181,17 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
 // Sidebar Component
 const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
-  <div className="w-1/4 bg-green-200 dark:bg-gray-700 p-6 flex flex-col justify-between">
+  <div className="w-1/4 bg-blue-300 dark:bg-blue-600 p-6 flex flex-col justify-between">
     <div className="text-center">
       <img src="/fresh-to-home-logo.png" alt="Logo" className="mx-auto mb-4" />
-      <h2 className="text-lg font-bold">LRTS.com</h2>
-      <p className="text-sm text-gray-500">JoyeshPay Trusted Business</p>
+      <h2 className="text-lg font-bold text-gray-800 dark:text-white">LRTS.com</h2>
+      <p className="text-sm text-gray-500 dark:text-gray-200">JoyeshPay Trusted Business</p>
     </div>
     <div>
-      <h3 className="text-md font-semibold">Price Summary</h3>
-      <p className="text-2xl font-bold mt-2">₹{passDetails.price}</p>
+      <h3 className="text-md font-semibold text-gray-800 dark:text-white">Price Summary</h3>
+      <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.price}</p>
     </div>
-    <p className="text-xs text-gray-500">Secured by JoyeshPay</p>
+    <p className="text-xs text-gray-500 dark:text-gray-200">Secured by JoyeshPay</p>
   </div>
 );
 
@@ -173,30 +207,38 @@ const MenuOption: React.FC<{
       "py-2 px-4 cursor-pointer rounded-md",
       active
         ? "bg-blue-700 text-white"
-        : "hover:bg-green-100 text-gray-800 dark:hover:bg-gray-600"
+        : "hover:bg-blue-100 text-gray-800 dark:hover:bg-blue-500"
     )}
   >
     {label}
   </div>
 );
 
-// Screens for Each Payment Mode
-
+// UPI Screen Component with QR Code
 const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
   const [upiId, setUpiId] = useState("");
+  const [qrCodePath, setQrCodePath] = useState("src/components/misc/QR.png"); // Example QR code file path
 
   const handleVerify = () => {
-    if (upiId) {
-      onSelect(upiId);
-      alert("UPI Verified Successfully");
-    } else {
-      alert("Please enter a valid UPI ID.");
+    if (!upiId) {
+      alert("Please enter a UPI ID.");
+      return;
     }
+
+    const isValidUPI = validUPISuffixes.some((suffix) => upiId.endsWith(suffix));
+
+    if (!isValidUPI) {
+      alert("Invalid UPI ID. Please use a valid UPI ID.");
+      return;
+    }
+
+    onSelect(upiId);
+    alert("UPI ID Verified Successfully!");
   };
 
   return (
     <div>
-      <h3 className="text-lg font-bold mb-2">Enter your UPI ID</h3>
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Enter your UPI ID</h3>
       <input
         type="text"
         value={upiId}
@@ -210,6 +252,9 @@ const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }
       >
         Verify and Select
       </button>
+
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white mt-4">Or Scan QR Code</h3>
+      <img src={qrCodePath} alt="QR Code for Payment" className="w-40 h-40 mx-auto my-4" />
     </div>
   );
 };
@@ -222,55 +267,76 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
   const [cardType, setCardType] = useState<string>("");
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCardNumber(value);
-    setCardType(identifyCardType(value)); // Update card type as user types the card number
+    const input = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
+    setCardNumber(input);
+    setCardType(identifyCardType(input));
   };
 
-  const handleVerify = () => {
-    if (cardNumber && cardholderName && expiryDate && cvv) {
-      onSelect(`Card: ${cardNumber}`);
-      alert("Card Verified Successfully");
-    } else {
-      alert("Please enter all required card details.");
+  const handleCardSelect = () => {
+    if (!cardNumber || cardNumber.length < 16) {
+      alert("Please enter a valid card number.");
+      return;
     }
+    onSelect(`${cardType} Card ending in ${cardNumber.slice(-4)}`);
   };
 
   return (
     <div>
-      <h3 className="text-lg font-bold mb-2">Enter your Card Details</h3>
-      <input
-        type="text"
-        value={cardNumber}
-        onChange={handleCardNumberChange}
-        placeholder="Card Number"
-        maxLength={19}
-        className="w-full border border-gray-300 rounded-md p-3 mb-2"
-      />
-      {cardNumber && <div><strong>Card Type:</strong> {cardType}</div>}
-      <input
-        type="text"
-        value={cardholderName}
-        onChange={(e) => setCardholderName(e.target.value)}
-        placeholder="Cardholder Name"
-        className="w-full border border-gray-300 rounded-md p-3 mb-2"
-      />
-      <input
-        type="text"
-        value={expiryDate}
-        onChange={(e) => setExpiryDate(e.target.value)}
-        placeholder="MM/YY"
-        className="w-full border border-gray-300 rounded-md p-3 mb-2"
-      />
-      <input
-        type="text"
-        value={cvv}
-        onChange={(e) => setCvv(e.target.value)}
-        placeholder="CVV"
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
-      />
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Enter your Card Details</h3>
+      <div className="relative mb-4">
+        <div className="relative mb-4">
+          {/* Card Number Input */}
+          <div className="relative">
+            <input
+              type="text"
+              value={cardNumber}
+              onChange={handleCardNumberChange}
+              placeholder="Card Number"
+              className="w-full pl-14 pr-4 border border-gray-300 rounded-md p-3"
+              maxLength={16}
+            />
+            <img
+              src={cardIcons[cardType]}
+              alt={`${cardType} icon`}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-8 h-8"
+            />
+          </div>
+        </div>
+        <input
+          type="text"
+          value={cardholderName}
+          onChange={(e) => setCardholderName(e.target.value)}
+          placeholder="Cardholder Name"
+          className="w-full border border-gray-300 rounded-md p-3 mb-2"
+        />
+        <input
+          type="text"
+          value={expiryDate}
+          onChange={(e) => setExpiryDate(e.target.value)}
+          placeholder="MM/YY"
+          className="w-full border border-gray-300 rounded-md p-3 mb-2"
+        />
+        <div className="relative mb-4">
+        {/* CVV Input */}
+        <div className="relative">
+          <input
+            type="text"
+            value={cvv}
+            onChange={(e) => setCvv(e.target.value)}
+            placeholder="CVV"
+            className="w-full pl-4 pr-14 border border-gray-300 rounded-md p-3"
+            maxLength={4}
+          />
+          <img
+            src={cvvIcon}
+            alt="CVV icon"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 w-8 h-8"
+          />
+        </div>
+      </div>
+      </div>
       <button
-        onClick={handleVerify}
+        onClick={handleCardSelect}
         className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
       >
         Verify and Select
