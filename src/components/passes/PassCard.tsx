@@ -4,20 +4,14 @@ import { Check, CreditCard } from "lucide-react";
 import clsx from "clsx";
 import ZoneSelectionModal from "../modals/ZoneSelectionModal";
 
-interface PassFeature {
-  text: string;
-  included: boolean;
-}
-
 interface PassCardProps {
   title: string;
   price: string;
   duration: string;
-  features: PassFeature[];
   popular?: boolean;
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, popular }) => {
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
@@ -61,36 +55,55 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
             <div className="text-gray-500 font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</div>
           </div>
 
+          {/* Hardcoded Features */}
           <ul className="space-y-3">
-            {features.map((feature, index) => (
-              <li key={index} className="flex items-center space-x-3">
-                <div
-                  className={clsx(
-                    "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
-                    feature.included
-                      ? "bg-blue-300 dark:bg-blue-500"
-                      : "bg-gray-300 dark:bg-gray-700"
-                  )}
-                >
-                  <Check
-                    className={clsx(
-                      "h-3 w-3",
-                      feature.included ? "text-white" : "text-gray-400 dark:text-gray-500"
-                    )}
-                  />
-                </div>
-                <span
-                  className={clsx(
-                    "text-sm",
-                    feature.included
-                      ? "text-gray-800 dark:text-white"
-                      : "text-gray-400 dark:text-gray-500 line-through"
-                  )}
-                >
-                  {feature.text}
-                </span>
-              </li>
-            ))}
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Unlimited rides in Multiple Zones</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Peak hour access</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Multi-zone access</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Priority booking</span>
+            </li>
           </ul>
 
           <button
@@ -113,20 +126,5 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
     </>
   );
 };
-
-<style jsx>{`
-  @keyframes gradient-x {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 100% 50%;
-    }
-  }
-  .animate-gradient-x {
-    background-size: 200% 200%;
-    animation: gradient-x 5s ease infinite;
-  }
-`}</style>;
 
 export default PassCard;
