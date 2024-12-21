@@ -62,15 +62,8 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
         </div>
         {/* Horizontal Layout */}
         <div className="flex gap-6 overflow-x-auto pb-4">
-          {availablePasses.map((pass) => (
-            <div
-              key={pass.id}
-              className="flex-shrink-0 w-72 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition"
-            >
-              {passes.map((pass, index) => (
-                <PassCard key={index} {...pass} />
-              ))}
-            </div>
+          {passes.map((pass, index) => (
+            <PassCard key={index} {...pass} />
           ))}
         </div>
       </div>
