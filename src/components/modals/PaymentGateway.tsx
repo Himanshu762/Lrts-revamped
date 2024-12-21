@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -12,27 +12,26 @@ const supabase = createClient(
 );
 
 interface PaymentGatewayProps {
-  passDetails: {
-    title: string;
-    price: string;
-    homeZone: string;
-    destinationZone: string;
-  };
+  passDetails: { title: string; price: string; homeZone: string; destinationZone: string };
   onClose: () => void;
 }
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose }) => {
-  const navigate = useNavigate();
   const { user } = useClerk();
-  const [activeScreen, setActiveScreen] = useState("UPI");
+  const navigate = useNavigate();
+  const [activePaymentMode, setActivePaymentMode] = useState("UPI");
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
 
-  const handlePayment = async (paymentMode: string) => {
+  const handlePayment = async () => {
+    if (!selectedPaymentMode) {
+      alert("Please select a payment mode.");
+      return;
+    }
+
     setIsPaymentProcessing(true);
 
     try {
-      const passSecret = uuidv4();
-
       const { error } = await supabase.from("passes").insert([
         {
           user_id: user?.id,
@@ -42,8 +41,8 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           price: passDetails.price,
           home_zone: passDetails.homeZone,
           destination_zone: passDetails.destinationZone,
-          pass_secret: passSecret,
-          payment_mode: paymentMode,
+          pass_secret: uuidv4(),
+          payment_mode: selectedPaymentMode,
         },
       ]);
 
@@ -54,6 +53,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         return;
       }
 
+      // Navigate to passes page after successful payment
       navigate("/passes", { state: { success: true } });
     } catch (err) {
       console.error("Payment error:", err);
@@ -63,188 +63,169 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
     }
   };
 
-  const renderScreen = () => {
-    switch (activeScreen) {
+  const renderPaymentMode = () => {
+    switch (activePaymentMode) {
       case "UPI":
-        return <UPIScreen onPay={() => handlePayment("UPI")} />;
+        return <UPIScreen onSelect={(upiId) => setSelectedPaymentMode(`UPI: ${upiId}`)} />;
       case "Cards":
-        return <CardsScreen onPay={() => handlePayment("Card")} />;
+        return <CardsScreen onSelect={(cardDetails) => setSelectedPaymentMode(`Card: ${cardDetails}`)} />;
       case "Wallets":
-        return <WalletsScreen onPay={() => handlePayment("Wallet")} />;
-      case "NetBanking":
-        return <NetBankingScreen onPay={() => handlePayment("NetBanking")} />;
+        return <WalletsScreen onSelect={(wallet) => setSelectedPaymentMode(`Wallet: ${wallet}`)} />;
+      case "Net Banking":
+        return <NetBankingScreen onSelect={(bank) => setSelectedPaymentMode(`Net Banking: ${bank}`)} />;
       case "EMI":
-        return <EMIScreen onPay={() => handlePayment("EMI")} />;
+        return <EMIScreen onSelect={(emi) => setSelectedPaymentMode(`EMI: ${emi}`)} />;
       default:
-        return <UPIScreen onPay={() => handlePayment("UPI")} />;
+        return null;
     }
   };
 
   return (
-    <div className="flex w-full h-screen justify-center items-center bg-gray-100 text-gray-900">
-      <div className="flex w-[900px] shadow-lg rounded-md overflow-hidden bg-white">
-        {/* Sidebar */}
-        <div className="w-1/3 p-6 bg-green-200">
-          <div className="text-center">
-            <img src="/fresh-to-home-logo.png" alt="Logo" className="mx-auto mb-4" />
-            <h2 className="text-lg font-bold">LRTS.com</h2>
-            <p className="text-sm text-gray-600">JoyeshPay Trusted Business</p>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-2/3 shadow-lg relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white"
+        >
+          &times;
+        </button>
+        <h3 className="text-lg font-bold mb-4">Payment Gateway</h3>
+        <div className="flex">
+          <div className="w-1/3">
+            {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
+              <div
+                key={mode}
+                onClick={() => setActivePaymentMode(mode)}
+                className={clsx(
+                  "py-2 px-4 cursor-pointer rounded-md mb-2",
+                  activePaymentMode === mode
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+                )}
+              >
+                {mode}
+              </div>
+            ))}
           </div>
-          <div className="mt-8">
-            <h3 className="text-md font-semibold">{passDetails.title}</h3>
-            <p className="text-2xl font-bold mt-2">₹{passDetails.price}</p>
-          </div>
-          <div className="mt-6">
-            <p className="text-sm">Using as {user?.primaryPhoneNumber || "No Phone"}</p>
-            <p className="text-sm mt-2 text-green-700 cursor-pointer">
-              Offers on UPI and Cards
-            </p>
-          </div>
-          <div className="absolute bottom-6 left-6">
-            <p className="text-xs text-gray-500">Secured by JoyeshPay</p>
-          </div>
+          <div className="w-2/3">{renderPaymentMode()}</div>
         </div>
-
-        {/* Main Content */}
-        <div className="w-2/3 p-6">
-          <h2 className="text-lg font-semibold mb-4">Payment Options</h2>
-          <div className="flex">
-            <div className="w-1/3">
-              {["UPI", "Cards", "Wallets", "NetBanking", "EMI"].map((mode) => (
-                <MenuOption
-                  key={mode}
-                  label={mode}
-                  active={activeScreen === mode}
-                  onClick={() => setActiveScreen(mode)}
-                />
-              ))}
-            </div>
-            <div className="w-2/3">{renderScreen()}</div>
-          </div>
-        </div>
+        <button
+          onClick={handlePayment}
+          disabled={isPaymentProcessing}
+          className={clsx(
+            "w-full py-2 px-4 rounded mt-4",
+            isPaymentProcessing ? "bg-gray-400" : "bg-green-500 text-white"
+          )}
+        >
+          {isPaymentProcessing ? "Processing Payment..." : "Confirm Payment"}
+        </button>
       </div>
     </div>
   );
 };
 
-const MenuOption = ({ label, active, onClick }: any) => (
-  <div
-    onClick={onClick}
-    className={clsx(
-      "py-2 px-4 cursor-pointer rounded-md",
-      active ? "bg-green-100 font-bold" : "hover:bg-gray-50 text-gray-700"
-    )}
-  >
-    {label}
-  </div>
-);
+// Individual Payment Modes
 
-const UPIScreen = ({ onPay }: { onPay: () => void }) => {
+const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
   const [upiId, setUpiId] = useState("");
+
+  const handleVerify = () => {
+    if (upiId) {
+      onSelect(upiId);
+      alert("UPI Verified Successfully");
+    } else {
+      alert("Please enter a valid UPI ID.");
+    }
+  };
 
   return (
     <div>
-      <h3 className="font-semibold mb-4">Enter your UPI ID</h3>
+      <h4 className="font-semibold mb-2">Enter your UPI ID</h4>
       <input
         type="text"
         value={upiId}
         onChange={(e) => setUpiId(e.target.value)}
-        placeholder="example@okhdfcbank"
-        className="w-full border p-2 rounded-md"
+        placeholder="example@bank"
+        className="w-full border p-2 rounded mb-2"
       />
-      <button onClick={onPay} className="mt-4 w-full bg-black text-white py-2 rounded-md">
-        Verify and Pay
+      <button onClick={handleVerify} className="w-full bg-black text-white py-2 rounded">
+        Verify and Select
       </button>
     </div>
   );
 };
 
-const CardsScreen = ({ onPay }: { onPay: () => void }) => {
+const CardsScreen: React.FC<{ onSelect: (details: string) => void }> = ({ onSelect }) => {
   const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvv, setCvv] = useState("");
+
+  const handleSelect = () => {
+    if (cardNumber) {
+      onSelect(cardNumber);
+      alert("Card Selected Successfully");
+    } else {
+      alert("Please enter valid card details.");
+    }
+  };
 
   return (
     <div>
-      <h3 className="font-semibold mb-4">Add a new card</h3>
+      <h4 className="font-semibold mb-2">Enter your Card Number</h4>
       <input
         type="text"
         value={cardNumber}
         onChange={(e) => setCardNumber(e.target.value)}
-        placeholder="Card Number"
-        className="w-full border p-2 rounded-md mb-4"
+        placeholder="1234 5678 9012 3456"
+        className="w-full border p-2 rounded mb-2"
       />
-      <div className="flex space-x-4">
-        <input
-          type="text"
-          value={expiry}
-          onChange={(e) => setExpiry(e.target.value)}
-          placeholder="MM / YY"
-          className="w-1/2 border p-2 rounded-md"
-        />
-        <input
-          type="text"
-          value={cvv}
-          onChange={(e) => setCvv(e.target.value)}
-          placeholder="CVV"
-          className="w-1/2 border p-2 rounded-md"
-        />
-      </div>
-      <button onClick={onPay} className="mt-4 w-full bg-black text-white py-2 rounded-md">
-        Continue
+      <button onClick={handleSelect} className="w-full bg-black text-white py-2 rounded">
+        Select Card
       </button>
     </div>
   );
 };
 
-const WalletsScreen = ({ onPay }: { onPay: () => void }) => (
+const WalletsScreen: React.FC<{ onSelect: (wallet: string) => void }> = ({ onSelect }) => (
   <div>
-    <h3 className="font-semibold mb-4">All Wallet Options</h3>
-    <ul className="space-y-2">
-      {["Amazon Pay", "Google Pay", "Paytm Wallet", "PhonePe"].map((wallet, index) => (
-        <li
-          key={index}
-          onClick={onPay}
-          className="cursor-pointer border p-2 rounded-md hover:bg-gray-50"
-        >
-          {wallet}
-        </li>
-      ))}
-    </ul>
+    <h4 className="font-semibold mb-2">Select a Wallet</h4>
+    {["Paytm", "Google Pay", "PhonePe"].map((wallet) => (
+      <div
+        key={wallet}
+        onClick={() => onSelect(wallet)}
+        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
+      >
+        {wallet}
+      </div>
+    ))}
   </div>
 );
 
-const NetBankingScreen = ({ onPay }: { onPay: () => void }) => (
+const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSelect }) => (
   <div>
-    <h3 className="font-semibold mb-4">Select Your Bank</h3>
-    <ul className="space-y-2">
-      {["HDFC Bank", "ICICI Bank", "SBI", "Axis Bank"].map((bank, index) => (
-        <li
-          key={index}
-          onClick={onPay}
-          className="cursor-pointer border p-2 rounded-md hover:bg-gray-50"
-        >
-          {bank}
-        </li>
-      ))}
-    </ul>
+    <h4 className="font-semibold mb-2">Select Your Bank</h4>
+    {["HDFC", "ICICI", "SBI"].map((bank) => (
+      <div
+        key={bank}
+        onClick={() => onSelect(bank)}
+        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
+      >
+        {bank}
+      </div>
+    ))}
   </div>
 );
 
-const EMIScreen = ({ onPay }: { onPay: () => void }) => (
+const EMIScreen: React.FC<{ onSelect: (emi: string) => void }> = ({ onSelect }) => (
   <div>
-    <h3 className="font-semibold mb-4">EMI Options</h3>
-    <ul className="space-y-2">
-      {["6 Months", "9 Months", "12 Months"].map((option, index) => (
-        <li
-          key={index}
-          onClick={onPay}
-          className="cursor-pointer border p-2 rounded-md hover:bg-gray-50"
-        >
-          {option}
-        </li>
-      ))}
-    </ul>
+    <h4 className="font-semibold mb-2">Select EMI Option</h4>
+    {["6 Months", "9 Months", "12 Months"].map((emi) => (
+      <div
+        key={emi}
+        onClick={() => onSelect(emi)}
+        className="border p-2 rounded mb-2 cursor-pointer hover:bg-gray-100"
+      >
+        {emi}
+      </div>
+    ))}
   </div>
 );
 

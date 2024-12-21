@@ -14,7 +14,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
 
   const handleConfirm = () => {
     if (homeZone && destinationZone) {
-      setIsPaymentOpen(true);
+      setIsPaymentOpen(true); // Trigger payment modal
     } else {
       alert("Please fill in both Home Zone and Destination Zone.");
     }
@@ -24,8 +24,8 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
 
   return (
     <>
-      {!isPaymentOpen ? (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        {!isPaymentOpen ? (
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96">
             <h3 className="text-lg font-bold mb-4">Select Zones</h3>
             <div>
@@ -53,17 +53,16 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
               Confirm
             </button>
           </div>
-        </div>
-      ) : (
-        <PaymentGateway
-          passDetails={{ ...passDetails, homeZone, destinationZone }}
-          onClose={() => {
-            console.log("PaymentGateway onClose called");
-            setIsPaymentOpen(false); // Ensure modal returns to the previous state
-            onClose();
-          }}
-        />
-      )}
+        ) : (
+          <PaymentGateway
+            passDetails={{ ...passDetails, homeZone, destinationZone }}
+            onClose={() => {
+              setIsPaymentOpen(false); // Return to the zone selection modal
+              onClose(); // Close the main modal
+            }}
+          />
+        )}
+      </div>
     </>
   );
 };
