@@ -55,7 +55,7 @@ const PassesPage: React.FC = () => {
               {defaultPasses.map((pass) => (
                 <PassCard
                   key={pass.id}
-                  title={pass.pass_type}
+                  title={pass.title}
                   price={pass.price}
                   duration={pass.duration}
                   features={pass.features}
