@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
+import { useClerk } from "@clerk/clerk-react";
 
 const PassesPage: React.FC = () => {
+  const { user } = useClerk();
   const [userHasPasses, setUserHasPasses] = useState(false);
 
   const handleUserPassCheck = (hasPasses: boolean) => {
@@ -12,29 +14,40 @@ const PassesPage: React.FC = () => {
   // Default available passes
   const defaultPasses = [
     {
-      title: 'Basic',
-      price: '999',
-      duration: 'month',
+      id: 1, // Add unique IDs for default passes
+      title: "Basic",
+      price: "999",
+      duration: "month",
       features: [
-        { text: 'Unlimited rides in one zone', included: true },
-        { text: 'Peak hour access', included: true },
-        { text: 'Multi-zone access', included: false },
-        { text: 'Priority booking', included: false },
+        { text: "Unlimited rides in one zone", included: true },
+        { text: "Peak hour access", included: true },
+        { text: "Multi-zone access", included: false },
+        { text: "Priority booking", included: false },
       ],
     },
     {
-      title: 'Standard',
-      price: '1499',
-      duration: 'month',
+      id: 2,
+      title: "Standard",
+      price: "1499",
+      duration: "month",
       features: [
-        { text: 'Unlimited rides in Multiple Zones', included: true },
-        { text: 'Peak hour access', included: true },
-        { text: 'Multi-zone access', included: true },
-        { text: 'Priority booking', included: true },
+        { text: "Unlimited rides in Multiple Zones", included: true },
+        { text: "Peak hour access", included: true },
+        { text: "Multi-zone access", included: true },
+        { text: "Priority booking", included: true },
       ],
       popular: true,
     },
   ];
+
+  useEffect(() => {
+    // Ensure user is authenticated before checking for passes
+    if (!user) {
+      console.warn("User not authenticated.");
+      setUserHasPasses(false);
+      return;
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
