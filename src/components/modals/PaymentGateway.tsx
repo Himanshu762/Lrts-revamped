@@ -305,6 +305,13 @@ const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSe
         <option value="">-- Select Bank --</option>
         <option value="HDFC">HDFC</option>
         <option value="SBI">SBI</option>
+        <option value="ICICI">ICICI</option>
+        <option value="Axis Bank">Axis Bank</option>
+        <option value="Kotak Mahindra">Kotak Mahindra</option> 
+        <option value="Punjab National Bank">Punjab National Bank</option> 
+        <option value="Bank of Baroda">Bank of Baroda</option> 
+        <option value="Yes Bank">Yes Bank</option> 
+        <option value="IDFC First Bank">IDFC First Bank</option> 
       </select>
       <button
         onClick={handleVerify}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import PassCard from "../components/passes/PassCard";
 import UserPasses from "../components/passes/UserPasses";
@@ -18,7 +18,7 @@ interface Pass {
 
 const PassesPage: React.FC = () => {
   const [availablePasses, setAvailablePasses] = useState<Pass[]>([]);
-  const [showAvailablePasses, setShowAvailablePasses] = useState(false);
+  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null); // Track if the user has passes
 
   useEffect(() => {
     const fetchAvailablePasses = async () => {
@@ -34,21 +34,37 @@ const PassesPage: React.FC = () => {
         console.error("Unexpected error:", err);
       }
     };
+
     fetchAvailablePasses();
   }, []);
+
+  // Callback to check if UserPasses finds user passes
+  const handleUserPassCheck = (hasPasses: boolean) => {
+    setHasUserPasses(hasPasses);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
-          Your Passes
-        </h2>
-        {!showAvailablePasses ? (
-          <UserPasses />
+        {hasUserPasses === null && (
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+            Loading...
+          </h2>
+        )}
+
+        {hasUserPasses ? (
+          <>
+            {/* Display user passes if they exist */}
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+              Your Passes
+            </h2>
+            <UserPasses onPassCheck={handleUserPassCheck} />
+          </>
         ) : (
           <>
+            {/* Display available passes for purchase */}
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
-              Available Passes
+              Choose Your Pass
             </h2>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
               {availablePasses.map((pass) => (
@@ -58,19 +74,10 @@ const PassesPage: React.FC = () => {
                   price={pass.price}
                   duration={pass.duration}
                   features={pass.features}
-                  onSelect={() => console.log("Selected pass:", pass)}
                 />
               ))}
             </div>
           </>
-        )}
-        {!showAvailablePasses && (
-          <button
-            onClick={() => setShowAvailablePasses(true)}
-            className="mt-4 py-2 px-4 bg-blue-500 text-white rounded"
-          >
-            Buy Another Pass
-          </button>
         )}
       </div>
     </div>

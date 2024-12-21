@@ -1,26 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { motion } from "framer-motion";
-import { CreditCard } from "lucide-react";
-import clsx from "clsx";
-import { useClerk } from "@clerk/clerk-react";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "",
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
-);
-
-interface Pass {
-  pass_secret: string;
-  pass_type: string;
-  price: string;
-  home_zone: string;
-  destination_zone: string;
-  email: string;
-  payment_mode: string;
+interface UserPassesProps {
+  onPassCheck?: (hasPasses: boolean) => void; // Notify if passes are available
 }
 
-const UserPasses: React.FC = () => {
+const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
   const [passes, setPasses] = useState<Pass[]>([]);
   const { user } = useClerk();
   const [loading, setLoading] = useState(true);
@@ -37,6 +19,7 @@ const UserPasses: React.FC = () => {
           return;
         }
         setPasses(data || []);
+        if (onPassCheck) onPassCheck((data || []).length > 0); // Notify PassesPage
       } catch (err) {
         console.error("Unexpected error:", err);
       } finally {
@@ -45,14 +28,14 @@ const UserPasses: React.FC = () => {
     };
 
     if (user?.id) fetchPasses();
-  }, [user]);
+  }, [user, onPassCheck]);
 
   if (loading) {
     return <p>Loading your passes...</p>;
   }
 
   if (!passes.length) {
-    return <p>You don't have any passes yet. Please buy one!</p>;
+    return null; // No need to display anything if no passes are found
   }
 
   return (
@@ -67,37 +50,14 @@ const UserPasses: React.FC = () => {
             "animate-gradient-x"
           )}
         >
+          {/* Pass details */}
           <div className="p-6 space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
-                  {pass.pass_type}
-                </h3>
-                <div className="mt-2">
-                  <span className="text-4xl font-extrabold text-gray-800 dark:text-white">
-                    ₹{pass.price}
-                  </span>
-                </div>
-              </div>
-              <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
-            </div>
-            <div className="space-y-2">
-              <p>
-                <strong>Home Zone:</strong> {pass.home_zone}
-              </p>
-              <p>
-                <strong>Destination Zone:</strong> {pass.destination_zone}
-              </p>
-              <p>
-                <strong>Email:</strong> {pass.email}
-              </p>
-              <p>
-                <strong>Pass Secret:</strong> {pass.pass_secret}
-              </p>
-              <p>
-                <strong>Payment Mode:</strong> {pass.payment_mode}
-              </p>
-            </div>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+              {pass.pass_type}
+            </h3>
+            <p>
+              <strong>Price:</strong> ₹{pass.price}
+            </p>
           </div>
         </motion.div>
       ))}
