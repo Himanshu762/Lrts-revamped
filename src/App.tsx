@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, CreditCard } from "lucide-react";
 import clsx from "clsx";
-import ZoneSelectionModal from "../modals/ZoneSelectionModal";
+import ZoneSelectionModal from "./components/modals/ZoneSelectionModal";
 
 interface PassCardProps {
   title: string;
