@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import clsx from "clsx";
 import { createClient } from "@supabase/supabase-js";
-import QRCode from "react-qr-code";
+import {QRCodeSVG} from 'qrcode.react';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
@@ -66,7 +66,7 @@ const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
               </p>
               <div className="mt-4 flex flex-col items-center space-y-2">
                 <strong>Pass QR Code:</strong>
-                <QRCode value={pass.pass_secret} size={128} />
+                <QRCodeSVG value={pass.pass_secret} size={128} level='H' />
               </div>
             </div>
           </div>
