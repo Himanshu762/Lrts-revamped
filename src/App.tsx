@@ -1,134 +1,130 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { AnimatePresence } from 'framer-motion';
-import { ClerkProvider, SignedIn } from '@clerk/clerk-react';
-import Navbar from './components/layout/Navbar';
-import Hero from './components/home/Hero';
-import Benefits from './components/features/Benefits';
-import PassCard from './components/passes/PassCard';
-import ExploreZones from './pages/ExploreZones';
-import TripPlanner from './pages/TripPlanner';
-import PassesPage from './pages/PassesPage';
-import Footer from './components/layout/Footer';
-import SignInPage from './pages/SignInPage';
-import AccountPage from './pages/AccountPage';
-import SignUpPage from './pages/SignUpPage';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Check, CreditCard } from "lucide-react";
+import clsx from "clsx";
+import ZoneSelectionModal from "../modals/ZoneSelectionModal";
 
-const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
+interface PassCardProps {
+  title: string;
+  price: string;
+  duration: string;
+  popular?: boolean;
+}
 
-const DarkModeContext = createContext<{
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}>({
-  darkMode: false,
-  toggleDarkMode: () => {},
-});
-
-export const useDarkMode = () => useContext(DarkModeContext);
-
-const DarkModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
-
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
-
-  return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
-      {children}
-    </DarkModeContext.Provider>
-  );
-};
-
-function HomePage() {
-  const passes = [
-    {
-      title: 'Basic',
-      price: '999',
-      duration: 'month',
-      features: [
-        { text: 'Unlimited rides in one zone', included: true },
-        { text: 'Peak hour access', included: true },
-        { text: 'Multi-zone access', included: false },
-        { text: 'Priority booking', included: false },
-      ],
-    },
-    {
-      title: 'Standard',
-      price: '1499',
-      duration: 'month',
-      features: [
-        { text: 'Unlimited rides in Multiple Zones', included: true },
-        { text: 'Peak hour access', included: true },
-        { text: 'Multi-zone access', included: true },
-        { text: 'Priority booking', included: true },
-      ],
-      popular: true,
-    },
-  ];
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, popular }) => {
+  const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
     <>
-      <Hero />
-      <Benefits />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-r from-indigo-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
-            Choose Your Pass
-          </h2>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-300">
-            Select the perfect pass that suits your travel needs
-          </p>
+      <motion.div
+        whileHover={{ translateY: -5 }}
+        className={clsx(
+          "relative overflow-hidden rounded-2xl",
+          "bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900",
+          "animate-gradient-x",
+          popular && "ring-2 ring-blue-300 dark:ring-blue-500"
+        )}
+      >
+        {popular && (
+          <div className="absolute top-0 right-0 bg-gradient-to-r from-pink-300 to-purple-300 dark:from-pink-600 dark:to-purple-600 text-white px-4 py-1 rounded-bl-lg text-sm font-medium">
+            Popular
+          </div>
+        )}
+
+        <div className="p-6 space-y-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h3>
+              <div className="mt-2">
+                <span className="text-4xl font-extrabold text-gray-800 dark:text-white">₹{price}</span>{" "}
+                <span className="text-lg text-gray-500 dark:text-gray-400">/{duration}</span>
+              </div>
+            </div>
+            <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8">
+              <svg viewBox="0 0 32 32" className="text-gray-500">
+                <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2" />
+                <text x="16" y="20" textAnchor="middle" fill="currentColor" fontSize="12" fontFamily="sans-serif">
+                  LRTS
+                </text>
+              </svg>
+            </div>
+            <div className="text-gray-500 font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</div>
+          </div>
+
+          {/* Hardcoded Features */}
+          <ul className="space-y-3">
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Unlimited rides in Multiple Zones</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Peak hour access</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Multi-zone access</span>
+            </li>
+
+            <li className="flex items-center space-x-3">
+              <div
+                className={clsx(
+                  "flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center",
+                  "bg-blue-300 dark:bg-blue-500"
+                )}
+              >
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-sm text-gray-800 dark:text-white">Priority booking</span>
+            </li>
+          </ul>
+
+          <button
+            onClick={() => setIsZoneModalOpen(true)}
+            className={clsx(
+              "w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200",
+              "bg-blue-300 hover:bg-blue-400 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
+            )}
+          >
+            Get Started
+          </button>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
-          {passes.map((pass, index) => (
-            <PassCard key={index} {...pass} />
-          ))}
-        </div>
-      </div>
+      </motion.div>
+
+      <ZoneSelectionModal
+        isOpen={isZoneModalOpen}
+        onClose={() => setIsZoneModalOpen(false)}
+        passDetails={{ title, price }}
+      />
     </>
   );
-}
+};
 
-function App() {
-  return (
-    <ClerkProvider publishableKey={clerkPublishableKey}>
-      <DarkModeProvider>
-        <Router basename="/"> {/* Add the base path if your app is deployed under a subpath */}
-          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <Navbar />
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/signin" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route
-                  path="/account"
-                  element={
-                    <SignedIn>
-                      <AccountPage />
-                    </SignedIn>
-                  }
-                />
-                <Route path="/zones" element={<ExploreZones />} />
-                <Route path="/planner" element={<TripPlanner />} />
-                <Route path="/passes" element={<PassesPage />} />
-                {/* 404 Route */}
-                <Route path="*" element={<AccountPage />} />
-              </Routes>
-            </AnimatePresence>
-            <Footer />
-          </div>
-        </Router>
-        <Toaster position="bottom-center" reverseOrder={false} />
-      </DarkModeProvider>
-    </ClerkProvider>
-  );
-}
-
-export default App;
+export default PassCard;
