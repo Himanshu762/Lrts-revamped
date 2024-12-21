@@ -24,6 +24,8 @@ const cardIcons: { [key: string]: string } = {
   Unknown: "src/components/misc/icons/generic.svg",
 };
 
+const cvvIcon = "src/components/misc/icons/cvv.png";
+
 // Identify Card Type Helper
 const identifyCardType = (cardNumber: string): string => {
   const visaRegex = /^4/;
