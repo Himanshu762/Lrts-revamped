@@ -18,8 +18,14 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
 
   const handleConfirm = () => {
     if (homeZone && destinationZone) {
+      console.log("Opening PaymentGateway...");
       setIsPaymentOpen(true); // Open PaymentGateway modal
     }
+  };
+
+  const handlePaymentClose = () => {
+    console.log("Closing PaymentGateway...");
+    setIsPaymentOpen(false);
   };
 
   if (!isOpen) return null;
@@ -71,9 +77,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
       ) : (
         <PaymentGateway
           passDetails={{ ...passDetails, homeZone, destinationZone }}
-          onClose={() => {
-            setIsPaymentOpen(false); // Close PaymentGateway modal
-          }}
+          onClose={handlePaymentClose}
         />
       )}
     </>
