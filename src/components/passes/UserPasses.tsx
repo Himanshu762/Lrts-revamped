@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import clsx from "clsx";
 import { createClient } from "@supabase/supabase-js";
-import { QRCode } from "qrcode.react";
+import QRCode from "react-qr-code";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
