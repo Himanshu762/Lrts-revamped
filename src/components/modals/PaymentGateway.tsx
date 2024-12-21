@@ -185,7 +185,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
   <div className="w-1/4 bg-blue-300 dark:bg-blue-600 p-6 flex flex-col justify-between">
     <div className="text-center">
-      <img src="/fresh-to-home-logo.png" alt="Logo" className="mx-auto mb-4" />
+      <img src="https://img.freepik.com/premium-vector/modern-l-letter-logo-vector_724449-55.jpg" alt="Logo" className="mx-auto mb-4" />
       <h2 className="text-lg font-bold text-gray-800 dark:text-white">LRTS.com</h2>
       <p className="text-sm text-gray-500 dark:text-gray-200">JoyeshPay Trusted Business</p>
     </div>
