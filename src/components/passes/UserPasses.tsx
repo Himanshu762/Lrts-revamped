@@ -21,19 +21,99 @@ interface Pass {
 }
 
 interface UserPassesProps {
-  passes: Array<{
-    // define your pass properties here based on your database schema
-    id: number;
-    email: string;
-    // ... other pass properties
-  }>;
+  onPassCheck?: (hasPasses: boolean) => void; // Notify parent if passes exist
 }
 
-const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
+const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
+  const [passes, setPasses] = useState<Pass[]>([]);
+  const { user } = useClerk();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPasses = async () => {
+      if (!user?.emailAddress) {
+        console.error("User email not found");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("passes")
+          .select("*")
+          .eq("email", user.emailAddress); // Fetch by user email
+
+        if (error) {
+          console.error("Error fetching user passes:", error);
+          return;
+        }
+
+        setPasses(data || []);
+        if (onPassCheck) {
+          onPassCheck((data || []).length > 0);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPasses();
+  }, [user, onPassCheck]);
+
+  if (loading) {
+    return <p>Loading your passes...</p>;
+  }
+
+  if (!passes.length) {
+    return null; // No passes found for this user
+  }
+
   return (
-    <div>
+    <div className="grid grid-cols-1 gap-6">
       {passes.map((pass) => (
-        // Render each pass details
+        <motion.div
+          key={pass.pass_secret}
+          whileHover={{ translateY: -5 }}
+          className={clsx(
+            "relative overflow-hidden rounded-2xl",
+            "bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900",
+            "animate-gradient-x"
+          )}
+        >
+          <div className="p-6 space-y-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  {pass.pass_type}
+                </h3>
+                <div className="mt-2">
+                  <span className="text-4xl font-extrabold text-gray-800 dark:text-white">
+                    ₹{pass.price}
+                  </span>
+                </div>
+              </div>
+              <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
+            </div>
+            <div className="space-y-2">
+              <p>
+                <strong>Home Zone:</strong> {pass.home_zone}
+              </p>
+              <p>
+                <strong>Destination Zone:</strong> {pass.destination_zone}
+              </p>
+              <p>
+                <strong>Email:</strong> {pass.email}
+              </p>
+              <p>
+                <strong>Pass Secret:</strong> {pass.pass_secret}
+              </p>
+              <p>
+                <strong>Payment Mode:</strong> {pass.payment_mode}
+              </p>
+            </div>
+          </div>
+        </motion.div>
       ))}
     </div>
   );
