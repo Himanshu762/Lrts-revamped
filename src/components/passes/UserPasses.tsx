@@ -18,6 +18,7 @@ interface Pass {
   home_zone: string;
   destination_zone: string;
   email: string;
+  payment_mode: string; // Added payment_mode
 }
 
 const UserPasses: React.FC = () => {
@@ -60,9 +61,13 @@ const UserPasses: React.FC = () => {
               <div className="p-6 space-y-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{pass.pass_type}</h3>
+                    <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                      {pass.pass_type}
+                    </h3>
                     <div className="mt-2">
-                      <span className="text-4xl font-extrabold text-gray-800 dark:text-white">₹{pass.price}</span>
+                      <span className="text-4xl font-extrabold text-gray-800 dark:text-white">
+                        ₹{pass.price}
+                      </span>
                     </div>
                   </div>
                   <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
@@ -73,6 +78,7 @@ const UserPasses: React.FC = () => {
                   <p><strong>Destination Zone:</strong> {pass.destination_zone}</p>
                   <p><strong>Email:</strong> {pass.email}</p>
                   <p><strong>Pass Secret:</strong> {pass.pass_secret}</p>
+                  <p><strong>Payment Mode:</strong> {pass.payment_mode}</p> {/* Display payment mode */}
                 </div>
               </div>
             </motion.div>
