@@ -44,7 +44,6 @@ const passes = [
 const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
   isOpen,
   onClose,
-  availablePasses,
 }) => {
   if (!isOpen) return null;
 
