@@ -93,7 +93,14 @@ const PassesPage: React.FC = () => {
             </div>
             <UserPasses passes={userPasses} />
             {isModalOpen && (
-              <BuyAnotherPassModal onClose={() => setIsModalOpen(false)} />
+              <BuyAnotherPassModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                availablePasses={passes} // Provide the list of passes
+                onPassSelect={() => {
+                  setIsModalOpen(false); // Close the modal after selection
+                }}
+              />
             )}
           </>
         ) : (
