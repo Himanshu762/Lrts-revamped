@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Change to useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { useClerk } from "@clerk/clerk-react"; // For user authentication
+import { useClerk } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase
 const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "",  // Adjusted for Vite environment variables
+  import.meta.env.VITE_SUPABASE_URL || "",
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
@@ -16,17 +16,16 @@ interface PaymentGatewayProps {
 }
 
 const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose }) => {
-  const navigate = useNavigate(); // Use useNavigate from react-router-dom
-  const { user } = useClerk(); // Fetch Clerk user details
+  const navigate = useNavigate();
+  const { user } = useClerk();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const handlePayment = async () => {
     setIsPaymentProcessing(true);
 
-    // Simulate payment processing delay
-    setTimeout(async () => {
-      // Save pass details to Supabase
-      const passSecret = uuidv4(); // Generate a unique pass identifier
+    try {
+      const passSecret = uuidv4();
+
       const { error } = await supabase.from("passes").insert([
         {
           user_id: user?.id,
@@ -42,11 +41,19 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
       if (error) {
         console.error("Failed to save pass details:", error);
+        alert("Payment failed. Please try again.");
+        setIsPaymentProcessing(false);
+        return;
       }
 
-      // Redirect back to PassesPage
-      navigate("/passes"); // Use navigate instead of router.push
-    }, 2000); // Simulate 2-second payment delay
+      // Navigate to passes page after successful payment
+      navigate("/passes", { state: { success: true } });
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsPaymentProcessing(false);
+    }
   };
 
   return (
@@ -69,7 +76,9 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         </div>
         <button
           onClick={handlePayment}
-          className="w-full py-2 px-4 bg-blue-500 text-white rounded mb-2"
+          className={`w-full py-2 px-4 rounded mb-2 ${
+            isPaymentProcessing ? "bg-gray-400" : "bg-blue-500 text-white"
+          }`}
           disabled={isPaymentProcessing}
         >
           {isPaymentProcessing ? "Processing Payment..." : "Pay Now"}
