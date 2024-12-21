@@ -46,24 +46,26 @@ const PassesPage: React.FC = () => {
   // Fetch user passes from the database
   useEffect(() => {
     const fetchUserPasses = async () => {
-      if (!user) {
-        console.warn("User not authenticated.");
+      if (!user || !user.emailAddress) {
+        console.warn("User not authenticated or missing email address.");
         setUserHasPasses(false);
         setLoading(false);
         return;
       }
-
+  
       try {
         const { data, error } = await supabase
           .from("passes")
           .select("*")
           .eq("email", user.emailAddress);
-
+  
         if (error) {
           console.error("Error fetching passes:", error);
           setUserHasPasses(false);
+        } else if (data && data.length > 0) {
+          setUserHasPasses(true);
         } else {
-          setUserHasPasses(data && data.length > 0);
+          setUserHasPasses(false);
         }
       } catch (err) {
         console.error("Unexpected error fetching passes:", err);
@@ -72,7 +74,7 @@ const PassesPage: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchUserPasses();
   }, [user]);
 

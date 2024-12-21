@@ -42,9 +42,9 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
       alert("Please select a payment mode.");
       return;
     }
-
+  
     setIsPaymentProcessing(true);
-
+  
     try {
       const { error } = await supabase.from("passes").insert([
         {
@@ -59,22 +59,21 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           payment_mode: selectedPaymentMode,
         },
       ]);
-
+  
       if (error) {
         console.error("Failed to save pass details:", error);
         alert("Payment failed. Please try again.");
-        setIsPaymentProcessing(false);
-        return;
+      } else {
+        alert("Payment successful! Your pass has been added.");
+        onClose(); // Close the payment gateway after successful payment
       }
-
-      navigate("/passes", { state: { success: true } });
     } catch (err) {
       console.error("Payment error:", err);
       alert("An unexpected error occurred. Please try again.");
     } finally {
       setIsPaymentProcessing(false);
     }
-  };
+  };  
 
   const renderPaymentMode = () => {
     switch (activePaymentMode) {
