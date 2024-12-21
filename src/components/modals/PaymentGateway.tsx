@@ -101,26 +101,24 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         >
           &times;
         </button>
-        <div className="p-6 flex">
+        <div className="flex h-full">
           {/* Sidebar */}
-          <div className="w-1/4 border-r dark:border-gray-700">
-            <div className="flex flex-col">
+          <Sidebar passDetails={passDetails} />
+
+          {/* Main Content */}
+          <div className="w-3/4 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Payment Options</h2>
+            </div>
+
+            <div className="flex space-x-4 mb-4">
               {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
-                <div
+                <MenuOption
                   key={mode}
+                  label={mode}
+                  active={activePaymentMode === mode}
                   onClick={() => setActivePaymentMode(mode)}
-                  className={clsx(
-                    "flex items-center gap-4 p-4 mb-2 rounded-lg cursor-pointer transition",
-                    activePaymentMode === mode
-                      ? "bg-blue-500 text-white shadow-lg"
-                      : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-300"
-                  )}
-                >
-                  <span className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 dark:border-gray-600">
-                    {mode[0]} {/* Add icons or initials */}
-                  </span>
-                  <span className="font-medium">{mode}</span>
-                </div>
+                />
               ))}
             </div>
           </div>
@@ -146,6 +144,41 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
     </div>
   );
 };
+
+// Sidebar Component
+const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
+  <div className="w-1/4 bg-green-200 dark:bg-gray-700 p-6 flex flex-col justify-between">
+    <div className="text-center">
+      <img src="/fresh-to-home-logo.png" alt="Logo" className="mx-auto mb-4" />
+      <h2 className="text-lg font-bold">LRTS.com</h2>
+      <p className="text-sm text-gray-500">JoyeshPay Trusted Business</p>
+    </div>
+    <div>
+      <h3 className="text-md font-semibold">Price Summary</h3>
+      <p className="text-2xl font-bold mt-2">₹{passDetails.price}</p>
+    </div>
+    <p className="text-xs text-gray-500">Secured by JoyeshPay</p>
+  </div>
+);
+
+// MenuOption Component
+const MenuOption: React.FC<{
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}> = ({ label, active, onClick }) => (
+  <div
+    onClick={onClick}
+    className={clsx(
+      "py-2 px-4 cursor-pointer rounded-md",
+      active
+        ? "bg-blue-700 text-white"
+        : "hover:bg-green-100 text-gray-800 dark:hover:bg-gray-600"
+    )}
+  >
+    {label}
+  </div>
+);
 
 // Screens for Each Payment Mode
 
