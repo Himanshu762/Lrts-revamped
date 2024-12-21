@@ -4,7 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 import PassCard from "../components/passes/PassCard";
 import UserPasses from "../components/passes/UserPasses";
 
-// Initialize Supabase
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
@@ -23,57 +22,50 @@ const PassesPage: React.FC = () => {
   const [availablePasses, setAvailablePasses] = useState<Pass[]>([]);
   const [userPasses, setUserPasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch all passes
   useEffect(() => {
     const fetchAvailablePasses = async () => {
       try {
-        const { data, error } = await supabase.from("passes").select("*").is("user_id", null); // Fetch passes not tied to a user
-
+        const { data, error } = await supabase.from("passes").select("*");
         if (error) {
           console.error("Error fetching available passes:", error);
-          setError("Unable to fetch available passes. Please try again later.");
+          setAvailablePasses([]);
           return;
         }
         setAvailablePasses(data || []);
       } catch (err) {
-        console.error("Unexpected error fetching available passes:", err);
-        setError("An unexpected error occurred.");
+        console.error("Unexpected error:", err);
       }
     };
-
     fetchAvailablePasses();
   }, []);
 
-  // Fetch user's passes
   useEffect(() => {
     const fetchUserPasses = async () => {
       if (!user?.id) return;
-    
       try {
-        const { data, error } = await supabase.from("passes").select("*").eq("user_id", user.id);
+        const { data, error } = await supabase
+          .from("passes")
+          .select("*")
+          .eq("user_id", user.id);
         if (error) {
           console.error("Error fetching user passes:", error);
-          setError("Unable to fetch your passes. Please try again later.");
-        } else {
-          setUserPasses(data || []);
+          return;
         }
+        setUserPasses(data || []);
       } catch (err) {
-        console.error("Unexpected error fetching user passes:", err);
-        setError("An unexpected error occurred.");
+        console.error("Unexpected error:", err);
       } finally {
         setLoading(false);
       }
-    };       
-
+    };
     fetchUserPasses();
   }, [user]);
 
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
             Please log in to view and buy passes
           </h2>
@@ -90,14 +82,6 @@ const PassesPage: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
@@ -106,9 +90,9 @@ const PassesPage: React.FC = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
             </h2>
-            <UserPasses passes={userPasses} />
+            <UserPasses />
             <button
-              onClick={() => setAvailablePasses([])} // Replace with modal or navigation logic
+              onClick={() => setAvailablePasses([])} // Trigger modal logic here
               className="mt-4 py-2 px-4 bg-blue-500 text-white rounded"
             >
               Buy Another Pass
@@ -133,9 +117,7 @@ const PassesPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-gray-500">
-                No passes available at the moment.
-              </p>
+              <p>No passes available at the moment.</p>
             )}
           </>
         )}
