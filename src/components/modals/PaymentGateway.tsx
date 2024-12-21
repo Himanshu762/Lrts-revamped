@@ -142,33 +142,24 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-4/5 max-w-4xl relative flex flex-col">
-        {/* Close Button */}
+      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-4/5 max-w-4xl relative flex flex-col"></div>
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"
         >
           &times;
         </button>
-  
-        {/* Layout Container */}
         <div className="flex h-full">
           {/* Sidebar */}
-          <div className="w-1/4 bg-blue-900 text-white p-4 flex-shrink-0">
-            <Sidebar passDetails={passDetails} />
-          </div>
-  
+          <Sidebar passDetails={passDetails} />
+
           {/* Main Content */}
-          <div className="flex-grow p-6 flex flex-col space-y-6">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Payment Options
-              </h2>
+          <div className="w-3/4 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Payment Options</h2>
             </div>
-  
-            {/* Payment Mode Tabs */}
-            <div className="flex space-x-4">
+
+            <div className="flex space-x-4 mb-4">
               {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
                 <MenuOption
                   key={mode}
@@ -178,15 +169,11 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
                 />
               ))}
             </div>
-  
-            {/* Dynamic Payment Mode Content */}
-            <div className="flex-grow bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
-              {renderPaymentMode()}
-            </div>
           </div>
+
+          {/* Main Content */}
+          <div className="w-3/4 p-6">{renderPaymentMode()}</div>
         </div>
-  
-        {/* Footer */}
         <div className="p-6">
           <button
             onClick={handlePayment}
@@ -204,7 +191,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
       </div>
     </div>
   );
-}; 
+};
 
 // Sidebar Component
 const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
