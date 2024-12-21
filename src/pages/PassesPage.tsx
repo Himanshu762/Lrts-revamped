@@ -1,32 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-import PassCard from "../components/passes/PassCard";
+import React, { useState } from "react";
 import UserPasses from "../components/passes/UserPasses";
+import PassCard from "../components/passes/PassCard";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
   import.meta.env.VITE_SUPABASE_ANON_KEY || ""
 );
 
-interface Pass {
-  id: number;
-  pass_type: string;
-  price: string;
-  duration: string;
-  features: { text: string; included: boolean }[];
-}
-
 const PassesPage: React.FC = () => {
-  const [availablePasses, setAvailablePasses] = useState<Pass[]>([]);
-  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null); // Track if the user has passes
+  const [availablePasses, setAvailablePasses] = useState([]);
+  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null);
 
-  useEffect(() => {
+  // Fetch available passes on mount
+  React.useEffect(() => {
     const fetchAvailablePasses = async () => {
       try {
-        const { data, error } = await supabase.from("available_passes").select("*");
+        const { data, error } = await supabase.from("passes").select("*");
         if (error) {
           console.error("Error fetching available passes:", error);
-          setAvailablePasses([]);
           return;
         }
         setAvailablePasses(data || []);
@@ -38,7 +30,7 @@ const PassesPage: React.FC = () => {
     fetchAvailablePasses();
   }, []);
 
-  // Callback to check if UserPasses finds user passes
+  // Callback to determine if the user has passes
   const handleUserPassCheck = (hasPasses: boolean) => {
     setHasUserPasses(hasPasses);
   };
@@ -54,7 +46,6 @@ const PassesPage: React.FC = () => {
 
         {hasUserPasses ? (
           <>
-            {/* Display user passes if they exist */}
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
             </h2>
@@ -62,7 +53,6 @@ const PassesPage: React.FC = () => {
           </>
         ) : (
           <>
-            {/* Display available passes for purchase */}
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Choose Your Pass
             </h2>

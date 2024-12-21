@@ -49,6 +49,18 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features, p
             <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
           </div>
 
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8">
+              <svg viewBox="0 0 32 32" className="text-gray-500">
+                <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2" />
+                <text x="16" y="20" textAnchor="middle" fill="currentColor" fontSize="12" fontFamily="sans-serif">
+                  LRTS
+                </text>
+              </svg>
+            </div>
+            <div className="text-gray-500 font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</div>
+          </div>
+
           <ul className="space-y-3">
             {features.map((feature, index) => (
               <li key={index} className="flex items-center space-x-3">
