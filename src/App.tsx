@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
-import { ClerkProvider, RedirectToSignIn, SignedIn } from '@clerk/clerk-react';
+import { ClerkProvider, SignedIn } from '@clerk/clerk-react';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import Benefits from './components/features/Benefits';
@@ -99,7 +99,7 @@ function App() {
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <DarkModeProvider>
-        <Router>
+        <Router basename="/"> {/* Add the base path if your app is deployed under a subpath */}
           <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <Navbar />
             <AnimatePresence mode="wait">
@@ -118,7 +118,8 @@ function App() {
                 <Route path="/zones" element={<ExploreZones />} />
                 <Route path="/planner" element={<TripPlanner />} />
                 <Route path="/passes" element={<PassesPage />} />
-                <Route path="*" element={<RedirectToSignIn />} />
+                {/* 404 Route */}
+                <Route path="*" element={<AccountPage />} />
               </Routes>
             </AnimatePresence>
             <Footer />
