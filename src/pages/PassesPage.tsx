@@ -17,7 +17,7 @@ const PassesPage: React.FC = () => {
     const fetchAvailablePasses = async () => {
       try {
         const { data, error } = await supabase.from("passes").select("*");
-        
+
         if (error) {
           console.error("Error fetching available passes:", error);
           setAvailablePasses([]); // Clear the passes if error occurs
@@ -49,7 +49,6 @@ const PassesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-
         {hasUserPasses ? (
           <>
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
@@ -70,7 +69,7 @@ const PassesPage: React.FC = () => {
                     title={pass.pass_type}
                     price={pass.price}
                     duration={pass.duration}
-                    features={pass.features}
+                    features={Array.isArray(pass.features) ? pass.features : []} // Ensure features is an array
                   />
                 ))
               ) : (
