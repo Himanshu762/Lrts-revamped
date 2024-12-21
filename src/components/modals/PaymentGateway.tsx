@@ -221,7 +221,7 @@ const MenuOption: React.FC<{
       "py-2 px-4 cursor-pointer rounded-md",
       active
         ? "bg-blue-700 text-white"
-        : "hover:bg-blue-100 text-gray-800 dark:hover:bg-blue-500"
+        : "hover:bg-blue-100 text-white dark:hover:bg-blue-500"
     )}
   >
     {label}
@@ -295,7 +295,7 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
 
   return (
     <div>
-      <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Enter your Card Details</h3>
+      <h3 className="text-lg font-bold text-gray-800 dark:text-Black mb-2">Enter your Card Details</h3>
       <div className="relative mb-4">
         <div className="relative mb-4">
           {/* Card Number Input */}
