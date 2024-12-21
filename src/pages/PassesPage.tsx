@@ -1,54 +1,44 @@
 import React, { useState, useEffect } from "react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "",
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
-);
 
 const PassesPage: React.FC = () => {
-  const [availablePasses, setAvailablePasses] = useState<any[]>([]); // Available passes for purchase
-  const [hasUserPasses, setHasUserPasses] = useState<boolean | null>(null); // Tracks if the user has passes
+  const [userHasPasses, setUserHasPasses] = useState(false);
 
-  // Fetch available passes for purchase
-  useEffect(() => {
-    const fetchAvailablePasses = async () => {
-      try {
-        const { data, error } = await supabase.from("passes").select("*");
-
-        if (error) {
-          console.error("Error fetching available passes:", error);
-          setAvailablePasses([]);
-          return;
-        }
-
-        // Ensure features are always an array
-        const passesWithFeatures = (data || []).map((pass) => ({
-          ...pass,
-          features: Array.isArray(pass.features) ? pass.features : [],
-        }));
-
-        setAvailablePasses(passesWithFeatures);
-      } catch (err) {
-        console.error("Unexpected error fetching available passes:", err);
-        setAvailablePasses([]);
-      }
-    };
-
-    fetchAvailablePasses();
-  }, []);
-
-  // Callback from UserPasses to determine if user has passes
   const handleUserPassCheck = (hasPasses: boolean) => {
-    setHasUserPasses(hasPasses);
+    setUserHasPasses(hasPasses);
   };
+
+  // Default available passes
+  const defaultPasses = [
+    {
+      id: 1,
+      pass_type: "Basic Pass",
+      price: "100",
+      duration: "1 Month",
+      features: [
+        { text: "Access to Zone 1", included: true },
+        { text: "Limited Rides", included: true },
+        { text: "Premium Features", included: false },
+      ],
+    },
+    {
+      id: 2,
+      pass_type: "Standard Pass",
+      price: "300",
+      duration: "3 Months",
+      features: [
+        { text: "Access to Zones 1-2", included: true },
+        { text: "Unlimited Rides", included: true },
+        { text: "Premium Features", included: true },
+      ],
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
-        {hasUserPasses ? (
+        {userHasPasses ? (
           <>
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
@@ -61,19 +51,15 @@ const PassesPage: React.FC = () => {
               Choose Your Pass
             </h2>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-              {availablePasses.length > 0 ? (
-                availablePasses.map((pass) => (
-                  <PassCard
-                    key={pass.id}
-                    title={pass.pass_type}
-                    price={pass.price}
-                    duration={pass.duration}
-                    features={pass.features || []}
-                  />
-                ))
-              ) : (
-                <p className="text-gray-500">No passes available at the moment.</p>
-              )}
+              {defaultPasses.map((pass) => (
+                <PassCard
+                  key={pass.id}
+                  title={pass.pass_type}
+                  price={pass.price}
+                  duration={pass.duration}
+                  features={pass.features}
+                />
+              ))}
             </div>
           </>
         )}

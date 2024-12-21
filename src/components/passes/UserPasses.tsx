@@ -21,7 +21,7 @@ interface Pass {
 }
 
 interface UserPassesProps {
-  onPassCheck?: (hasPasses: boolean) => void; // Callback to notify the parent about user passes
+  onPassCheck?: (hasPasses: boolean) => void; // Notify parent if passes exist
 }
 
 const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
@@ -31,18 +31,23 @@ const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
 
   useEffect(() => {
     const fetchPasses = async () => {
+      if (!user?.emailAddress) {
+        console.error("User email not found");
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from("passes")
           .select("*")
-          .eq("user_id", user?.id);
+          .eq("email", user.emailAddress); // Fetch by user email
+
         if (error) {
           console.error("Error fetching user passes:", error);
           return;
         }
-        setPasses(data || []);
 
-        // Notify the parent about whether the user has passes
+        setPasses(data || []);
         if (onPassCheck) {
           onPassCheck((data || []).length > 0);
         }
@@ -53,7 +58,7 @@ const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
       }
     };
 
-    if (user?.id) fetchPasses();
+    fetchPasses();
   }, [user, onPassCheck]);
 
   if (loading) {
@@ -61,7 +66,7 @@ const UserPasses: React.FC<UserPassesProps> = ({ onPassCheck }) => {
   }
 
   if (!passes.length) {
-    return null; // No need to display anything if the user has no passes
+    return null; // No passes found for this user
   }
 
   return (
