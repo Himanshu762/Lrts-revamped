@@ -157,7 +157,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           {/* Main Content */}
           <div className="flex-1 p-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Select Payment Option</h2>
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-6 bg-white dark:bg-gray-800 text-gray-800 dark:text-white">
               {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
                 <MenuOption
                   key={mode}
