@@ -78,19 +78,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         },
       ]);
   
-      if (error) {
-        console.error("Failed to save pass details:", error);
-        alert("Payment failed. Please try again.");
-      } else {
-        alert("Payment successful! Your pass has been added.");
-        onClose();
-      }
-    } catch (err) {
-      console.error("Payment error:", err);
-      alert("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsPaymentProcessing(false);
-    }
+      if(error){console.error("Failed to save pass details:",error);alert("Payment failed. Please try again.");}else{alert("Payment successful! Your pass has been added.");onClose();}}catch(err){console.error("Payment error:", err); alert("An unexpected error occurred. Please try again.");}finally{setIsPaymentProcessing(false);}
   };
   
 
