@@ -416,12 +416,17 @@ const WalletsScreen: React.FC<{ onSelect: (wallet: string) => void }> = ({ onSel
       <select
         value={wallet}
         onChange={(e) => setWallet(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
-        <option value="">-- Select Wallet --</option>
-        <option value="Paytm">Paytm</option>
-        <option value="Google Pay">Google Pay</option>
-        <option value="PhonePe">PhonePe</option>
+        <option value="" className="text-gray-600 dark:text-gray-300">-- Select Wallet --</option>
+        <option value="Paytm" className="text-gray-800 dark:text-white">Paytm</option>
+        <option value="Google Pay" className="text-gray-800 dark:text-white">Google Pay</option>
+        <option value="PhonePe" className="text-gray-800 dark:text-white">PhonePe</option>
+        <option value="Amazon Pay" className="text-gray-800 dark:text-white">Amazon Pay</option>
+        <option value="Mobikwik" className="text-gray-800 dark:text-white">Mobikwik</option>
+        <option value="Freecharge" className="text-gray-800 dark:text-white">Freecharge</option>
+        <option value="Airtel Money" className="text-gray-800 dark:text-white">Airtel Money</option>
+        <option value="JioMoney" className="text-gray-800 dark:text-white">JioMoney</option>
       </select>
       <button
         onClick={handleVerify}
@@ -451,18 +456,19 @@ const NetBankingScreen: React.FC<{ onSelect: (bank: string) => void }> = ({ onSe
       <select
         value={bank}
         onChange={(e) => setBank(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
-        <option value="">-- Select Bank --</option>
-        <option value="HDFC">HDFC</option>
-        <option value="SBI">SBI</option>
-        <option value="ICICI">ICICI</option>
-        <option value="Axis Bank">Axis Bank</option>
-        <option value="Kotak Mahindra">Kotak Mahindra</option> 
-        <option value="Punjab National Bank">Punjab National Bank</option> 
-        <option value="Bank of Baroda">Bank of Baroda</option> 
-        <option value="Yes Bank">Yes Bank</option> 
-        <option value="IDFC First Bank">IDFC First Bank</option> 
+        <option value="" className="text-gray-600 dark:text-gray-300">-- Select Bank --</option>
+        <option value="HDFC" className="text-gray-800 dark:text-white">HDFC</option>
+        <option value="SBI" className="text-gray-800 dark:text-white">SBI</option>
+        <option value="ICICI" className="text-gray-800 dark:text-white">ICICI</option>
+        <option value="Axis Bank" className="text-gray-800 dark:text-white">Axis Bank</option>
+        <option value="Kotak Mahindra" className="text-gray-800 dark:text-white">Kotak Mahindra</option>
+        <option value="Punjab National Bank" className="text-gray-800 dark:text-white">Punjab National Bank</option>
+        <option value="Bank of Baroda" className="text-gray-800 dark:text-white">Bank of Baroda</option>
+        <option value="Canara Bank" className="text-gray-800 dark:text-white">Canara Bank</option>
+        <option value="Yes Bank" className="text-gray-800 dark:text-white">Yes Bank</option>
+        <option value="IDBI Bank" className="text-gray-800 dark:text-white">IDBI Bank</option>
       </select>
       <button
         onClick={handleVerify}
@@ -492,12 +498,12 @@ const EMIScreen: React.FC<{ onSelect: (emi: string) => void }> = ({ onSelect }) 
       <select
         value={emi}
         onChange={(e) => setEmi(e.target.value)}
-        className="w-full border border-gray-300 rounded-md p-3 mb-4"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
       >
-        <option value="">-- Select EMI --</option>
-        <option value="3 months">3 months</option>
-        <option value="6 months">6 months</option>
-        <option value="12 months">12 months</option>
+        <option value="" className="text-gray-600 dark:text-gray-300">-- Select EMI --</option>
+        <option value="3 months" className="text-gray-800 dark:text-white">3 months</option>
+        <option value="6 months" className="text-gray-800 dark:text-white">6 months</option>
+        <option value="12 months" className="text-gray-800 dark:text-white">12 months</option>
       </select>
       <button
         onClick={handleVerify}
