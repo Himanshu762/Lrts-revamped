@@ -126,15 +126,15 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const renderPaymentMode = () => {
     switch (activePaymentMode) {
       case "UPI":
-        return <UPIScreen onSelect={(upiId) => setSelectedPaymentMode(UPI: ${upiId})} />;
+        return <UPIScreen onSelect={(upiId) => setSelectedPaymentMode(`UPI: ${upiId}`)} />;
       case "Cards":
-        return <CardsScreen onSelect={(cardDetails) => setSelectedPaymentMode(Card: ${cardDetails})} />;
+        return <CardsScreen onSelect={(cardDetails) => setSelectedPaymentMode(`Card: ${cardDetails}`)} />;
       case "Wallets":
-        return <WalletsScreen onSelect={(wallet) => setSelectedPaymentMode(Wallet: ${wallet})} />;
+        return <WalletsScreen onSelect={(wallet) => setSelectedPaymentMode(`Wallet: ${wallet}`)} />;
       case "Net Banking":
-        return <NetBankingScreen onSelect={(bank) => setSelectedPaymentMode(Net Banking: ${bank})} />;
+        return <NetBankingScreen onSelect={(bank) => setSelectedPaymentMode(`Net Banking: ${bank}`)} />;
       case "EMI":
-        return <EMIScreen onSelect={(emi) => setSelectedPaymentMode(EMI: ${emi})} />;
+        return <EMIScreen onSelect={(emi) => setSelectedPaymentMode(`EMI: ${emi}`)} />;
       default:
         return null;
     }
@@ -303,10 +303,10 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
 
   const handleCardSelect = () => {
     if (!isValidCardNumber(cardNumber, cardType)) {
-      alert(Please enter a valid ${cardType} card number.);
+      alert(`Please enter a valid ${cardType} card number.`);
       return;
     }
-    onSelect(${cardType} Card ending in ${cardNumber.slice(-4)});
+    onSelect(`${cardType} Card ending in ${cardNumber.slice(-4)}`);
   }; 
 
   return (
@@ -326,7 +326,7 @@ const CardsScreen: React.FC<{ onSelect: (cardDetails: string) => void }> = ({ on
             />
             <img
               src={cardIcons[cardType]}
-              alt={${cardType} icon}
+              alt={`${cardType} icon`}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 w-8 h-8"
             />
           </div>
