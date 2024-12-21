@@ -29,26 +29,12 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-xl relative transition-transform transform scale-100">
           {!isPaymentOpen ? (
             <>
-              <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white text-center">
-                Select Zones
-              </h3>
+              <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white text-center">Select Zones</h3>
               <div>
-                <label className="block mb-2 text-sm text-gray-700 dark:text-gray-300">
-                  Home Zone:
-                </label>
-                <select
-                  value={homeZone}
-                  onChange={(e) => setHomeZone(e.target.value)}
-                  className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-white transition focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                >
-                  <option value="" disabled>
-                    Select Home Zone
-                  </option>
-                  {delhiMetroStations.map((station) => (
-                    <option key={station.name} value={station.name}>
-                      {station.name}
-                    </option>
-                  ))}
+                <label className="block mb-2 text-sm text-gray-700 dark:text-gray-300">Home Zone:</label>
+                <select value={homeZone} onChange={(e) => setHomeZone(e.target.value)} className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-white transition focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="" disabled>Select Home Zone</option>
+                  {delhiMetroStations.map((station) => (<option key={station.name} value={station.name}>{station.name}</option>))}
                 </select>
               </div>
               <div className="mt-4">
@@ -90,7 +76,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({ isOpen, onClose
             onClick={onClose}
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-transform transform hover:scale-110"
           >
-            ✕
+            &times;
           </button>
         </div>
       </div>
