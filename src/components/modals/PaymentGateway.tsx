@@ -69,7 +69,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           user_id: user?.id,
           name: user?.fullName || "Unknown User",
           email: user?.primaryEmailAddress?.emailAddress || "No Email",
-          pass_type: passDetails.title.toLowerCase(), // Ensure the pass type is in lowercase
+          pass_type: passDetails.title,
           price: passDetails.price,
           home_zone: passDetails.homeZone,
           destination_zone: passDetails.destinationZone,
