@@ -57,7 +57,11 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
 
-  const handlePayment = async () => {if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
+  const handlePayment = async () => {
+    if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
+    const validPassTypes = ["basic", "standard"];
+    if (!validPassTypes.includes(passDetails.title.toLowerCase())) {alert(`Invalid pass type: ${passDetails.title}. Only 'basic' or 'standard' are allowed.`);return;}
+  
     setIsPaymentProcessing(true);
     try {
       const { error } = await supabase.from("passes").insert([
@@ -65,7 +69,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           user_id: user?.id,
           name: user?.fullName || "Unknown User",
           email: user?.primaryEmailAddress?.emailAddress || "No Email",
-          pass_type: passDetails.title,
+          pass_type: passDetails.title.toLowerCase(), // Ensure the pass type is in lowercase
           price: passDetails.price,
           home_zone: passDetails.homeZone,
           destination_zone: passDetails.destinationZone,
@@ -73,8 +77,22 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
           payment_mode: selectedPaymentMode,
         },
       ]);
-      if (error) {console.error("Failed to save pass details:", error);alert("Payment failed. Please try again.");} else {alert("Payment successful! Your pass has been added.");onClose();}} catch (err) {console.error("Payment error:", err);alert("An unexpected error occurred. Please try again.");} finally {setIsPaymentProcessing(false);}
+  
+      if (error) {
+        console.error("Failed to save pass details:", error);
+        alert("Payment failed. Please try again.");
+      } else {
+        alert("Payment successful! Your pass has been added.");
+        onClose();
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsPaymentProcessing(false);
+    }
   };
+  
 
   const renderPaymentMode = () => {
     switch (activePaymentMode) {
