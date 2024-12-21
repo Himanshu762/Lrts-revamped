@@ -118,8 +118,6 @@ function App() {
                 <Route path="/zones" element={<ExploreZones />} />
                 <Route path="/planner" element={<TripPlanner />} />
                 <Route path="/passes" element={<PassesPage />} />
-                {/* 404 Route */}
-                <Route path="*" element={<AccountPage />} />
               </Routes>
             </AnimatePresence>
             <Footer />
