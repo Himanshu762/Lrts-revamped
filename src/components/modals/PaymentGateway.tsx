@@ -28,14 +28,14 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
       const { error } = await supabase.from("passes").insert([
         {
-          user_id: user?.id,
+          user_id: user?.id, // Now accepted as text
           name: user?.fullName || "Unknown User",
           email: user?.primaryEmailAddress?.emailAddress || "No Email",
           pass_type: passDetails.title,
           price: passDetails.price,
           home_zone: passDetails.homeZone,
           destination_zone: passDetails.destinationZone,
-          pass_secret: passSecret,
+          pass_secret: uuidv4(),
         },
       ]);
 
