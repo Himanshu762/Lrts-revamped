@@ -142,24 +142,22 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-4/5 max-w-4xl relative">
+      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-full max-w-4xl relative overflow-hidden">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"
+          aria-label="Close"
         >
           &times;
         </button>
-        <div className="flex h-full">
+        <div className="flex flex-col lg:flex-row">
           {/* Sidebar */}
           <Sidebar passDetails={passDetails} />
-
+  
           {/* Main Content */}
-          <div className="w-3/4 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Payment Options</h2>
-            </div>
-
-            <div className="flex space-x-4 mb-4">
+          <div className="flex-1 p-6">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Select Payment Option</h2>
+            <div className="flex flex-wrap gap-2 mb-6">
               {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
                 <MenuOption
                   key={mode}
@@ -169,28 +167,56 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
                 />
               ))}
             </div>
+            <div className="bg-white dark:bg-gray-700 rounded-md p-4 shadow-md">
+              {renderPaymentMode()}
+            </div>
           </div>
-
-          {/* Main Content */}
-          <div className="w-3/4 p-6">{renderPaymentMode()}</div>
         </div>
-        <div className="p-6">
+  
+        {/* Footer */}
+        <div className="p-6 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700">
           <button
             onClick={handlePayment}
             disabled={isPaymentProcessing}
             className={clsx(
-              "w-full py-3 rounded-lg text-lg font-bold",
+              "w-full py-3 rounded-lg text-lg font-bold transition-all",
               isPaymentProcessing
-                ? "bg-gray-400 text-gray-800"
+                ? "bg-gray-400 text-gray-800 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
             )}
           >
-            {isPaymentProcessing ? "Processing Payment..." : "Confirm Payment"}
+            {isPaymentProcessing ? (
+              <span className="flex items-center justify-center">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+                Processing Payment...
+              </span>
+            ) : (
+              "Confirm Payment"
+            )}
           </button>
         </div>
       </div>
     </div>
-  );
+  );  
 };
 
 // Sidebar Component
