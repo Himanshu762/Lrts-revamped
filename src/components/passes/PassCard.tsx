@@ -44,6 +44,7 @@ const PassCard: React.FC = () => {
 
   return (
     <>
+      {/* Pass Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {passes.map((pass, index) => (
           <motion.div
@@ -56,12 +57,14 @@ const PassCard: React.FC = () => {
               pass.popular && "ring-2 ring-blue-300 dark:ring-blue-500"
             )}
           >
+            {/* Popular Tag */}
             {pass.popular && (
               <div className="absolute top-0 right-0 bg-gradient-to-r from-pink-300 to-purple-300 dark:from-pink-600 dark:to-purple-600 text-white px-4 py-1 rounded-bl-lg text-sm font-medium">
                 Popular
               </div>
             )}
 
+            {/* Pass Details */}
             <div className="p-6 space-y-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -80,35 +83,7 @@ const PassCard: React.FC = () => {
                 <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
               </div>
 
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8">
-                  <svg viewBox="0 0 32 32" className="text-gray-500">
-                    <circle
-                      cx="16"
-                      cy="16"
-                      r="14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <text
-                      x="16"
-                      y="20"
-                      textAnchor="middle"
-                      fill="currentColor"
-                      fontSize="12"
-                      fontFamily="sans-serif"
-                    >
-                      LRTS
-                    </text>
-                  </svg>
-                </div>
-                <div className="text-gray-500 font-mono">
-                  •••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}
-                </div>
-              </div>
-
-              {/* Features rendering */}
+              {/* Features */}
               <ul className="space-y-3">
                 {pass.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center space-x-3">
@@ -143,6 +118,7 @@ const PassCard: React.FC = () => {
                 ))}
               </ul>
 
+              {/* Get Started Button */}
               <button
                 onClick={() =>
                   handleGetStarted({ title: pass.title, price: pass.price })
