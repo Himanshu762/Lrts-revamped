@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import React from "react";
 import { motion } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import clsx from "clsx";
-import { useClerk } from "@clerk/clerk-react";
+import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
@@ -52,21 +51,11 @@ const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
               <CreditCard className="w-10 h-10 text-gray-500 dark:text-gray-400" />
             </div>
             <div className="space-y-2">
-              <p>
-                <strong>Home Zone:</strong> {pass.home_zone}
-              </p>
-              <p>
-                <strong>Destination Zone:</strong> {pass.destination_zone}
-              </p>
-              <p>
-                <strong>Email:</strong> {pass.email}
-              </p>
-              <p>
-                <strong>Pass Secret:</strong> {pass.pass_secret}
-              </p>
-              <p>
-                <strong>Payment Mode:</strong> {pass.payment_mode}
-              </p>
+              <p><strong>Home Zone:</strong> {pass.home_zone}</p>
+              <p><strong>Destination Zone:</strong> {pass.destination_zone}</p>
+              <p><strong>Email:</strong> {pass.email}</p>
+              <p><strong>Pass Secret:</strong> {pass.pass_secret}</p>
+              <p><strong>Payment Mode:</strong> {pass.payment_mode}</p>
             </div>
           </div>
         </motion.div>
