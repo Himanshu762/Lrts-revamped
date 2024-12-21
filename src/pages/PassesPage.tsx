@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
+import { createClient } from "@supabase/supabase-js";
 import { useClerk } from "@clerk/clerk-react";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL || "",
+  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
+);
 
 const PassesPage: React.FC = () => {
   const { user } = useClerk();
   const [userHasPasses, setUserHasPasses] = useState(false);
-
-  const handleUserPassCheck = (hasPasses: boolean) => {
-    setUserHasPasses(hasPasses);
-  };
+  const [loading, setLoading] = useState(true);
 
   // Default available passes
   const defaultPasses = [
     {
-      id: 1, // Add unique IDs for default passes
+      id: 1, // Unique ID
       title: "Basic",
       price: "999",
       duration: "month",
@@ -40,14 +43,42 @@ const PassesPage: React.FC = () => {
     },
   ];
 
+  // Fetch user passes from the database
   useEffect(() => {
-    // Ensure user is authenticated before checking for passes
-    if (!user) {
-      console.warn("User not authenticated.");
-      setUserHasPasses(false);
-      return;
-    }
+    const fetchUserPasses = async () => {
+      if (!user) {
+        console.warn("User not authenticated.");
+        setUserHasPasses(false);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("passes")
+          .select("*")
+          .eq("email", user.emailAddress);
+
+        if (error) {
+          console.error("Error fetching passes:", error);
+          setUserHasPasses(false);
+        } else {
+          setUserHasPasses(data && data.length > 0);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching passes:", err);
+        setUserHasPasses(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserPasses();
   }, [user]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -57,7 +88,7 @@ const PassesPage: React.FC = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
               Your Passes
             </h2>
-            <UserPasses onPassCheck={handleUserPassCheck} />
+            <UserPasses />
           </>
         ) : (
           <>
@@ -72,6 +103,7 @@ const PassesPage: React.FC = () => {
                   price={pass.price}
                   duration={pass.duration}
                   features={pass.features}
+                  popular={pass.popular}
                 />
               ))}
             </div>
