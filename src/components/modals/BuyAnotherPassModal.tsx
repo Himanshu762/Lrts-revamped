@@ -83,7 +83,7 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
                 className="transform translate-y-2 transition-all duration-300 cursor-pointer"
                 onClick={() => handlePassSelection(pass)}
               >
-                <PassCard {...pass} disableZoneModal={true} hideActionButton={true}/>
+                <PassCard {...pass}/>
               </div>
             ))}
           </div>

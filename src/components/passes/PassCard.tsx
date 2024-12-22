@@ -13,29 +13,26 @@ interface PassCardProps {
   title: string;
   price: string;
   duration: string;
-  features: PassFeature[]; // Pass features directly
+  features: PassFeature[];
   popular?: boolean;
-  hideActionButton?: boolean;
 }
 
-const PassCard: React.FC<PassCardProps> = ({ 
-  title, 
-  price, 
-  duration, 
-  features = [], 
-  popular,
-  hideActionButton = false
-}) => {
+const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = [], popular }) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsZoneModalOpen(true);
+  };
 
   return (
     <>
       <motion.div
         whileHover={{ translateY: -5 }}
+        onClick={handleClick}
         className={clsx(
-          'relative overflow-hidden rounded-2xl',
+          'relative overflow-hidden rounded-2xl cursor-pointer',
           'bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900',
-          'animate-gradient-x',
+          'animate-gradient-x transition-transform transform',
           popular && 'ring-2 ring-blue-300 dark:ring-blue-500'
         )}
       >
@@ -71,50 +68,34 @@ const PassCard: React.FC<PassCardProps> = ({
 
           {/* Features rendering */}
           <ul className="space-y-3">
-            {features && features.length > 0 ? (
-              features.map((feature, index) => (
-                <li key={index} className="flex items-center space-x-3">
-                  <div
+            {features.map((feature, index) => (
+              <li key={index} className="flex items-center space-x-3">
+                <div
+                  className={clsx(
+                    'flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center',
+                    feature.included ? 'bg-blue-300 dark:bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'
+                  )}
+                >
+                  <Check
                     className={clsx(
-                      'flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center',
-                      feature.included ? 'bg-blue-300 dark:bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'
+                      'h-3 w-3',
+                      feature.included ? 'text-white' : 'text-gray-400 dark:text-gray-500'
                     )}
-                  >
-                    <Check
-                      className={clsx(
-                        'h-3 w-3',
-                        feature.included ? 'text-white' : 'text-gray-400 dark:text-gray-500'
-                      )}
-                    />
-                  </div>
-                  <span
-                    className={clsx(
-                      'text-sm',
-                      feature.included
-                        ? 'text-gray-800 dark:text-white'
-                        : 'text-gray-400 dark:text-gray-500 line-through'
-                    )}
-                  >
-                    {feature.text}
-                  </span>
-                </li>
-              ))
-            ) : (
-              <li className="text-gray-400">No features available</li>
-            )}
+                  />
+                </div>
+                <span
+                  className={clsx(
+                    'text-sm',
+                    feature.included
+                      ? 'text-gray-800 dark:text-white'
+                      : 'text-gray-400 dark:text-gray-500 line-through'
+                  )}
+                >
+                  {feature.text}
+                </span>
+              </li>
+            ))}
           </ul>
-
-          {!hideActionButton && (  
-            <button
-              onClick={() => setIsZoneModalOpen(true)}
-              className={clsx(
-                'w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200',
-                'bg-blue-300 hover:bg-blue-400 text-white dark:bg-blue-500 dark:hover:bg-blue-600'
-              )}
-            >
-              Get Started
-            </button>
-          )}
         </div>
       </motion.div>
 
