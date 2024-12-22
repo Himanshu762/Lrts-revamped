@@ -1,5 +1,5 @@
-import React from "react";
-import { SignUp, useAuth } from "@clerk/clerk-react";
+import React, { useEffect } from "react";
+import { SignUp, useAuth, useClerk } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext"; // Assuming you have this context
 
@@ -7,12 +7,19 @@ const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
   const { darkMode } = useDarkMode(); // Access dark mode state
+  const { clerk } = useClerk(); // Access Clerk directly to check initialization
 
-  React.useEffect(() => {
+  // Redirect to the account page if signed in
+  useEffect(() => {
     if (isSignedIn) {
       navigate("/account");
     }
   }, [isSignedIn, navigate]);
+
+  // Ensure Clerk is loaded before rendering
+  if (!clerk) {
+    return <div>Loading Clerk...</div>; // Wait for Clerk to load
+  }
 
   return (
     <div
@@ -35,7 +42,8 @@ const SignUpPage: React.FC = () => {
           <SignUp
             path="/signup"
             routing="path"
-            redirectUrl="/account"
+            redirectUrl="/account" // Avoid automatic redirect
+            afterSignUpUrl="/account" // Stay on the current page
           />
         </div>
       </div>
