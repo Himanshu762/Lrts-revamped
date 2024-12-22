@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useClerk, RedirectToSignIn } from "@clerk/clerk-react";
+import { useUser, RedirectToSignIn } from "@clerk/clerk-react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
 import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
@@ -37,39 +37,36 @@ const passes = [
 ];
 
 const PassesPage: React.FC = () => {
-  const { user, isLoaded, isSignedIn } = useClerk();
+  const { user, isSignedIn, isLoaded } = useUser();
   const [userPasses, setUserPasses] = useState<Pass[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const checkAuthenticationAndFetchPasses = async () => {
-      console.log("Auth state:", { isLoaded, isSignedIn, user });
+    if (!isLoaded) {
+      console.log("Clerk is still loading...");
+      return;
+    }
 
-      if (!isLoaded) {
-        console.log("Clerk not loaded yet.");
-        return; // Wait for Clerk to load
-      }
+    if (!isSignedIn) {
+      console.log("User is not signed in.");
+      setLoading(false); // Stop loading if not signed in
+      return;
+    }
 
-      if (!isSignedIn) {
-        console.log("User is not signed in.");
-        setLoading(false); // Stop loading for unsigned users
-        return;
-      }
-
+    const fetchUserPasses = async () => {
       console.log("User is signed in, fetching passes...");
-      if (user?.primaryEmailAddress?.emailAddress) {
+      if (user?.primaryEmailAddress) {
         try {
           const { data, error } = await supabase
             .from("passes")
             .select("*")
-            .eq("email", user.primaryEmailAddress.emailAddress);
+            .eq("email", user.primaryEmailAddress);
 
           if (error) {
             console.error("Error fetching passes:", error);
             setUserPasses([]);
           } else {
-            console.log("Fetched passes:", data);
             setUserPasses(data || []);
           }
         } catch (err) {
@@ -81,11 +78,15 @@ const PassesPage: React.FC = () => {
       }
     };
 
-    checkAuthenticationAndFetchPasses();
+    fetchUserPasses();
   }, [user, isLoaded, isSignedIn]);
 
   if (!isLoaded) {
-    return <div>Loading...</div>; // Show loading while Clerk loads
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Initializing Clerk... Please wait.</p>
+      </div>
+    );
   }
 
   if (!isSignedIn) {
@@ -102,7 +103,7 @@ const PassesPage: React.FC = () => {
   }
 
   if (loading) {
-    return <div>Loading passes...</div>; // Show loading while passes are fetched
+    return <div>Loading passes...</div>;
   }
 
   return (
