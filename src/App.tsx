@@ -14,6 +14,8 @@ import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 import SignUpPage from './pages/SignUpPage';
+import VerifyEmailSignInPage from './pages/VerifyEmailSignInPage';
+import VerifyEmailSignUpPage from './pages/VerifyEmailSignUpPage';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
 
@@ -107,7 +109,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
-                {/* AccountPage is wrapped with SignedIn to ensure the user is authenticated */}
+                <Route path="/signin/verify-email-address" element={<VerifyEmailSignInPage />} />
+                <Route path="/signup/verify-email-address" element={<VerifyEmailSignUpPage />} />
                 <Route
                   path="/account"
                   element={
