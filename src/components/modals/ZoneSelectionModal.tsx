@@ -5,7 +5,7 @@ import { delhiMetroStations } from "../../data/stations"; // Adjust the path as 
 interface ZoneSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  passDetails: { title: string; price: string };
+  passDetails: { title: string; price: string } | null; // Updated to handle null for safety
 }
 
 const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
@@ -30,7 +30,7 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
     setIsPaymentOpen(true);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !passDetails) return null; // Ensure modal is closed if passDetails is null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -38,7 +38,6 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
         {!isPaymentOpen ? (
           <>
             {isConfirming ? (
-              // Confirmation Screen
               <>
                 <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white text-center">
                   Confirm Pass Details
@@ -73,7 +72,6 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
                 </button>
               </>
             ) : (
-              // Zone Selection Screen
               <>
                 <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white text-center">
                   Select Zones
@@ -126,7 +124,6 @@ const ZoneSelectionModal: React.FC<ZoneSelectionModalProps> = ({
             )}
           </>
         ) : (
-          // Payment Gateway Screen
           <PaymentGateway
             passDetails={{ ...passDetails, homeZone, destinationZone }}
             onClose={() => {
