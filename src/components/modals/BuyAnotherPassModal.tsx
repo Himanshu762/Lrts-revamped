@@ -59,7 +59,6 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
             &times;
           </button>
         </div>
-        {/* Horizontal Layout */}
         <div className="flex gap-6 overflow-x-auto pb-4">
           {passes.map((pass, index) => (
             <PassCard key={index} {...pass} />
