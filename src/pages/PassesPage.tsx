@@ -43,39 +43,40 @@ const PassesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!isSignedIn) {
-      setLoading(false);
-      return;
+    if (isLoaded && !isSignedIn) {
+      setLoading(false); // Stop loading when the user is not signed in
     }
 
-    const fetchUserPasses = async () => {
-      if (!user?.primaryEmailAddress?.emailAddress) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from("passes")
-          .select("*")
-          .eq("email", user.primaryEmailAddress.emailAddress);
-
-        if (error) {
-          console.error("Error fetching passes:", error);
-          setUserPasses([]);
-        } else {
-          setUserPasses(data || []);
+    if (isLoaded && isSignedIn) {
+      const fetchUserPasses = async () => {
+        if (!user?.primaryEmailAddress?.emailAddress) {
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setUserPasses([]);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchUserPasses();
-  }, [user, isSignedIn]);
+        try {
+          const { data, error } = await supabase
+            .from("passes")
+            .select("*")
+            .eq("email", user.primaryEmailAddress.emailAddress);
+
+          if (error) {
+            console.error("Error fetching passes:", error);
+            setUserPasses([]);
+          } else {
+            setUserPasses(data || []);
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+          setUserPasses([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchUserPasses();
+    }
+  }, [user, isLoaded, isSignedIn]);
 
   if (!isLoaded) {
     return <div>Loading...</div>; // Show a loading indicator until Clerk is loaded
@@ -95,7 +96,7 @@ const PassesPage: React.FC = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading passes...</div>; // Show a loading indicator while fetching passes
   }
 
   return (
