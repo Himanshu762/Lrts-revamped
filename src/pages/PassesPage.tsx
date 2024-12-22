@@ -43,17 +43,18 @@ const PassesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      setLoading(false); // Stop loading when the user is not signed in
-    }
+    const checkAuthenticationAndFetchPasses = async () => {
+      if (!isLoaded) {
+        return; // Wait for Clerk to load
+      }
 
-    if (isLoaded && isSignedIn) {
-      const fetchUserPasses = async () => {
-        if (!user?.primaryEmailAddress?.emailAddress) {
-          setLoading(false);
-          return;
-        }
+      if (!isSignedIn) {
+        setLoading(false); // If not signed in, stop loading
+        return;
+      }
 
+      // Fetch passes only if signed in
+      if (isSignedIn && user?.primaryEmailAddress?.emailAddress) {
         try {
           const { data, error } = await supabase
             .from("passes")
@@ -72,14 +73,14 @@ const PassesPage: React.FC = () => {
         } finally {
           setLoading(false);
         }
-      };
+      }
+    };
 
-      fetchUserPasses();
-    }
+    checkAuthenticationAndFetchPasses();
   }, [user, isLoaded, isSignedIn]);
 
   if (!isLoaded) {
-    return <div>Loading...</div>; // Show a loading indicator until Clerk is loaded
+    return <div>Loading...</div>; // Show loading while Clerk loads
   }
 
   if (!isSignedIn) {
@@ -96,7 +97,7 @@ const PassesPage: React.FC = () => {
   }
 
   if (loading) {
-    return <div>Loading passes...</div>; // Show a loading indicator while fetching passes
+    return <div>Loading passes...</div>; // Show loading while passes are fetched
   }
 
   return (
