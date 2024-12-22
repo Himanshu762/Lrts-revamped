@@ -15,13 +15,29 @@ interface PassCardProps {
   duration: string;
   features: PassFeature[];
   popular?: boolean;
+  insideBuyAnotherPassModal?: boolean; // New prop
+  onCardClick?: () => void; // Callback for click when inside BuyAnotherPassModal
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = [], popular }) => {
+const PassCard: React.FC<PassCardProps> = ({
+  title,
+  price,
+  duration,
+  features = [],
+  popular,
+  insideBuyAnotherPassModal = false,
+  onCardClick,
+}) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   const handleClick = () => {
-    setIsZoneModalOpen(true);
+    if (insideBuyAnotherPassModal && onCardClick) {
+      // Let the parent handle the modal
+      onCardClick();
+    } else if (!insideBuyAnotherPassModal) {
+      // Open modal directly when not inside BuyAnotherPassModal
+      setIsZoneModalOpen(true);
+    }
   };
 
   return (
@@ -99,11 +115,13 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = 
         </div>
       </motion.div>
 
-      <ZoneSelectionModal
-        isOpen={isZoneModalOpen}
-        onClose={() => setIsZoneModalOpen(false)}
-        passDetails={{ title, price }}
-      />
+      {!insideBuyAnotherPassModal && (
+        <ZoneSelectionModal
+          isOpen={isZoneModalOpen}
+          onClose={() => setIsZoneModalOpen(false)}
+          passDetails={{ title, price }}
+        />
+      )}
     </>
   );
 };
