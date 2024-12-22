@@ -1,18 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
-import { UserProfile } from "@clerk/clerk-react";
+import { useAuth, UserProfile, ClerkLoaded } from "@clerk/clerk-react";
 
 const AccountPage: React.FC = () => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth(); // Include isLoaded to check if Clerk has finished loading
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  // Redirect to sign-in page if the user is not signed in
+  // If Clerk hasn't finished loading, show a loading state
   useEffect(() => {
+    if (!isLoaded) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false); // Set loading to false once Clerk is loaded
     if (!isSignedIn) {
       navigate("/signin");
     }
-  }, [isSignedIn, navigate]);
+  }, [isLoaded, isSignedIn, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-xl text-gray-900 dark:text-white">Loading...</div>
+      </div>
+    );
+  }
 
   if (!isSignedIn) {
     return null; // Prevent rendering if not authenticated
@@ -20,13 +33,13 @@ const AccountPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
-      <div 
+      <div
         className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 sm:p-6"
         style={{
           maxWidth: "1000px",
-          width: "100%", 
+          width: "100%",
           padding: "20px",
-        }}      
+        }}
       >
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
           Manage Your Account
@@ -57,7 +70,7 @@ const AccountPage: React.FC = () => {
                   "text-black border-b-2 border-indigo-500 font-medium px-3 py-2",
               },
             }}
-          />  
+          />
         </div>
       </div>
     </div>
