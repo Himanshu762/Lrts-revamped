@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PassCard from "../passes/PassCard";
+import PassCa from "../passes/PassCa";
 import ZoneSelectionModal from "../modals/ZoneSelectionModal";
 
 interface Pass {
@@ -78,13 +78,7 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
           </div>
           <div className="flex gap-6 overflow-x-auto pb-4">
             {passes.map((pass, index) => (
-              <div
-                key={index}
-                className="transform translate-y-2 transition-all duration-300 cursor-pointer"
-                onClick={() => handlePassSelection(pass)}
-              >
-                <PassCard {...pass} disableZoneModal={true}/>
-              </div>
+              <PassCa key={index} {...pass} />
             ))}
           </div>
         </div>
