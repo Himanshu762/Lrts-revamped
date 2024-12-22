@@ -44,17 +44,21 @@ const PassesPage: React.FC = () => {
 
   useEffect(() => {
     const checkAuthenticationAndFetchPasses = async () => {
+      console.log("Auth state:", { isLoaded, isSignedIn, user });
+
       if (!isLoaded) {
+        console.log("Clerk not loaded yet.");
         return; // Wait for Clerk to load
       }
 
       if (!isSignedIn) {
-        setLoading(false); // If not signed in, stop loading
+        console.log("User is not signed in.");
+        setLoading(false); // Stop loading for unsigned users
         return;
       }
 
-      // Fetch passes only if signed in
-      if (isSignedIn && user?.primaryEmailAddress?.emailAddress) {
+      console.log("User is signed in, fetching passes...");
+      if (user?.primaryEmailAddress?.emailAddress) {
         try {
           const { data, error } = await supabase
             .from("passes")
@@ -65,6 +69,7 @@ const PassesPage: React.FC = () => {
             console.error("Error fetching passes:", error);
             setUserPasses([]);
           } else {
+            console.log("Fetched passes:", data);
             setUserPasses(data || []);
           }
         } catch (err) {
