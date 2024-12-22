@@ -46,14 +46,17 @@ const BuyAnotherPassModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               &times;
             </button>
           </div>
-          <div className="flex gap-6 overflow-x-auto pb-4">
+
+          {/* Add margin-top to move the PassCards down */}
+          <div className="flex gap-6 overflow-x-auto pb-4 mt-2">
             {passes.map((pass, index) => (
-              <PassCard
-                key={index}
-                {...pass}
-                insideBuyAnotherPassModal={true}
-                onCardClick={() => setSelectedPass({ title: pass.title, price: pass.price })}
-              />
+              <div key={index} className="mt-2">
+                <PassCard
+                  {...pass}
+                  insideBuyAnotherPassModal={true}
+                  onCardClick={() => setSelectedPass({ title: pass.title, price: pass.price })}
+                />
+              </div>
             ))}
           </div>
         </div>
