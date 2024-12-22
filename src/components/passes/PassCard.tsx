@@ -15,9 +15,17 @@ interface PassCardProps {
   duration: string;
   features: PassFeature[]; // Pass features directly
   popular?: boolean;
+  disableZoneModal?: boolean; // New prop to disable ZoneSelectionModal
 }
 
-const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = [], popular }) => {
+const PassCard: React.FC<PassCardProps> = ({ 
+  title, 
+  price, 
+  duration, 
+  features = [], 
+  popular, 
+  disableZoneModal = false // Default to false
+}) => {
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false);
 
   return (
@@ -92,16 +100,19 @@ const PassCard: React.FC<PassCardProps> = ({ title, price, duration, features = 
                 </li>
               ))
             ) : (
-              <li className="text-gray-400">No features available</li> // More informative message
+              <li className="text-gray-400">No features available</li>
             )}
           </ul>
 
           <button
-            onClick={() => setIsZoneModalOpen(true)}
+            onClick={() => !disableZoneModal && setIsZoneModalOpen(true)} // Only open modal if not disabled
             className={clsx(
               'w-full py-3 px-4 rounded-lg font-medium transition-colors duration-200',
-              'bg-blue-300 hover:bg-blue-400 text-white dark:bg-blue-500 dark:hover:bg-blue-600'
+              disableZoneModal
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-300 hover:bg-blue-400 text-white dark:bg-blue-500 dark:hover:bg-blue-600'
             )}
+            disabled={disableZoneModal} // Disable button if ZoneSelectionModal is disabled
           >
             Get Started
           </button>
