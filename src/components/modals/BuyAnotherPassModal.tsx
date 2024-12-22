@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PassCa from "../passes/PassCa";
+import PassCard from "../passes/PassCard";
 import ZoneSelectionModal from "../modals/ZoneSelectionModal";
 
 interface Pass {
@@ -83,7 +83,7 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
                 className="transform translate-y-2 transition-all duration-300 cursor-pointer"
                 onClick={() => handlePassSelection(pass)}
               >
-                <PassCa {...pass} />
+                <PassCard {...pass} disableZoneModal={true} hideActionButton={true}/>
               </div>
             ))}
           </div>
