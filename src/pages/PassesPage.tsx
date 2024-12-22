@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useUser, RedirectToSignIn } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
 import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
@@ -43,19 +44,12 @@ const PassesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded) {
-      console.log("Clerk is still loading...");
-      return;
-    }
-
-    if (!isSignedIn) {
-      console.log("User is not signed in.");
-      setLoading(false); // Stop loading if not signed in
+    if (!isLoaded || !isSignedIn) {
+      setLoading(false);
       return;
     }
 
     const fetchUserPasses = async () => {
-      console.log("User is signed in, fetching passes...");
       if (user?.primaryEmailAddress) {
         try {
           const { data, error } = await supabase
@@ -81,10 +75,10 @@ const PassesPage: React.FC = () => {
     fetchUserPasses();
   }, [user, isLoaded, isSignedIn]);
 
-  if (!isLoaded) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Initializing Clerk... Please wait.</p>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -94,16 +88,25 @@ const PassesPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-            Please Sign In to Access Your Passes
+            Please Sign In or Sign Up to Access Your Passes
           </h2>
-          <RedirectToSignIn />
+          <div className="flex justify-center space-x-4">
+            <Link
+              to="/signin"
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       </div>
     );
-  }
-
-  if (loading) {
-    return <div>Loading passes...</div>;
   }
 
   return (
