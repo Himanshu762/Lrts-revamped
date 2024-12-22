@@ -1,24 +1,32 @@
-import React, { useEffect } from "react";
-import { SignUp, useAuth, useClerk } from "@clerk/clerk-react";
+import React, { useEffect, useState } from "react";
+import { SignUp, useAuth, ClerkLoaded } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../context/DarkModeContext"; // Assuming you have this context
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const { darkMode } = useDarkMode(); // Access dark mode state
-  const { clerk } = useClerk(); // Access Clerk directly to check initialization
+  const [loading, setLoading] = useState(true);
 
-  // Redirect to the account page if signed in
+  // Redirect to account page if signed in
   useEffect(() => {
+    if (!isLoaded) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false); // Set loading to false once Clerk is loaded
     if (isSignedIn) {
       navigate("/account");
     }
-  }, [isSignedIn, navigate]);
+  }, [isLoaded, isSignedIn, navigate]);
 
-  // Ensure Clerk is loaded before rendering
-  if (!clerk) {
-    return <div>Loading Clerk...</div>; // Wait for Clerk to load
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-xl text-gray-900 dark:text-white">Loading...</div>
+      </div>
+    );
   }
 
   return (
@@ -29,9 +37,7 @@ const SignUpPage: React.FC = () => {
     >
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
         <h2
-          className={`text-2xl font-bold ${
-            darkMode ? "text-white" : "text-gray-900"
-          }`}
+          className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}
         >
           Sign Up
         </h2>
@@ -42,8 +48,7 @@ const SignUpPage: React.FC = () => {
           <SignUp
             path="/signup"
             routing="path"
-            redirectUrl="/account" // Avoid automatic redirect
-            afterSignUpUrl="/account" // Stay on the current page
+            redirectUrl="/account"
           />
         </div>
       </div>
