@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
-import { ClerkProvider, SignedIn } from '@clerk/clerk-react';
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import Benefits from './components/features/Benefits';
@@ -107,6 +107,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
+                {/* AccountPage is wrapped with SignedIn to ensure the user is authenticated */}
                 <Route
                   path="/account"
                   element={
