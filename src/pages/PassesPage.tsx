@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useClerk } from "@clerk/clerk-react";
+import { useClerk, RedirectToSignIn } from "@clerk/clerk-react";
 import UserPasses from "../components/passes/UserPasses";
 import PassCard from "../components/passes/PassCard";
 import BuyAnotherPassModal from "../components/modals/BuyAnotherPassModal";
@@ -12,36 +12,42 @@ const supabase = createClient(
 
 const passes = [
   {
-    title: 'Basic',
-    price: '999',
-    duration: 'month',
+    title: "Basic",
+    price: "999",
+    duration: "month",
     features: [
-      { text: 'Unlimited rides in one zone', included: true },
-      { text: 'Peak hour access', included: true },
-      { text: 'Multi-zone access', included: false },
-      { text: 'Priority booking', included: false },
+      { text: "Unlimited rides in one zone", included: true },
+      { text: "Peak hour access", included: true },
+      { text: "Multi-zone access", included: false },
+      { text: "Priority booking", included: false },
     ],
   },
   {
-    title: 'Standard',
-    price: '1499',
-    duration: 'month',
+    title: "Standard",
+    price: "1499",
+    duration: "month",
     features: [
-      { text: 'Unlimited rides in Multiple Zones', included: true },
-      { text: 'Peak hour access', included: true },
-      { text: 'Multi-zone access', included: true },
-      { text: 'Priority booking', included: true },
+      { text: "Unlimited rides in Multiple Zones", included: true },
+      { text: "Peak hour access", included: true },
+      { text: "Multi-zone access", included: true },
+      { text: "Priority booking", included: true },
     ],
     popular: true,
   },
 ];
 
 const PassesPage: React.FC = () => {
-  const { user } = useClerk();
+  const { user, isLoaded, isSignedIn } = useClerk();
   const [userPasses, setUserPasses] = useState<Pass[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
+    if (!isSignedIn) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUserPasses = async () => {
       if (!user?.primaryEmailAddress?.emailAddress) {
         setLoading(false);
@@ -69,7 +75,24 @@ const PassesPage: React.FC = () => {
     };
 
     fetchUserPasses();
-  }, [user]);
+  }, [user, isSignedIn]);
+
+  if (!isLoaded) {
+    return <div>Loading...</div>; // Show a loading indicator until Clerk is loaded
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            Please Sign In to Access Your Passes
+          </h2>
+          <RedirectToSignIn />
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -85,7 +108,7 @@ const PassesPage: React.FC = () => {
                 Your Purchased Passes
               </h2>
               <button
-                onClick={() => setIsModalOpen(true)} // Toggle modal visibility
+                onClick={() => setIsModalOpen(true)}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Buy Another Pass
@@ -96,9 +119,9 @@ const PassesPage: React.FC = () => {
               <BuyAnotherPassModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                availablePasses={passes} // Provide the list of passes
+                availablePasses={passes}
                 onPassSelect={() => {
-                  setIsModalOpen(false); // Close the modal after selection
+                  setIsModalOpen(false);
                 }}
               />
             )}
