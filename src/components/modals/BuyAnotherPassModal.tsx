@@ -39,7 +39,7 @@ const passes = [
     ],
     popular: true,
   },
-];
+]
 
 const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
   isOpen,
@@ -59,14 +59,9 @@ const BuyAnotherPassModal: React.FC<BuyAnotherPassModalProps> = ({
             &times;
           </button>
         </div>
-        <div className="flex gap-6 overflow-x-auto pb-4">
+        <div className="flex gap-6 overflow-x-auto pb-4 transform translate-y-2 transition-all duration-300">
           {passes.map((pass, index) => (
-            <div
-              key={index}
-              className="transform translate-y-2 transition-all duration-300"
-            >
-              <PassCard {...pass} />
-            </div>
+            <PassCard key={index} {...pass} />
           ))}
         </div>
       </div>
