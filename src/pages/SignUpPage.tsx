@@ -21,7 +21,11 @@ const SignUpPage: React.FC = () => {
       }`}
     >
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h2 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+        <h2
+          className={`text-2xl font-bold ${
+            darkMode ? "text-white" : "text-gray-900"
+          }`}
+        >
           Sign Up
         </h2>
         <p className={`mt-4 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
