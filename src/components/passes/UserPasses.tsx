@@ -26,41 +26,41 @@ interface UserPassesProps {
 
 const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
       {passes.map((pass) => (
         <motion.div
           key={pass.pass_secret}
           whileHover={{ translateY: -3 }}
           className={clsx(
-            "relative overflow-hidden rounded-lg",
+            "relative overflow-hidden rounded-md",
             "bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900",
-            "animate-gradient-x shadow-lg",
-            "w-full max-w-sm"
+            "animate-gradient-x shadow-md",
+            "w-full max-w-xs aspect-video"
           )}
-          style={{ width: "350px", height: "200px" }} // Slightly larger than standard credit card size
+          style={{ width: "300px", height: "180px" }} // Approximate credit card size
         >
-          <div className="p-4 space-y-3 h-full flex flex-col justify-between">
+          <div className="p-3 space-y-2 h-full flex flex-col justify-between">
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-base font-bold text-gray-800 dark:text-white">
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="text-sm font-bold text-gray-800 dark:text-white">
                   {pass.pass_type}
                 </h3>
                 <CreditCard className="w-6 h-6 text-gray-500 dark:text-gray-400" />
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
                 <p>
-                  <strong>Home Zone:</strong> {pass.home_zone}
+                  <strong>Home:</strong> {pass.home_zone}
                 </p>
                 <p>
-                  <strong>Destination Zone:</strong> {pass.destination_zone}
+                  <strong>Destination:</strong> {pass.destination_zone}
                 </p>
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <div className="text-lg font-semibold text-gray-800 dark:text-white">
+              <div className="text-sm font-semibold text-gray-800 dark:text-white">
                 ₹{pass.price}
               </div>
-              <QRCodeSVG value={pass.pass_secret} size={64} level="H" />
+              <QRCodeSVG value={pass.pass_secret} size={48} level="H" />
             </div>
           </div>
         </motion.div>
