@@ -13,27 +13,28 @@ const supabase = createClient(
 
 const passes = [
   {
-    title: "Basic",
-    price: "999",
-    duration: "month",
+    title: "Daily Pass - Single Trip",
+    price: "17",
+    duration: "trip",
     features: [
-      { text: "Unlimited rides in one zone", included: true },
-      { text: "Peak hour access", included: true },
-      { text: "Multi-zone access", included: false },
-      { text: "Priority booking", included: false },
+      { text: "Single trip to any metro station in the zone", included: true },
     ],
   },
   {
-    title: "Standard",
-    price: "1499",
-    duration: "month",
+    title: "Daily Pass - Single Zone",
+    price: "35",
+    duration: "day",
     features: [
-      { text: "Unlimited rides in Multiple Zones", included: true },
-      { text: "Peak hour access", included: true },
-      { text: "Multi-zone access", included: true },
-      { text: "Priority booking", included: true },
+      { text: "Up to 2 rides/day in one zone", included: true },
     ],
-    popular: true,
+  },
+  {
+    title: "Daily Pass - Dual Zone",
+    price: "95",
+    duration: "day",
+    features: [
+      { text: "Up to 4 rides/day across two zones", included: true },
+    ],
   },
 ];
 
