@@ -49,6 +49,7 @@ const PassCard: React.FC<PassCardProps> = ({
           'relative overflow-hidden rounded-2xl cursor-pointer',
           'bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900',
           'animate-gradient-x transition-transform transform',
+          'w-64', // Added fixed width
           popular && 'ring-2 ring-blue-300 dark:ring-blue-500'
         )}
       >
