@@ -45,48 +45,50 @@ const PassCard: React.FC<PassCardProps> = ({
         onClick={handleClick}
         className={clsx(
           'relative overflow-hidden rounded-lg cursor-pointer',
-          'bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900',
-          'animate-gradient-x transition-transform transform',
+          'bg-gradient-to-b from-blue-800 to-blue-900',
+          'transition-transform transform',
           'w-full max-w-sm mx-auto',
-          'h-[300px]',
-          popular && 'ring-2 ring-blue-300 dark:ring-blue-500'
+          'h-[200px]',
+          popular && 'ring-2 ring-blue-300'
         )}
       >
         {popular && (
-          <div className="absolute top-0 right-0 bg-gradient-to-r from-pink-300 to-purple-300 dark:from-pink-600 dark:to-purple-600 text-white px-3 py-1 rounded-bl-lg text-xs font-medium">
+          <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-xs font-medium">
             Popular
           </div>
         )}
 
-        <div className="p-6 space-y-4 h-full flex flex-col justify-between">
-          <div className="space-y-4">
+        <div className="p-6 space-y-4 h-full flex flex-col justify-between text-white">
+          <div className="space-y-2">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
-                <div className="mt-1">
-                  <span className="text-3xl font-extrabold text-gray-800 dark:text-white">₹{price}</span>
-                  <span className="text-base text-gray-500 dark:text-gray-400">/{duration}</span>
+                <h3 className="text-xl font-bold">{title}</h3>
+                <div className="mt-2">
+                  <span className="text-3xl font-extrabold">₹{price}</span>
+                  <span className="text-sm text-gray-300">/{duration}</span>
                 </div>
               </div>
-              <CreditCard className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+              <CreditCard className="w-6 h-6 text-gray-300" />
             </div>
           </div>
 
-          <ul className="space-y-2">
+          <div className="flex items-center space-x-2 text-sm">
+            <div className="h-8 w-8">
+              <svg viewBox="0 0 32 32" className="text-gray-300">
+                <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="2" />
+                <text x="16" y="20" textAnchor="middle" fill="currentColor" fontSize="12" fontFamily="sans-serif">
+                  LRTS
+                </text>
+              </svg>
+            </div>
+            <div className="text-gray-300 font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</div>
+          </div>
+
+          <ul className="space-y-1">
             {features.map((feature, index) => (
-              <li key={index} className="flex items-center space-x-2">
-                <Check className={clsx(
-                  'h-4 w-4',
-                  feature.included ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400'
-                )} />
-                <span className={clsx(
-                  'text-sm',
-                  feature.included
-                    ? 'text-gray-700 dark:text-gray-300'
-                    : 'text-gray-400 line-through'
-                )}>
-                  {feature.text}
-                </span>
+              <li key={index} className="flex items-center space-x-2 text-sm text-gray-300">
+                <Check className="h-4 w-4" />
+                <span>{feature.text}</span>
               </li>
             ))}
           </ul>
@@ -104,4 +106,5 @@ const PassCard: React.FC<PassCardProps> = ({
   );
 };
 
+export default PassCard;
 export default PassCard;
