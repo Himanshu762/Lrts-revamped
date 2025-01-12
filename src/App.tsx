@@ -86,7 +86,7 @@ function HomePage() {
             Select the perfect pass that suits your travel needs
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
           {passes.map((pass, index) => (
             <PassCard key={index} {...pass} />
           ))}
