@@ -107,4 +107,3 @@ const PassCard: React.FC<PassCardProps> = ({
 };
 
 export default PassCard;
-export default PassCard;
