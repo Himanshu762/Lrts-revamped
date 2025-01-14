@@ -48,8 +48,8 @@ const PassCard: React.FC<PassCardProps> = ({
           'bg-gradient-to-br from-blue-900 to-blue-950',
           'shadow-lg',
           'w-full',
-          'min-w-[200px] max-w-[300px]',
-          'h-[120px]'
+          'aspect-[1.586]',
+          'min-w-[240px] max-w-[340px]'
         )}
       >
         {popular && (
@@ -61,7 +61,7 @@ const PassCard: React.FC<PassCardProps> = ({
         <div className="p-3 space-y-1.5 h-full flex flex-col justify-between">
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold text-white line-clamp-1">
+              <h3 className="text-xs font-bold text-white line-clamp-1 flex-1 mr-2">
                 {title}
               </h3>
               <CreditCard className="w-4 h-4 text-gray-300 flex-shrink-0" />
