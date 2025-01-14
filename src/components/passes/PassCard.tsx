@@ -47,8 +47,9 @@ const PassCard: React.FC<PassCardProps> = ({
           'relative overflow-hidden rounded-lg cursor-pointer',
           'bg-gradient-to-br from-blue-900 to-blue-950',
           'shadow-lg',
-          'w-full max-w-xs',
-          'h-[150px]'
+          'w-full',
+          'min-w-[250px] max-w-full',
+          'aspect-[2/1]'
         )}
       >
         {popular && (
@@ -60,14 +61,14 @@ const PassCard: React.FC<PassCardProps> = ({
         <div className="p-4 space-y-2 h-full flex flex-col justify-between">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-bold text-white">
+              <h3 className="text-sm font-bold text-white line-clamp-1">
                 {title}
               </h3>
-              <CreditCard className="w-5 h-5 text-gray-300" />
+              <CreditCard className="w-5 h-5 text-gray-300 flex-shrink-0" />
             </div>
             <div className="text-xs text-gray-300">
               <div className="flex items-center space-x-2">
-                <div className="h-6 w-6">
+                <div className="h-6 w-6 flex-shrink-0">
                   <svg viewBox="0 0 24 24" className="text-gray-300">
                     <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
                     <text x="12" y="15" textAnchor="middle" fill="currentColor" fontSize="8" fontFamily="sans-serif">
@@ -75,7 +76,9 @@ const PassCard: React.FC<PassCardProps> = ({
                     </text>
                   </svg>
                 </div>
-                <span className="font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</span>
+                <span className="font-mono whitespace-nowrap overflow-hidden text-ellipsis">
+                  •••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}
+                </span>
               </div>
             </div>
           </div>
@@ -83,14 +86,14 @@ const PassCard: React.FC<PassCardProps> = ({
           <div className="space-y-2">
             {features.slice(0, 1).map((feature, index) => (
               <div key={index} className="flex items-center space-x-2 bg-blue-800/50 rounded-md p-1.5">
-                <Check className="h-4 w-4 text-blue-300" />
-                <span className="text-xs text-blue-100">
+                <Check className="h-4 w-4 text-blue-300 flex-shrink-0" />
+                <span className="text-xs text-blue-100 line-clamp-1">
                   {feature.text}
                 </span>
               </div>
             ))}
             <div className="flex justify-between items-center">
-              <div className="text-base font-semibold text-white">
+              <div className="text-base font-semibold text-white whitespace-nowrap">
                 ₹{price}<span className="text-xs text-gray-300">/{duration}</span>
               </div>
             </div>

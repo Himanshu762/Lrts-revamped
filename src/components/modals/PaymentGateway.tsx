@@ -14,6 +14,7 @@ import maestro from "../misc/icons/maestro.svg";
 import jcb from "../misc/icons/jcb.svg";
 import cvvicon from "../misc/icons/cvv.svg";
 import qrcode from "../misc/QR.png";
+import { QRCodeSVG } from "qrcode.react";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
@@ -58,27 +59,21 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const [selectedPaymentMode, setSelectedPaymentMode] = useState("");
   const [qrValue, setQrValue] = useState("");
 
-  const generateUPIQR = () => {
-    const merchantId = Math.random().toString(36).substring(2, 15);
-    const transactionId = uuidv4();
-    const timestamp = Date.now();
-    const randomSalt = Math.random().toString(36).substring(7);
-    
-    const baseAmount = parseFloat(passDetails.price);
-    const amount = baseAmount.toFixed(2);
-    
-    const upiString = `upi://pay?pa=lrts${merchantId}@ybl&pn=LRTS_METRO&mc=4121&tid=${transactionId}&tr=${timestamp}${randomSalt}&tn=LRTS%20Pass%20Payment&am=${amount}&cu=INR&mode=04`;
-    return upiString;
-  };
-
   useEffect(() => {
-    setQrValue(generateUPIQR());
-    const interval = setInterval(() => {
-      setQrValue(generateUPIQR());
-    }, 300000);
-
-    return () => clearInterval(interval);
+    generateUPIQR();
   }, [passDetails.price]);
+
+  const generateUPIQR = () => {
+    const merchantId = "LRTS" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const transactionId = uuidv4().substring(0, 12).toUpperCase();
+    const timestamp = Date.now();
+    
+    const amount = parseFloat(passDetails.price).toFixed(2);
+    
+    const upiUrl = `upi://pay?pa=lrts@upi&pn=LRTS_METRO&tr=${transactionId}&tn=${passDetails.title}&am=${amount}&cu=INR&mc=4121&mid=${merchantId}&sign=${timestamp}`;
+    
+    setQrValue(upiUrl);
+  };
 
   const handlePayment = async () => {
     if (!selectedPaymentMode) {alert("Please select a payment mode.");return;}
@@ -126,13 +121,39 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl z-10">&times;</button>
         
         <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-          <div className="lg:w-1/3 p-6 bg-gradient-to-b from-blue-900 to-blue-950 text-white">
-            <Sidebar passDetails={passDetails} />
+          <div className="lg:w-1/3 p-4 lg:p-6 bg-gradient-to-b from-blue-900 to-blue-950 text-white">
+            <div className="flex flex-col h-full space-y-4">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-2">
+                  <img 
+                    src="https://img.freepik.com/premium-vector/modern-l-letter-logo-vector_724449-55.jpg" 
+                    alt="Logo" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h2 className="text-lg font-bold text-white">LRTS.com</h2>
+                <p className="text-sm text-gray-300">LRTSPay Trusted Business</p>
+              </div>
+
+              <div className="flex-grow">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-white break-words">
+                    {passDetails.title}
+                  </h3>
+                  <div>
+                    <p className="text-sm text-gray-300">Price Summary</p>
+                    <p className="text-2xl font-bold text-white">₹{passDetails.price}</p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-300 text-center">Secured by LRTSPay</p>
+            </div>
           </div>
 
           <div className="lg:w-2/3 flex flex-col overflow-hidden">
-            <div className="p-6 border-b dark:border-gray-700">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="p-4 lg:p-6 border-b dark:border-gray-700">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                 {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
                   <MenuOption
                     key={mode}
@@ -144,13 +165,13 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 lg:p-6">
               <div className="max-w-md mx-auto">
                 {renderPaymentMode()}
               </div>
             </div>
 
-            <div className="p-6 border-t dark:border-gray-700">
+            <div className="p-4 lg:p-6 border-t dark:border-gray-700">
               <button
                 onClick={handlePayment}
                 disabled={!selectedPaymentMode || isPaymentProcessing}
@@ -161,7 +182,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
                     : "bg-gray-400 cursor-not-allowed"
                 )}
               >
-                {isPaymentProcessing ? "Processing..." : "Pay ₹" + passDetails.price}
+                {isPaymentProcessing ? "Processing..." : `Pay ₹${passDetails.price}`}
               </button>
             </div>
           </div>
@@ -204,20 +225,57 @@ const MenuOption: React.FC<{
 );
 const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
   const [upiId, setUpiId] = useState("");
+
   const handleVerify = () => {
-    if (!upiId) {alert("Please enter a UPI ID.");return;}
+    if (!upiId) {
+      alert("Please enter a UPI ID.");
+      return;
+    }
     const isValidUPI = validUPISuffixes.some((suffix) => upiId.endsWith(suffix));
-    if (!isValidUPI) {alert("Invalid UPI ID. Please use a valid UPI ID.");return;}
+    if (!isValidUPI) {
+      alert("Invalid UPI ID. Please use a valid UPI ID.");
+      return;
+    }
     onSelect(upiId);
     alert("UPI ID Verified Successfully!");
   };
+
   return (
     <div>
-      <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Enter your UPI ID</h3>
-      <input type="text" value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="example@bank" className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"/>
-      <button onClick={handleVerify} className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700">Verify and Select</button>
-      <h3 className="text-lg font-bold text-gray-800 dark:text-white mt-4">Or Scan QR Code</h3>
-      <img src={QRCode} alt="QR Code for Payment" className="w-40 h-40 mx-auto my-4" />
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">
+        Enter your UPI ID
+      </h3>
+      <input
+        type="text"
+        value={upiId}
+        onChange={(e) => setUpiId(e.target.value)}
+        placeholder="example@bank"
+        className="w-full border border-gray-300 rounded-md p-3 mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+      />
+      <button
+        onClick={handleVerify}
+        className="bg-blue-600 text-white py-2 px-4 rounded-md w-full hover:bg-blue-700"
+      >
+        Verify and Select
+      </button>
+      
+      <h3 className="text-lg font-bold text-gray-800 dark:text-white mt-4">
+        Or Scan QR Code
+      </h3>
+      <div className="flex justify-center my-4">
+        <div className="bg-white p-4 rounded-lg">
+          <QRCodeSVG
+            value={qrValue}
+            size={160}
+            level="H"
+            includeMargin={true}
+            className="mx-auto"
+          />
+        </div>
+      </div>
+      <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+        Scan with any UPI app to pay
+      </p>
     </div>
   );
 };
