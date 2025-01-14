@@ -99,24 +99,33 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900 rounded-lg shadow-lg w-full max-w-4xl relative overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl relative overflow-hidden">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl" aria-label="Close">&times;</button>
         <div className="flex flex-col lg:flex-row">
           <Sidebar passDetails={passDetails} />
           <div className="flex-1 p-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Select Payment Option</h2>
-            <div className="flex flex-wrap gap-2 mb-6 bg-white dark:bg-gray-800 text-gray-800 dark:text-white">
+            <div className="flex flex-wrap gap-2 mb-6">
               {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
                 <MenuOption key={mode} label={mode} active={activePaymentMode === mode} onClick={() => setActivePaymentMode(mode)}/>
               ))}
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-md p-4 shadow-md">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-md p-4 shadow-md">
               {renderPaymentMode()}
             </div>
           </div>
         </div>
-        <div className="p-6 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700">
-          <button onClick={handlePayment} disabled={isPaymentProcessing} className={clsx("w-full py-3 rounded-lg text-lg font-bold transition-all", isPaymentProcessing ? "bg-gray-400 text-gray-800 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700")}>
+        <div className="p-6 bg-gray-100 dark:bg-gray-800 border-t dark:border-gray-700">
+          <button 
+            onClick={handlePayment} 
+            disabled={isPaymentProcessing} 
+            className={clsx(
+              "w-full py-3 rounded-lg text-lg font-bold transition-all",
+              isPaymentProcessing 
+                ? "bg-gray-400 text-gray-800 cursor-not-allowed" 
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            )}
+          >
             {isPaymentProcessing ? (
               <span className="flex items-center justify-center">
                 <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -135,18 +144,18 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   );  
 };
 const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
-  <div className="w-1/4 bg-blue-300 dark:bg-blue-600 p-6 flex flex-col justify-between">
+  <div className="w-1/4 bg-blue-100 dark:bg-blue-900 p-6 flex flex-col justify-between">
     <div className="text-center">
       <img src="https://img.freepik.com/premium-vector/modern-l-letter-logo-vector_724449-55.jpg" alt="Logo" className="mx-auto mb-4" />
       <h2 className="text-lg font-bold text-gray-800 dark:text-white">LRTS.com</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-200">JoyeshPay Trusted Business</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300">LRTSPay Trusted Business</p>
     </div>
     <div>
       <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">{passDetails.title}</p>
       <h3 className="text-md font-semibold text-gray-800 dark:text-white">Price Summary</h3>
       <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.price}</p>
     </div>
-    <p className="text-xs text-gray-500 dark:text-gray-200">Secured by JoyeshPay</p>
+    <p className="text-xs text-gray-600 dark:text-gray-300">Secured by LRTSPay</p>
   </div>
 );
 const MenuOption: React.FC<{
@@ -154,7 +163,15 @@ const MenuOption: React.FC<{
   active: boolean;
   onClick: () => void;
 }> = ({ label, active, onClick }) => (
-  <div onClick={onClick} className={clsx( "py-2 px-4 cursor-pointer rounded-md", active ? "bg-blue-700 text-white" : "hover:bg-blue-100 text-white dark:hover:bg-blue-500")}>
+  <div 
+    onClick={onClick} 
+    className={clsx(
+      "py-2 px-4 cursor-pointer rounded-md transition-colors",
+      active 
+        ? "bg-blue-600 text-white" 
+        : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-600"
+    )}
+  >
     {label}
   </div>
 );
