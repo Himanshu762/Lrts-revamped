@@ -14,6 +14,7 @@ import Footer from './components/layout/Footer';
 import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 import SignUpPage from './pages/SignUpPage';
+import { Analytics } from '@vercel/analytics/react';
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -129,6 +130,7 @@ function App() {
           </div>
         </Router>
         <Toaster position="bottom-center" reverseOrder={false} />
+        <Analytics />
       </DarkModeProvider>
     </ClerkProvider>
   );
