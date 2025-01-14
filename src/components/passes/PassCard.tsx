@@ -77,18 +77,22 @@ const PassCard: React.FC<PassCardProps> = ({
                 </div>
                 <span className="font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</span>
               </div>
-              <div className="mt-1 text-xs text-gray-300 pl-8">
-                {features.slice(0, 1).map((feature, index) => (
-                  <span key={index} className="block truncate">
-                    {feature.text}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
-          <div className="flex justify-between items-center">
-            <div className="text-base font-semibold text-white">
-              ₹{price}<span className="text-xs text-gray-300">/{duration}</span>
+          
+          <div className="space-y-2">
+            {features.slice(0, 1).map((feature, index) => (
+              <div key={index} className="flex items-center space-x-2 bg-blue-800/50 rounded-md p-1.5">
+                <Check className="h-4 w-4 text-blue-300" />
+                <span className="text-xs text-blue-100">
+                  {feature.text}
+                </span>
+              </div>
+            ))}
+            <div className="flex justify-between items-center">
+              <div className="text-base font-semibold text-white">
+                ₹{price}<span className="text-xs text-gray-300">/{duration}</span>
+              </div>
             </div>
           </div>
         </div>
