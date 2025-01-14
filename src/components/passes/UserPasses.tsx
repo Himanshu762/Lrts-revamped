@@ -23,46 +23,48 @@ const UserPasses: React.FC<UserPassesProps> = ({ passes }) => {
 
   return (
     <>
-      {/* Grid Display */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 auto-rows-fr">
         {passes.map((pass) => (
-          <motion.div
-            key={pass.pass_secret}
-            whileHover={{ translateY: -3 }}
-            className={clsx(
-              "relative overflow-hidden rounded-lg",
-              "bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900",
-              "animate-gradient-x shadow-lg cursor-pointer",
-              "w-full max-w-xs"
-            )}
-            style={{ width: "300px", height: "150px" }}
-            onClick={() => setSelectedPass(pass)} // Open modal on click
-          >
-            <div className="p-4 space-y-2 h-full flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-sm font-bold text-gray-800 dark:text-white">
-                    {pass.pass_type}
-                  </h3>
-                  <CreditCard className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          <div key={pass.pass_secret} className="flex items-center justify-center">
+            <motion.div
+              whileHover={{ translateY: -3 }}
+              className={clsx(
+                "relative overflow-hidden rounded-lg",
+                "bg-gradient-to-br from-white to-blue-100 dark:from-gray-800 dark:to-blue-900",
+                "animate-gradient-x shadow-lg cursor-pointer",
+                "w-full aspect-[1.586]",
+                "min-w-[240px] max-w-[340px]"
+              )}
+              onClick={() => setSelectedPass(pass)}
+            >
+              <div className="p-3 space-y-1.5 h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-xs font-bold text-gray-800 dark:text-white line-clamp-1 flex-1 mr-2">
+                      {pass.pass_type}
+                    </h3>
+                    <CreditCard className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                  </div>
+                  <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                    <p className="flex items-center space-x-1">
+                      <strong>Home Zone:</strong> 
+                      <span className="truncate">{pass.home_zone}</span>
+                    </p>
+                    <p className="flex items-center space-x-1">
+                      <strong>Destination Zone:</strong>
+                      <span className="truncate">{pass.destination_zone}</span>
+                    </p>
+                  </div>
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  <p>
-                    <strong>Home Zone:</strong> {pass.home_zone}
-                  </p>
-                  <p>
-                    <strong>Destination Zone:</strong> {pass.destination_zone}
-                  </p>
+                <div className="flex justify-between items-center">
+                  <div className="text-sm font-semibold text-gray-800 dark:text-white">
+                    ₹{pass.price}
+                  </div>
+                  <QRCodeSVG value={pass.pass_secret} size={32} level="H" />
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <div className="text-base font-semibold text-gray-800 dark:text-white">
-                  ₹{pass.price}
-                </div>
-                <QRCodeSVG value={pass.pass_secret} size={48} level="H" />
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         ))}
       </div>
 
