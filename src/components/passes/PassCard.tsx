@@ -58,8 +58,8 @@ const PassCard: React.FC<PassCardProps> = ({
         )}
 
         <div className="p-4 space-y-2 h-full flex flex-col justify-between">
-          <div>
-            <div className="flex justify-between items-center mb-2">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold text-white">
                 {title}
               </h3>
@@ -77,18 +77,18 @@ const PassCard: React.FC<PassCardProps> = ({
                 </div>
                 <span className="font-mono">•••• •••• •••• {Math.floor(Math.random() * 9000) + 1000}</span>
               </div>
+              <div className="mt-1 text-xs text-gray-300 pl-8">
+                {features.slice(0, 1).map((feature, index) => (
+                  <span key={index} className="block truncate">
+                    {feature.text}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
           <div className="flex justify-between items-center">
             <div className="text-base font-semibold text-white">
               ₹{price}<span className="text-xs text-gray-300">/{duration}</span>
-            </div>
-            <div className="flex space-x-1">
-              {features.slice(0, 1).map((feature, index) => (
-                <span key={index} className="text-xs text-gray-300 truncate max-w-[150px]">
-                  {feature.text}
-                </span>
-              ))}
             </div>
           </div>
         </div>
