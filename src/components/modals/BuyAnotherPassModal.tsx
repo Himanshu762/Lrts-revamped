@@ -48,10 +48,9 @@ const BuyAnotherPassModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             </button>
           </div>
 
-          {/* Add margin-top to move the PassCards down */}
-          <div className="flex gap-4 overflow-x-auto pb-4 mt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[70vh] p-2">
             {passes.map((pass, index) => (
-              <div key={index} className="mt-2">
+              <div key={index} className="flex items-center justify-center">
                 <PassCard
                   {...pass}
                   insideBuyAnotherPassModal={true}
