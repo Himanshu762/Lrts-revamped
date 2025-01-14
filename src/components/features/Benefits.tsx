@@ -10,7 +10,7 @@ const Benefits = () => {
     },
     {
       title: 'Subscription-Based Convenience',
-      description: 'Say goodbye to fare negotiations and cash payments. LRTS offers fixed, affordable subscription plans that let you travel unlimited within your zone.',
+      description: 'Say goodbye to fare negotiations and cash payments. LRTS offers fixed, affordable subscription plans that let you travel up to 4 rides/day across two zones.',
       icon: CreditCard,
     },
     {

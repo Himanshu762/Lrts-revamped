@@ -1,15 +1,15 @@
 declare module 'qrcode.react' {
   import React from 'react';
 
-  export interface QRCodeProps {
+  export interface QRCodeSVGProps {
     value: string;
     size?: number;
     bgColor?: string;
     fgColor?: string;
     level?: 'L' | 'M' | 'Q' | 'H';
     includeMargin?: boolean;
-    renderAs?: 'canvas' | 'svg';
+    className?: string;
   }
 
-  export const QRCode: React.FC<QRCodeProps>;
+  export const QRCodeSVG: React.FC<QRCodeSVGProps>;
 }

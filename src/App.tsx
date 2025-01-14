@@ -15,7 +15,11 @@ import SignInPage from './pages/SignInPage';
 import AccountPage from './pages/AccountPage';
 import SignUpPage from './pages/SignUpPage';
 
-const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!clerkPublishableKey) {
+  console.error('Missing Clerk Publishable Key');
+}
 
 const DarkModeContext = createContext<{
   darkMode: boolean;

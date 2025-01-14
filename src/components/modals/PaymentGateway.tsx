@@ -13,7 +13,6 @@ import unionpay from "../misc/icons/unionpay.svg";
 import maestro from "../misc/icons/maestro.svg";
 import jcb from "../misc/icons/jcb.svg";
 import cvvicon from "../misc/icons/cvv.svg";
-import qrcode from "../misc/QR.png";
 import { QRCodeSVG } from "qrcode.react";
 
 const supabase = createClient(
@@ -23,7 +22,6 @@ const supabase = createClient(
 
 const cardIcons: { [key: string]: string } = {Visa: visa, MasterCard: mastercard, "American Express": amex, Discover: discover, JCB: jcb, "Diners Club": diners, UnionPay: unionpay, Maestro: maestro, Unknown: generic,};
 const cvvIcon = cvvicon;
-const QRCode = qrcode;
 
 const identifyCardType = (cardNumber: string): string => {const visaRegex = /^4/;
   const masterCardRegex = /^5[1-5]/;
@@ -101,7 +99,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const renderPaymentMode = () => {
     switch (activePaymentMode) {
       case "UPI":
-        return <UPIScreen onSelect={(upiId) => setSelectedPaymentMode(`UPI: ${upiId}`)} />;
+        return <UPIScreen onSelect={(upiId) => setSelectedPaymentMode(`UPI: ${upiId}`)} qrValue={qrValue} />;
       case "Cards":
         return <CardsScreen onSelect={(cardDetails) => setSelectedPaymentMode(`Card: ${cardDetails}`)} />;
       case "Wallets":
@@ -117,72 +115,51 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl relative overflow-hidden max-h-[90vh] flex flex-col">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl z-10">&times;</button>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-5xl relative overflow-hidden">
+        <button 
+          onClick={onClose} 
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl z-10"
+        >
+          &times;
+        </button>
         
-        <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-          <div className="lg:w-1/3 p-4 lg:p-6 bg-gradient-to-b from-blue-900 to-blue-950 text-white">
-            <div className="flex flex-col h-full space-y-4">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-2">
-                  <img 
-                    src="https://img.freepik.com/premium-vector/modern-l-letter-logo-vector_724449-55.jpg" 
-                    alt="Logo" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <h2 className="text-lg font-bold text-white">LRTS.com</h2>
-                <p className="text-sm text-gray-300">LRTSPay Trusted Business</p>
-              </div>
-
-              <div className="flex-grow">
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-white break-words">
-                    {passDetails.title}
-                  </h3>
-                  <div>
-                    <p className="text-sm text-gray-300">Price Summary</p>
-                    <p className="text-2xl font-bold text-white">₹{passDetails.price}</p>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-xs text-gray-300 text-center">Secured by LRTSPay</p>
+        <div className="flex flex-col lg:flex-row min-h-[500px] max-h-[90vh]">
+          {/* Left Panel - Payment Summary */}
+          <div className="lg:w-1/3 bg-blue-900 text-white p-6 flex flex-col justify-between">
+            <div>
+              <h2 className="text-2xl font-bold mb-4">LRTS.com</h2>
+              <p className="text-sm mb-2">LRTSPay</p>
+              <p className="text-sm mb-4">Trusted Business</p>
+              <h3 className="text-xl font-semibold mb-2">{passDetails.title}</h3>
+              <p className="text-sm mb-4">Price Summary</p>
+              <p className="text-3xl font-bold">₹{passDetails.price}</p>
+            </div>
+            <div className="mt-auto">
+              <p className="text-sm">Secured by</p>
+              <p className="font-semibold">LRTSPay</p>
             </div>
           </div>
 
-          <div className="lg:w-2/3 flex flex-col overflow-hidden">
-            <div className="p-4 lg:p-6 border-b dark:border-gray-700">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-                {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
-                  <MenuOption
-                    key={mode}
-                    label={mode}
-                    active={activePaymentMode === mode}
-                    onClick={() => setActivePaymentMode(mode)}
-                  />
-                ))}
-              </div>
+          {/* Right Panel - Payment Options */}
+          <div className="lg:w-2/3 p-6 overflow-y-auto">
+            <div className="flex flex-wrap gap-2 mb-6">
+              {["UPI", "Cards", "Wallets", "Net Banking", "EMI"].map((mode) => (
+                <MenuOption
+                  key={mode}
+                  label={mode}
+                  active={activePaymentMode === mode}
+                  onClick={() => setActivePaymentMode(mode)}
+                />
+              ))}
             </div>
-
-            <div className="flex-1 overflow-y-auto p-4 lg:p-6">
-              <div className="max-w-md mx-auto">
-                {renderPaymentMode()}
-              </div>
-            </div>
-
-            <div className="p-4 lg:p-6 border-t dark:border-gray-700">
+            <div className="mt-4">
+              {renderPaymentMode()}
               <button
                 onClick={handlePayment}
-                disabled={!selectedPaymentMode || isPaymentProcessing}
-                className={clsx(
-                  "w-full py-3 px-4 rounded-lg text-white font-semibold transition-all",
-                  selectedPaymentMode && !isPaymentProcessing
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "bg-gray-400 cursor-not-allowed"
-                )}
+                disabled={isPaymentProcessing}
+                className="bg-green-600 text-white py-2 px-4 rounded-md w-full mt-4 hover:bg-green-700 disabled:bg-gray-400"
               >
-                {isPaymentProcessing ? "Processing..." : `Pay ₹${passDetails.price}`}
+                {isPaymentProcessing ? "Processing..." : "Pay"}
               </button>
             </div>
           </div>
@@ -191,21 +168,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
     </div>
   );  
 };
-const Sidebar: React.FC<{ passDetails: PaymentGatewayProps["passDetails"] }> = ({ passDetails }) => (
-  <div className="w-1/4 bg-blue-100 dark:bg-blue-900 p-6 flex flex-col justify-between">
-    <div className="text-center">
-      <img src="https://img.freepik.com/premium-vector/modern-l-letter-logo-vector_724449-55.jpg" alt="Logo" className="mx-auto mb-4" />
-      <h2 className="text-lg font-bold text-gray-800 dark:text-white">LRTS.com</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-300">LRTSPay Trusted Business</p>
-    </div>
-    <div>
-      <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">{passDetails.title}</p>
-      <h3 className="text-md font-semibold text-gray-800 dark:text-white">Price Summary</h3>
-      <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-white">₹{passDetails.price}</p>
-    </div>
-    <p className="text-xs text-gray-600 dark:text-gray-300">Secured by LRTSPay</p>
-  </div>
-);
+
 const MenuOption: React.FC<{
   label: string;
   active: boolean;
@@ -223,7 +186,11 @@ const MenuOption: React.FC<{
     {label}
   </div>
 );
-const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }) => {
+
+const UPIScreen: React.FC<{ 
+  onSelect: (upiId: string) => void;
+  qrValue: string;
+}> = ({ onSelect, qrValue }) => {
   const [upiId, setUpiId] = useState("");
 
   const handleVerify = () => {
@@ -269,7 +236,6 @@ const UPIScreen: React.FC<{ onSelect: (upiId: string) => void }> = ({ onSelect }
             size={160}
             level="H"
             includeMargin={true}
-            className="mx-auto"
           />
         </div>
       </div>
