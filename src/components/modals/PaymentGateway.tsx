@@ -60,18 +60,18 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({ passDetails, onClose })
   const [qrValue, setQrValue] = useState("");
 
   useEffect(() => {
-    generateUPIQR();
-  }, [passDetails.price]);
+    if (activePaymentMode === "UPI") {
+      generateUPIQR();
+    }
+  }, [activePaymentMode, passDetails.price]);
 
   const generateUPIQR = () => {
     const merchantId = "LRTS" + Math.random().toString(36).substring(2, 8).toUpperCase();
-    const transactionId = uuidv4().substring(0, 12).toUpperCase();
+    const transactionId = Math.random().toString(36).substring(2, 12).toUpperCase();
     const timestamp = Date.now();
-    
     const amount = parseFloat(passDetails.price).toFixed(2);
     
     const upiUrl = `upi://pay?pa=lrts@upi&pn=LRTS_METRO&tr=${transactionId}&tn=${passDetails.title}&am=${amount}&cu=INR&mc=4121&mid=${merchantId}&sign=${timestamp}`;
-    
     setQrValue(upiUrl);
   };
 
