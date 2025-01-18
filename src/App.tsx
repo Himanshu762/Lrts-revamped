@@ -70,7 +70,7 @@ function HomePage() {
     },
     {
       title: 'Daily Pass - Dual Zone',
-      price: '95',
+      price: '79',
       duration: 'day',
       features: [
         { text: 'Up to 4 rides/day across two zones', included: true },
