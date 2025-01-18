@@ -54,7 +54,7 @@ function HomePage() {
   const passes = [
     {
       title: 'Daily Pass - Single Trip',
-      price: '17',
+      price: '25',
       duration: 'trip',
       features: [
         { text: 'Single trip to any metro station in the zone', included: true },
