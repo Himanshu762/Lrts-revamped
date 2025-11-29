@@ -6,9 +6,17 @@ Lrts-revamped is the modernized, production-ready iteration of the Local Ricksha
 
 ## Screenshots
 
-| Home / Hero | Zones Overview | Zone Analytics | Pass Selection |
-|-------------|----------------|----------------|----------------|
-| ![Home Screen – Hero (Image 1)](screenshots/screenshot-1.png) | ![Zones Overview (Image 2)](screenshots/screenshot-2.png) | ![Zone Features & Stats (Image 3)](screenshots/screenshot-3.png) | ![Pass Options (Image 4)](screenshots/screenshot-4.png) |
+Home / Hero (Image 1)
+![Home Screen – Hero](screenshots/screenshot-1.png)
+
+Zones Overview (Image 2)
+![Zones Overview](screenshots/screenshot-2.png)
+
+Zone Features & Statistics (Image 3)
+![Zone Features & Stats](screenshots/screenshot-3.png)
+
+Pass Selection (Image 4)
+![Pass Options](screenshots/screenshot-4.png)
 
 (If the images don't display, ensure the `screenshots/` folder exists at the repository root and the filenames match.)
 
@@ -30,10 +38,10 @@ LRTS aims to provide:
 ## Tech Stack
 
 - TypeScript / Modern ES Modules
-- (Optional) React / State management (adapt based on actual implementation)
+- (Optional) React / State management (adjust based on actual implementation)
 - Tooling: Vite / ESLint / Prettier (adjust if different)
 - Small JavaScript utility interop
-- Configuration & ancillary scripts (Other)
+- Configuration & ancillary scripts
 
 ## Suggested Project Structure
 
@@ -72,12 +80,10 @@ npm test           # if tests configured
 
 ## Roadmap Ideas
 
-| Milestone | Description |
-|----------|-------------|
-| Real-time Fleet Data | Integrate live rickshaw availability and wait-time feeds |
-| Driver App API | Authentication & route optimization endpoints |
-| Dynamic Pricing | Peak/off-peak and zone-linked subscription tiers |
-| Accessibility Audit | WCAG compliance pass & improvements |
+- Real-time Fleet Data (availability and wait-time feeds)
+- Driver App API (auth & route optimization)
+- Dynamic Pricing (peak/off-peak and zone-linked tiers)
+- Accessibility Audit (WCAG compliance pass)
 
 ## Contributing
 
